@@ -38,16 +38,16 @@ Note: the repo is **private** — only accounts with read access can add the mar
 
 Two-digit numbered steps; utilities unnumbered.
 
-**cuevik-start — Locked**
+### cuevik-start — Locked
 
 `00-bootstrap` · `01-product-concept` · `02-product-requirements` · `03-architecture` ·
 `04-tech-stack` · `05-ai-tool-guide` · `06-readme` · `07-backlog` · `08-finalize` · `status` · `cleanup`
 
-**cuevik-docs — Locked**
+### cuevik-docs — Locked
 
 `audit` (was `/doc-audit`) · `update` (was `/proj-init-doc-update`)
 
-**cuevik-ship — Locked**
+### cuevik-ship — Locked
 
 `01-brainstorm` · `02-audit-prd` · `03-create-backlog` (epic and stories) · `04-plan-intent` ·
 `05-design-spec` · `06-build-plan` · `07-execute-plan` · `cleanup`
@@ -88,7 +88,7 @@ Two-digit numbered steps; utilities unnumbered.
 
 ## 4. cuevik-ship behaviour
 
-**Locked**
+### Locked
 
 - Work folder: `docs/ship/<issue#>-<slug>/`, brainstorming in `docs/ship/<issue#>-<slug>/brainstorming/`.
 - `docs/ship/` **never reaches `main`**.
@@ -102,7 +102,7 @@ Two-digit numbered steps; utilities unnumbered.
 - An idea that splits into several stories at step 03: each extra story starts its own branch set at
   `04-plan-intent`, linking back to the original issue's brainstorming.
 
-**Locked — the simple model**
+### Locked — the simple model
 
 One rule: **files under `docs/ship/` go to the issue branch; everything else goes to `main`.**
 
