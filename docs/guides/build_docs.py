@@ -197,13 +197,17 @@ def mermaid(lanes, rows):
     return "\n".join(out + edges + ["```"])
 
 
-def start_steps(d):
-    rows = ["| Command | Owner | Reviewers | Reads | Writes |", "|---|---|---|---|---|"]
-    for s in d["steps"]:
-        rows.append("| `{}` | {} | {} | {} | {} |".format(
-            s["id"], s["owner"], ", ".join(s["reviewers"]),
-            ", ".join(f"`{u}`" for u in s["reads"]) or "—", ", ".join(f"`{o}`" for o in s["outputs"])))
-    return "\n".join(rows)
+def step_facts(d):
+    """One facts line per cuevik-start step, keyed by gen block name. A bootstrap step reads nothing."""
+    out, steps = {}, d["steps"]
+    for i, s in enumerate(steps):
+        reads = [] if s.get("bootstrap") else s["reads"]
+        nxt = steps[i + 1]["id"] if i + 1 < len(steps) else "cleanup"
+        read_list = ", ".join(f"`{u}`" for u in reads) or "—"
+        write_list = ", ".join(f"`{o}`" for o in s["outputs"])
+        out[f"step-{s['id']}"] = (f"**Owner:** {s['owner']}  ·  **Reviewers:** {', '.join(s['reviewers'])}  ·  "
+                                  f"**Reads:** {read_list}  ·  **Writes:** {write_list}  ·  **Then:** `/cuevik-start:{nxt}`")
+    return out
 
 
 def doc_owners(d):
@@ -216,7 +220,8 @@ def doc_owners(d):
 
 def render_blocks(d, t1, t2):
     blocks = {name: mermaid(*model) for name, model in diagrams(d, t1, t2).items()}
-    blocks.update({"start-steps": start_steps(d), "doc-owners": doc_owners(d)})
+    blocks.update(step_facts(d))
+    blocks["doc-owners"] = doc_owners(d)
     return blocks
 
 
@@ -254,7 +259,7 @@ def checks(walk, over, d, t1, t2, release):
             warn(f"{p}: guide says {given}, plugin.json is {want}")
 
     if bad := [s["id"] for s in d["steps"] if s["branch"] != f"init/{s['id']}"]:
-        fail(f"steps.yml branch is no longer init/<id> for {bad}; update section 3 of the Walkthrough and start_steps()")
+        fail(f"steps.yml branch is no longer init/<id> for {bad}; update section 5 of the Walkthrough")
     documented = set(t1)
     steps = {("cuevik-start", s["id"]) for s in d["steps"]}
     if gap := steps - documented:
@@ -334,6 +339,7 @@ h2{font-size:var(--text-lg);line-height:var(--leading-snug);margin:30px 0 10px;b
 .keep>h2,.keep>h3{margin-top:0}
 .keep.k2{margin-top:30px}
 .keep.k3{margin-top:18px}
+.keep:has(>.pg){break-before:page;margin-top:0}
 section.sec{margin-top:30px}
 h3{font-size:var(--text-md);line-height:var(--leading-snug);margin:18px 0 6px;break-after:avoid}
 h2 .num{vertical-align:2px;margin-right:10px;display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;
@@ -381,6 +387,8 @@ td:first-child,td.nw{white-space:nowrap}
 td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
+
+.facts{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-sm);line-height:var(--leading-snug)}
 
 /* by-actor diagrams */
 figure.sw{margin:10px 0 14px;break-inside:avoid}
@@ -566,6 +574,14 @@ def shape(body_html, eyebrow, foot, overview=False):
             if len(code.get_text()) > 24:  # long paths may wrap, at a slash
                 marked = code.decode_contents().replace("/", "/<wbr>")
                 code.clear(); code.append(BeautifulSoup(marked, "html.parser")); code["class"] = "wrap"
+    for p in soup.find_all("p"):
+        if p.get_text().startswith("Owner:") and p.find("strong"):  # the generated facts line under a step heading
+            p["class"] = "facts"
+    for n, fig in enumerate(soup.find_all("figure", class_="sw")):  # a diagram is most of a page: start it on a fresh one
+        h = fig.find_previous(["h2", "h3"])
+        if n == 0 and h.name == "h3":
+            h = h.find_previous("h2")  # the first diagram also carries its section heading
+        h["class"] = h.get("class", []) + ["pg"]
     # keep every heading with the block that follows it (no orphaned headings at page foot)
     for h in soup.find_all(["h2", "h3"]):
         nxt = h.find_next_sibling()

@@ -40,6 +40,7 @@ h2{font-size:var(--text-lg);line-height:var(--leading-snug);margin:30px 0 10px;b
 .keep>h2,.keep>h3{margin-top:0}
 .keep.k2{margin-top:30px}
 .keep.k3{margin-top:18px}
+.keep:has(>.pg){break-before:page;margin-top:0}
 section.sec{margin-top:30px}
 h3{font-size:var(--text-md);line-height:var(--leading-snug);margin:18px 0 6px;break-after:avoid}
 h2 .num{vertical-align:2px;margin-right:10px;display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;
@@ -88,6 +89,8 @@ td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
+.facts{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-sm);line-height:var(--leading-snug)}
+
 /* by-actor diagrams */
 figure.sw{margin:10px 0 14px;break-inside:avoid}
 .sw svg{display:block;width:100%;height:auto}
@@ -128,26 +131,46 @@ h2.pb{break-before:page;margin-top:0}
 @media print{main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards{grid-template-columns:1fr}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.1, cuevik-ship 0.1, cuevik-docs 0.1</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Draft. Sections 1–5 hold the diagrams and reference tables, which are generated from the plugins or checked against them. The step-by-step prose is written next.</p></header>
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.1, cuevik-ship 0.1, cuevik-docs 0.1</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all three plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
-<li><a href="#1-the-three-plugins">1. The three plugins</a></li>
-<li><a href="#2-the-flow-by-actor">2. The flow by actor</a><ul>
+<li><a href="#1-what-you-get">1. What you get</a></li>
+<li><a href="#2-install-and-prerequisites">2. Install and prerequisites</a></li>
+<li><a href="#3-how-it-works">3. How it works</a><ul>
+<li><a href="#what-happens-inside-a-step">What happens inside a step</a></li>
+<li><a href="#what-lands-in-your-repo">What lands in your repo</a></li>
+</ul>
+</li>
+<li><a href="#4-the-flow-by-actor">4. The flow by actor</a><ul>
 <li><a href="#cuevik-start">cuevik-start</a></li>
 <li><a href="#cuevik-ship">cuevik-ship</a></li>
 <li><a href="#cuevik-docs">cuevik-docs</a></li>
 </ul>
 </li>
-<li><a href="#3-cuevik-start-steps">3. cuevik-start steps</a></li>
-<li><a href="#4-command-reference">4. Command reference</a><ul>
+<li><a href="#5-cuevik-start-set-up-a-project">5. cuevik-start: set up a project</a><ul>
+<li><a href="#00-bootstrap">00-bootstrap</a></li>
+<li><a href="#01-product-concept">01-product-concept</a></li>
+<li><a href="#02-product-requirements">02-product-requirements</a></li>
+<li><a href="#03-architecture">03-architecture</a></li>
+<li><a href="#04-tech-stack">04-tech-stack</a></li>
+<li><a href="#05-ai-tool-guide">05-ai-tool-guide</a></li>
+<li><a href="#06-readme">06-readme</a></li>
+<li><a href="#07-backlog">07-backlog</a></li>
+<li><a href="#08-finalize">08-finalize</a></li>
+<li><a href="#status-and-cleanup">status and cleanup</a></li>
+</ul>
+</li>
+<li><a href="#6-command-reference">6. Command reference</a><ul>
 <li><a href="#what-each-command-does">What each command does</a></li>
 <li><a href="#branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</a></li>
 </ul>
 </li>
-<li><a href="#5-who-owns-which-document">5. Who owns which document</a></li>
+<li><a href="#7-who-owns-which-document">7. Who owns which document</a></li>
 </ul></nav><hr/>
-<div class="keep k2"><h2 id="1-the-three-plugins"><span class="num">1</span>The three plugins</h2><div class="tbl short"><table>
+<div class="keep k2"><h2 id="1-what-you-get"><span class="num">1</span>What you get</h2><p>Three plugins with one rule: every document and change reaches <code>main</code> through a reviewed PR, and the next step will not run until the previous PR is merged.</p></div>
+
+<div class="tbl short"><table>
 <thead>
 <tr>
 <th>Plugin</th>
@@ -172,10 +195,49 @@ h2.pb{break-before:page;margin-top:0}
 <td class="nw"><code>audit</code>, <code>update</code></td>
 </tr>
 </tbody>
-</table></div></div>
+</table></div>
+<hr/>
+<div class="keep k2"><h2 id="2-install-and-prerequisites"><span class="num">2</span>Install and prerequisites</h2><p>Before you install:</p></div>
+
+<ul>
+<li><a href="https://cli.github.com">GitHub CLI</a> (<code>gh</code>), signed in with the <code>project</code> scope: <code>gh auth login</code>, then <code>gh auth refresh -s project</code>.</li>
+<li>A local Claude Code session. Cloud sessions cannot reach GitHub Projects.</li>
+<li>Read access to the marketplace repository, which is private for now.</li>
+<li>Admin rights on the project's repo. <code>00-bootstrap</code> changes a repo setting and links a board.</li>
+<li>GitHub as your host. It is the only one supported.</li>
+</ul>
+<p>Install, in Claude Code:</p>
+<pre><code class="language-text">/plugin marketplace add viralparikh-dev/cuevik-plugins
+/plugin install cuevik-start@cuevik-plugins
+/plugin install cuevik-ship@cuevik-plugins
+</code></pre>
+<p><code>cuevik-docs</code> installs automatically: both other plugins depend on it.</p>
+<p>Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.</p>
+<hr/>
+<div class="keep k2"><h2 id="3-how-it-works"><span class="num">3</span>How it works</h2><ul>
+<li><strong>One step, one session.</strong> Run one step per session. Ask for a second step in the same session and it tells you to start a new one.</li>
+<li><strong>One PR per step.</strong> A step works on its own branch (<code>init/&lt;name&gt;</code> in <code>cuevik-start</code>), commits there, and opens a PR to <code>main</code> once you approve. It never commits to <code>main</code>.</li>
+<li><strong>Merged means final.</strong> A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.</li>
+<li><strong>Nothing happens without a yes.</strong> Before it creates a branch, writes files, files issues or pushes, a step shows a checklist of what it verified and waits for your explicit <code>yes</code>.</li>
+<li><strong>One question at a time, fixed structure.</strong> Claude interviews you for each section, never assumes an answer, and fills a template, so every project gets the same sections in the same order, with no placeholders left.</li>
+<li><strong>Owners and reviewers.</strong> Every document has an owner role and reviewer roles. Claude acts as the owner while it drafts, and each reviewer applies their own checklist at PR review. These are roles, not GitHub accounts.</li>
+<li><strong>Solo is fine.</strong> GitHub does not let you approve your own PR, so when one person holds every role, the self-review checklist in <code>CONTRIBUTING.md</code> is the approval. Wait a few hours (ideally a day), check every required section is covered and no upstream document changed on <code>main</code>, then merge. Change hats on purpose.</li>
+<li><strong>Finished means finished.</strong> Re-running a finished step stops and sends you to <code>/cuevik-docs:update &lt;document&gt;</code>.</li>
+</ul></div>
+
+<div class="keep k3"><h3 id="what-happens-inside-a-step">What happens inside a step</h3><ol>
+<li>You start the command in a fresh session, in the project folder.</li>
+<li>It checks the ground: clean working tree, <code>main</code> up to date, the previous step's PR merged, upstream documents on <code>main</code>, and this step's output not already final.</li>
+<li>It shows the checklist, waits for your <code>yes</code>, then creates the step's branch from <code>main</code>.</li>
+<li>It interviews you, drafts, and revises until you approve, then commits on the branch.</li>
+<li>On your approval it pushes and opens the PR, with a summary and the reviewer checklist.</li>
+<li>You review and merge on GitHub, then start the next step in a new session.</li>
+</ol></div>
+
+<div class="keep k3"><h3 id="what-lands-in-your-repo">What lands in your repo</h3><p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> holds the project board's ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p></div>
 
 <hr/>
-<div class="keep k2"><h2 id="2-the-flow-by-actor"><span class="num">2</span>The flow by actor</h2><p>Who acts at each step, one diagram per plugin. They are also the three pages of <code>Cuevik-Plugins_WalkthroughByActor.pdf</code>.</p></div>
+<div class="keep k2"><h2 class="pg" id="4-the-flow-by-actor"><span class="num">4</span>The flow by actor</h2><p>Who acts at each step, one diagram per plugin. They are also the three pages of <code>Cuevik-Plugins_WalkthroughByActor.pdf</code>.</p></div>
 
 <div class="keep k3"><h3 id="cuevik-start">cuevik-start</h3><p>Lanes are the document owners from the project's lineage. Every command is <code>/cuevik-start:&lt;name&gt;</code>.</p></div>
 
@@ -292,7 +354,7 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="548" y="795">PR → main</text>
 <text class="note" x="548" y="812">Approved by Architect</text>
 </svg></figure>
-<div class="keep k3"><h3 id="cuevik-ship">cuevik-ship</h3><p>You approve and merge, Claude runs each command in its own session, and GitHub holds the issue, branches and PRs. Every command is <code>/cuevik-ship:&lt;name&gt;</code>.</p></div>
+<div class="keep k3"><h3 class="pg" id="cuevik-ship">cuevik-ship</h3><p>You approve and merge, Claude runs each command in its own session, and GitHub holds the issue, branches and PRs. Every command is <code>/cuevik-ship:&lt;name&gt;</code>.</p></div>
 
 <figure class="sw"><svg aria-label="flow-ship by actor" role="img" viewbox="0 0 780 764" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="ah1" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
@@ -417,7 +479,7 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="548" y="709">No PR</text>
 <text class="note" x="548" y="726">Worktree, local branches, archive tag</text>
 </svg></figure>
-<div class="keep k3"><h3 id="cuevik-docs">cuevik-docs</h3><p>Same lanes as <code>cuevik-ship</code>. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
+<div class="keep k3"><h3 class="pg" id="cuevik-docs">cuevik-docs</h3><p>Same lanes as <code>cuevik-ship</code>. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
 
 <figure class="sw"><svg aria-label="flow-docs by actor" role="img" viewbox="0 0 780 248" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="ah2" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
@@ -459,86 +521,75 @@ h2.pb{break-before:page;margin-top:0}
 <text class="note" x="548" y="210">docs/update/&lt;doc&gt;</text>
 </svg></figure>
 <hr/>
-<div class="keep k2"><h2 id="3-cuevik-start-steps"><span class="num">3</span>cuevik-start steps</h2><p>Each step runs in its own session on branch <code>init/&lt;name&gt;</code> and ends in a PR to <code>main</code>. Every command is <code>/cuevik-start:&lt;name&gt;</code>. Owner, reviewers and the documents a step reads come from the lineage; the outputs come from the step registry.</p></div>
+<div class="keep k2"><h2 id="5-cuevik-start-set-up-a-project"><span class="num">5</span>cuevik-start: set up a project</h2><p>Nine steps, run in order, one session and one PR each. Each step reads the documents before it from <code>main</code>, so the order matters. Every command is <code>/cuevik-start:&lt;name&gt;</code> and runs on branch <code>init/&lt;name&gt;</code>. The line under each heading is generated from the plugin's own step registry and lineage.</p></div>
 
-<div class="tbl"><table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Owner</th>
-<th>Reviewers</th>
-<th>Reads</th>
-<th>Writes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="nw"><code>00-bootstrap</code></td>
-<td class="nw">Architect</td>
-<td class="nw">Architect</td>
-<td><code>docs/TECH-STACK.md</code></td>
-<td><code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code></td>
-</tr>
-<tr>
-<td><code>01-product-concept</code></td>
-<td>Product Owner</td>
-<td>Product Owner</td>
-<td class="nw">—</td>
-<td><code>docs/PRODUCT.md</code></td>
-</tr>
-<tr>
-<td><code>02-product-requirements</code></td>
-<td>Product Owner</td>
-<td>Product Owner</td>
-<td><code>docs/PRODUCT.md</code></td>
-<td class="nw"><code>docs/PRD.md</code></td>
-</tr>
-<tr>
-<td><code>03-architecture</code></td>
-<td class="nw">Architect</td>
-<td>Architect, Product Owner</td>
-<td class="nw"><code>docs/PRD.md</code></td>
-<td><code>docs/ARCHITECTURE.md</code></td>
-</tr>
-<tr>
-<td><code>04-tech-stack</code></td>
-<td class="nw">Architect</td>
-<td class="nw">Architect</td>
-<td><code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code></td>
-<td><code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code></td>
-</tr>
-<tr>
-<td><code>05-ai-tool-guide</code></td>
-<td class="nw">Architect</td>
-<td class="nw">Architect</td>
-<td><code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code></td>
-<td><code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code class="wrap">.github/<wbr/>copilot-instructions.md</code></td>
-</tr>
-<tr>
-<td class="nw"><code>06-readme</code></td>
-<td class="nw">Architect</td>
-<td class="nw">Architect</td>
-<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code></td>
-<td class="nw"><code>README.md</code></td>
-</tr>
-<tr>
-<td class="nw"><code>07-backlog</code></td>
-<td>Product Owner</td>
-<td>Product Owner</td>
-<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
-<td><code>docs/BACKLOG.md</code></td>
-</tr>
-<tr>
-<td class="nw"><code>08-finalize</code></td>
-<td class="nw">Architect</td>
-<td class="nw">Architect</td>
-<td><code>docs/TECH-STACK.md</code></td>
-<td><code>CONTRIBUTING.md</code></td>
-</tr>
-</tbody>
-</table></div>
+<div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
+
+<p>Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it lists every change and waits for a separate <code>yes</code> on each.</p>
+<ul>
+<li><strong>Repo.</strong> Connects the folder to a GitHub repo, or creates one. It asks for the owner and name, and for the visibility of a new repo (private is suggested). In an empty folder it clones an existing repo. It stops if the folder has files but no repo (it never commits your files for you), if the folder sits inside another repo, or if <code>origin</code> is not on GitHub.</li>
+<li><strong>Board.</strong> Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board is a copy of a template board: you can name one as <code>&lt;owner&gt;/&lt;number&gt;</code>, and a default is offered. If no template can be read, you pick an existing board or a blank one, and a blank board gets only GitHub's default Status options (<code>Todo</code>, <code>In Progress</code>, <code>Done</code>). The board needs a single-select field named <code>Status</code>.</li>
+<li><strong>Remote changes.</strong> Each is confirmed on its own: create the board, link it to the repo, and turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges.</li>
+<li><strong>The PR.</strong> Opens <code>init/00-bootstrap</code> with <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code> and <code>.markdownlint.json</code>. An existing <code>.markdownlint.json</code> is kept. An existing <code>CONTRIBUTING.md</code> keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, <code>chore: initialize repository</code>, on <code>main</code> and pushes it. That is the only commit bootstrap makes on <code>main</code>.</li>
+<li><strong>The governance text</strong> covers the review flow, Conventional Commits and the rule never to push to <code>main</code>. It also carries the initiation-only branching table and the self-review checklist, which <code>08-finalize</code> removes.</li>
+<li><strong>It stops, and says what to fix,</strong> if <code>gh</code> is not signed in, the default branch is not <code>main</code>, you lack admin rights on the repo, the repo is already bootstrapped, or a <code>00-bootstrap</code> PR is already open.</li>
+</ul>
+<p>Review the PR:</p>
+<ul>
+<li><code>CONTRIBUTING.md</code> holds the governance text verbatim, with both <code>INITIATION-ONLY</code> markers. If it already existed, your text is unchanged.</li>
+<li>No stack-specific commands in <code>CONTRIBUTING.md</code>.</li>
+<li><code>.cuevik/config.json</code> names the board linked to this repo, with ids read from GitHub.</li>
+<li><code>.cuevik/lineage.json</code> matches the plugin's default lineage.</li>
+<li>Auto-delete is on: <code>gh repo view --json deleteBranchOnMerge</code> returns <code>true</code>.</li>
+<li>No plugin files (runner, registry, templates, roles) in the diff.</li>
+</ul>
+<p>Not yet tested: linking a user-owned board to an organisation-owned repo.</p>
+<div class="keep k3"><h3 id="01-product-concept">01-product-concept</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:02-product-requirements</code></p></div>
+
+<p>Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner and pushes back: every feature must answer <em>what user problem does this solve?</em>, and nothing technical belongs here. The result is <code>docs/PRODUCT.md</code> with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.</p>
+<div class="keep k3"><h3 id="02-product-requirements">02-product-requirements</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Writes:</strong> <code>docs/PRD.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:03-architecture</code></p></div>
+
+<p>Turns the concept into numbered, testable requirements. The result is <code>docs/PRD.md</code> with twelve sections: Overview, Target Users, Problem Statements, Features / Capabilities, User Stories, Functional Requirements, Non-Functional Requirements, Acceptance Criteria, Out of Scope (This Release), Dependencies &amp; Assumptions, Constraints (Non-Architectural), Risks &amp; Edge Cases.</p>
+<p>The Product Owner blocks the PR if:</p>
+<ul>
+<li>acceptance criteria are vague ("works correctly", "performs well")</li>
+<li>a feature has no user story</li>
+<li>a requirement does not trace back to <code>docs/PRODUCT.md</code></li>
+<li>implementation, architecture or stack details appear</li>
+<li>out-of-scope items are implied instead of listed</li>
+<li>requirements lack unique IDs</li>
+</ul>
+<div class="keep k3"><h3 id="03-architecture">03-architecture</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>  ·  <strong>Writes:</strong> <code>docs/ARCHITECTURE.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:04-tech-stack</code></p></div>
+
+<p>Designs the system from the requirements. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
+<p>Every significant decision is written as <strong>Context, Decision, Alternatives rejected, Trade-offs</strong>. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.</p>
+<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
+
+<p>Locks the approved technologies and the trade-offs behind them. The result is <code>docs/TECH-STACK.md</code> with six sections: Languages &amp; Frameworks, Datastores, Cloud &amp; Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions &amp; Constraints.</p>
+<p>It then appends a tooling layer (build, test and lint commands) to <code>CONTRIBUTING.md</code>, using only technologies approved in <code>TECH-STACK.md</code> and leaving the governance layer from <code>00-bootstrap</code> untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.</p>
+<div class="keep k3"><h3 id="05-ai-tool-guide">05-ai-tool-guide</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-readme</code></p></div>
+
+<p>Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes <code>docs/AI-TOOL-GUIDE.md</code> and only the adapter files for those tools (<code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>). The shared rules live in the guide; each adapter holds only tool-specific settings.</p>
+<p>The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.</p>
+<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
+
+<p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed, and every command in the README is run before it is committed.</p>
+<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
+
+<p>Derives epics and stories from the product concept and the PRD, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
+<p>After setup, GitHub is the backlog. <code>docs/BACKLOG.md</code> is a snapshot and stays frozen.</p>
+<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
+
+<p>Ends initiation. It reads <code>CONTRIBUTING.md</code> from <code>main</code>, removes the fenced <code>INITIATION-ONLY</code> block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with <code>/cuevik-docs:update</code>. If the markers are missing it stops rather than guess which lines to delete.</p>
+<p>Initiation is complete when this PR is merged.</p>
+<div class="keep k3"><h3 id="status-and-cleanup">status and cleanup</h3><ul>
+<li><code>/cuevik-start:status</code> is read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.</li>
+<li><code>/cuevik-start:cleanup</code> deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</li>
+</ul></div>
+
+<p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
-<div class="keep k2"><h2 id="4-command-reference"><span class="num">4</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
+<div class="keep k2"><h2 id="6-command-reference"><span class="num">6</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
 
 <div class="tbl"><table>
 <thead>
@@ -656,7 +707,7 @@ h2.pb{break-before:page;margin-top:0}
 </tr>
 </tbody>
 </table></div>
-<div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The nine numbered <code>cuevik-start</code> steps are not repeated here: their branch and outputs are in section 3. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
+<div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The nine numbered <code>cuevik-start</code> steps are not repeated here: see section 5. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
 
 <div class="tbl"><table>
 <thead>
@@ -756,7 +807,7 @@ h2.pb{break-before:page;margin-top:0}
 </tbody>
 </table></div>
 <hr/>
-<div class="keep k2"><h2 id="5-who-owns-which-document"><span class="num">5</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
+<div class="keep k2"><h2 id="7-who-owns-which-document"><span class="num">7</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
 
 <div class="tbl short"><table>
 <thead>
