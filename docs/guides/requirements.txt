@@ -1,0 +1,6 @@
+markdown==3.11.1
+beautifulsoup4==4.15.0
+PyYAML==6.0.3
+playwright==1.64.0
+# QA only: rasterize PDF pages to PNG so every page can be looked at
+pymupdf==1.28.2
