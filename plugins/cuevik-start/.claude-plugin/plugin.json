@@ -7,13 +7,5 @@
     "name": "Viral Parikh"
   },
   "keywords": ["project-initiation", "governance", "prd", "architecture", "cuevik"],
-  "dependencies": ["cuevik-docs"],
-  "userConfig": {
-    "board_template": {
-      "type": "string",
-      "title": "Project board template",
-      "description": "Board that 00-bootstrap copies when it creates a new project board, as <owner>/<number>. Must be readable by you (public, or you have access). Empty: offer a blank board instead.",
-      "default": "viralparikh-dev/3"
-    }
-  }
+  "dependencies": ["cuevik-docs"]
 }

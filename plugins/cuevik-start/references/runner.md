@@ -63,10 +63,12 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    - Non-empty output: **STOP** and tell the operator: `Uncommitted changes detected — commit or
      stash before continuing.`
 
-2. **Refresh `main`** — run `git checkout main`, then `git pull --ff-only`. PRs merge on GitHub, so
-   the local `main` is stale until it is pulled, and every `main:` check below reads the local ref.
+2. **Refresh `main`** — run `git fetch --prune origin`, `git checkout main`, then
+   `git pull --ff-only`. PRs merge on GitHub, so the local `main` is stale until it is pulled, and
+   every `main:` check below reads the local ref. Fetching first makes `checkout`'s status line
+   current and drops remote-tracking refs of branches GitHub auto-deleted after merge.
    - Both succeed: proceed.
-   - Either fails (no network or remote access, or local `main` has diverged from `origin/main`):
+   - Any fails (no network or remote access, or local `main` has diverged from `origin/main`):
      **STOP** and tell the operator: `Could not fast-forward main — resolve the pull error before
      continuing.` Never run the checks below against a stale `main`.
 

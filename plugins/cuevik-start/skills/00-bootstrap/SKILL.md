@@ -32,10 +32,12 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
    on GitHub.
 3. **Runner §1 checks 1, 2 and 7** — check 7 is the `steps.yml` special precondition plus §C.
 4. **Board** (§D). Questions and reads only.
-5. **Runner §2 checklist**, plus the remote changes from §E. Confirm each change on its own.
-6. **Remote changes** (§E).
+5. **Runner §2 checklist.** Show it, listing the §E changes that apply, and wait for one `yes`
+   to the checklist.
+6. **Remote changes** (§E). Then confirm each change on its own, with its own `yes`, before
+   running it.
 7. **Runner §3** — branch `init/00-bootstrap`.
-8. **Outputs** (§F).
+8. **Outputs** (§F). Show the files and wait for approval before committing.
 9. **Runner §5–§6** — commit, push on approval, PR (§G).
 
 ## A. Auth
@@ -49,8 +51,11 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
 Detect the folder's state with:
 
 - `git rev-parse --show-prefix` — non-zero: not a repo. Non-empty output: the folder is a
-  subfolder of another repo — **STOP** and say so. (Do not compare `--show-toplevel` with the
-  current path: on Windows the two use different path forms.)
+  subfolder of another repo — **STOP** — `This folder is inside the git repo at <git rev-parse
+  --show-toplevel>. Run 00-bootstrap from the project repo's root, or, if that parent repo is not
+  your project, move this folder out of it (or remove the stray .git there), then re-run.` Never
+  delete a `.git` folder yourself. (Do not compare `--show-toplevel` with the current path: on
+  Windows the two use different path forms.)
 - `git remote get-url origin` — the remote, if any.
 - `ls -A` — empty output: empty folder.
 
@@ -60,7 +65,7 @@ Detect the folder's state with:
 | Repo, `origin` on `github.com`, `gh repo view` fails | **STOP** — `origin points at <url>, which does not exist or you cannot access. Fix or remove origin, then re-run.` |
 | Repo, `origin` not on `github.com` | **STOP** — GitHub only. |
 | Repo, no `origin` | Ask owner and name (B.1). Existing: connect it (B.2). Missing: create it (B.3). |
-| Not a repo, empty folder | Ask owner and name (B.1). Existing: confirm, then `gh repo clone <owner>/<name> .` (an empty repo then needs B.4). Missing: `git init -b main`, then create it (B.3). |
+| Not a repo, empty folder | Ask owner and name (B.1). Existing: confirm, then `gh repo clone <owner>/<name> .` (an empty repo then needs B.4). Missing: create it (B.3), which starts with `git init -b main`. |
 | Not a repo, folder has files | **STOP** — `This folder has files but is not a git repo. Commit them to a repo yourself, then re-run.` Never commit the operator's files. |
 
 **B.1 Owner and name.** Offer the signed-in user (`gh api user --jq .login`) and their
@@ -75,10 +80,15 @@ https://github.com/<owner>/<name>.git` and `git fetch origin`.
   **STOP** — local `main` has commits GitHub does not; the operator reconciles them.
 - The remote is empty: go to B.4.
 
-**B.3 Create a missing repo.** Ask the visibility (`private` or `public`; suggest `private`).
-The current branch (`git branch --show-current`) must be `main`, or **STOP**. Run B.4 if there is
-no commit yet. Show the command, wait for `yes`, then:
-`gh repo create <owner>/<name> --<visibility> --source . --remote origin --push`.
+**B.3 Create a missing repo.** In this order:
+
+1. Ask the visibility (`private` or `public`; suggest `private`).
+2. Show every command below that applies as one list and wait for one `yes`:
+   - `git init -b main` (folder is not a repo yet);
+   - the B.4 empty commit (`main` has no commit yet);
+   - `gh repo create <owner>/<name> --<visibility> --source . --remote origin --push`.
+3. Run them in that order. In an existing repo, the current branch (`git branch --show-current`)
+   must be `main` before the create, or **STOP**.
 
 **B.4 Empty `main` on GitHub.** The GitHub repo is new (B.3) or empty (`isEmpty` true), so `main`
 must be pushed before anything else.
@@ -103,8 +113,10 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 3. `git show main:.cuevik/config.json` and `git show main:.cuevik/lineage.json` both non-zero, or
    **STOP**: `This repo is already bootstrapped.` Change the board through a PR that edits
    `.cuevik/config.json`.
-4. `gh pr list --head init/00-bootstrap --state open --json url` returns nothing, or **STOP** and
-   show the open PR.
+4. `gh pr list --head init/00-bootstrap --state open --json url` returns `[]`, or **STOP** —
+   `A 00-bootstrap PR is already open: <url>. Merge it (then this step is done), or close it and
+   delete its branch (git push origin --delete init/00-bootstrap, git branch -D init/00-bootstrap),
+   then re-run.`
 5. `git show main:CONTRIBUTING.md`:
    - Non-zero: **new** mode — write the whole file.
    - Contains `<!-- BEGIN INITIATION-ONLY -->`: **STOP** — the governance layer is already there.
@@ -114,8 +126,8 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
 ## D. Board (questions and reads only)
 
-1. **Owner.** Ask: board owner is `<repo owner>`, or another user or organisation? A board can
-   belong to a different owner than the repo.
+1. **Owner.** Ask: `Use <repo owner> as the board owner? (yes, or name another user or
+   organisation)`. A board can belong to a different owner than the repo.
 2. **Projects probe.** `gh project list --owner <board-owner> --limit 1`. Non-zero: **STOP** —
    `gh cannot read Projects for <board-owner>. In a local session, run gh auth refresh -s project.
    Cloud sessions cannot reach Projects v2.`
@@ -142,12 +154,14 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
    No output, or a `type` other than `ProjectV2SingleSelectField`: **STOP** — the board needs a
    single-select field named `Status`.
-6. **Template** (new board only). The plugin's `board_template` setting is
-   `${user_config.board_template}`, as `<template-owner>/<template-number>`. Check it can be read:
-   `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
+6. **Template** (new board only). Ask: `Which board should the new board copy? Give
+   <owner>/<number>, or press enter for the default viralparikh-dev/3 (public).` Check the answer
+   can be read: `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
    - Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
-   - Empty setting, or non-zero: tell the operator the template cannot be used and why. Ask them
-     to pick an existing board, or to create a blank board, warning that a blank board gets only
+   - Non-zero for the operator's template: say so, then try the default `viralparikh-dev/3` the
+     same way and ask the operator to confirm using it.
+   - Non-zero for the default too: tell the operator no template can be read and why. Ask them to
+     pick an existing board, or to create a blank board, warning that a blank board gets only
      GitHub's default Status options (`Todo`, `In Progress`, `Done`). Never pick for them.
 
 ## E. Remote changes
@@ -158,24 +172,38 @@ List every change below that applies in the runner §2 checklist, with its exact
 1. **Create the board** (if chosen):
    - From the template (D.6):
      `gh project copy <template-number> --source-owner <template-owner> --target-owner <board-owner> --title "<title>" --format json --jq .number`.
-     Draft issues are not copied. Then compare the copy with the template by running this for
-     each and diffing the two results:
+     Draft issues are not copied. Then compare the copy with the template. Run this once with the
+     template (`> template.txt`) and once with the new board (`> board.txt`), writing both files in
+     a temporary folder outside the repo. It prints one line per value, so `diff` output is
+     readable. Use `gh`'s built-in `--jq`; do not assume a separate `jq` is installed.
 
      ```sh
      gh api graphql -f o=<owner> -F n=<number> -f query='
        query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
-         fields(first:50){nodes{... on ProjectV2FieldCommon{name} ... on ProjectV2SingleSelectField{options{name}}}}
-         views(first:20){nodes{name layout}} workflows(first:20){nodes{name enabled}}}}}}' \
-       --jq '.data.repositoryOwner.projectV2'
+         fields(first:50){nodes{... on ProjectV2FieldCommon{name dataType}
+           ... on ProjectV2SingleSelectField{options{name}}
+           ... on ProjectV2IterationField{configuration{duration startDay}}}}
+         views(first:20){nodes{name layout filter
+           fields(first:50){nodes{... on ProjectV2FieldCommon{name}}}
+           groupByFields(first:5){nodes{... on ProjectV2FieldCommon{name}}}
+           verticalGroupByFields(first:5){nodes{... on ProjectV2FieldCommon{name}}}
+           sortByFields(first:5){nodes{direction field{... on ProjectV2FieldCommon{name}}}}}}
+         workflows(first:20){nodes{name enabled}}}}}}' \
+       --jq '.data.repositoryOwner.projectV2 | paths(scalars) as $p
+             | "\($p | map(tostring) | join(".")) = \(getpath($p))"'
      ```
 
-     Report every difference; do not stop on one. The operator decides whether to fix it by hand.
+     Then `diff template.txt board.txt`. Check both files are non-empty first: two empty files
+     also give "no differences". Report every difference; do not stop on one. The operator
+     decides whether to fix it by hand. Say what the check cannot see: the settings inside each
+     workflow (for example which Status "Item closed" sets) are not readable through the API.
    - Blank (operator chose it in D.6):
      `gh project create --owner <board-owner> --title "<title>" --format json --jq .number`.
 
    Then run D.5 on the new board.
 2. **Link the board** (unless already linked), from the repo folder so it links this repo:
-   `gh project link <number> --owner <board-owner>`. A user-owned board linked to an
+   `gh project link <number> --owner <board-owner>`. It prints nothing on success, so re-run the
+   D.4 query and confirm the board now appears. A user-owned board linked to an
    organisation-owned repo is untested. If the link fails, **STOP** and show the error; do not
    retry with another owner.
 3. **Auto-delete head branches** (unless

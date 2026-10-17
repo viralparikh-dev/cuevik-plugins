@@ -62,16 +62,22 @@ Two-digit numbered steps; utilities unnumbered.
     existing repo is connected as `origin`. A missing one is created with
     `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
   - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is copied
-    from the template board in the `board_template` userConfig (default `viralparikh-dev/3`,
-    public; decided 2026-10-17) with `gh project copy`, and linked with `gh project link`. An
-    unreadable template: the operator picks an existing board or a blank one (`gh project create`).
-    Its ids are then read back into `.cuevik/config.json` (contract: `contracts/config/`).
+    with `gh project copy` from a template board the skill asks for, default `viralparikh-dev/3`
+    (public; decided 2026-10-17), and linked with `gh project link`. Unreadable answer: fall back
+    to the default; unreadable default: the operator picks an existing board or a blank one
+    (`gh project create`). Its ids are then read back into `.cuevik/config.json` (contract:
+    `contracts/config/`).
+  - No plugin `userConfig` for the template: in the Phase 03 sandbox test
+    `${user_config.board_template}` reached the skill unsubstituted (cause unknown), so the skill
+    asks instead.
   - Template `viralparikh-dev/3` is a copy of the team's org template: fields, views and all
     workflows copied identically, except the org's Priority (an org-level field with no options)
     became a Priority field with Urgent/High/Medium/Low. User-owned boards cannot carry GitHub's
     "template" flag; a copy does not need it.
   - Needs the `project` token scope and a local session: cloud sessions cannot reach Projects v2.
-  - Unverified: linking a board owned by a user to a repo owned by an organisation. Test in Phase 03.
+  - Unverified: linking a board owned by a user to a repo owned by an organisation (not covered by
+    the sandbox or tx-QE4AIApps, both user-owned), and copying the public template as another user.
+    The second is tested in the end-of-plan tx-QE4AIApps run.
 - Old Step-01 (repo setup / governance / `CONTRIBUTING.md`) is **merged into `00-bootstrap`**;
   steps renumbered 00–08 with no gap.
 - Each step opens a PR to `main`; the next step refuses to run until that PR is merged.

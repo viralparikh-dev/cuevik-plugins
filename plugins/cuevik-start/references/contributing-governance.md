@@ -32,7 +32,8 @@ one of `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`, `ci`.
 
 ## Direct-push rule
 
-- Never push to `main`.
+- Never push to `main`. The one exception is the empty `chore: initialize repository` commit
+  `/cuevik-start:00-bootstrap` pushes to a new or empty repo; it holds no files.
 - Never force-push a branch someone else may have pulled.
 
 <!-- BEGIN INITIATION-ONLY -->
@@ -67,6 +68,7 @@ this checklist is the approval. Complete it in the PR before merging any `init/*
       (fresh-eyes pass).
 - [ ] The document covers every section its step requires.
 - [ ] No upstream document changed on `main` after this branch was created.
-- [ ] The change is in a PR. Nothing was pushed to `main` directly.
+- [ ] The change is in a PR. Nothing was pushed to `main` directly, apart from bootstrap's empty
+      initial commit.
 <!-- END INITIATION-ONLY -->
 <!-- END CONTENT -->
