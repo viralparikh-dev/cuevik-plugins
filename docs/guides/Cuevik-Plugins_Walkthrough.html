@@ -161,12 +161,32 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#status-and-cleanup">status and cleanup</a></li>
 </ul>
 </li>
-<li><a href="#6-command-reference">6. Command reference</a><ul>
+<li><a href="#6-cuevik-ship-deliver-one-issue-at-a-time">6. cuevik-ship: deliver one issue at a time</a><ul>
+<li><a href="#how-it-differs-from-cuevik-start">How it differs from cuevik-start</a></li>
+<li><a href="#01-brainstorm">01-brainstorm</a></li>
+<li><a href="#02-audit-prd">02-audit-prd</a></li>
+<li><a href="#03-create-backlog">03-create-backlog</a></li>
+<li><a href="#04-plan-intent">04-plan-intent</a></li>
+<li><a href="#05-design-spec">05-design-spec</a></li>
+<li><a href="#06-build-plan">06-build-plan</a></li>
+<li><a href="#07-execute-plan">07-execute-plan</a></li>
+<li><a href="#cleanup">cleanup</a></li>
+</ul>
+</li>
+<li><a href="#7-cuevik-docs-keep-the-documents-true">7. cuevik-docs: keep the documents true</a><ul>
+<li><a href="#audit">audit</a></li>
+<li><a href="#update">update</a></li>
+</ul>
+</li>
+<li><a href="#8-command-reference">8. Command reference</a><ul>
 <li><a href="#what-each-command-does">What each command does</a></li>
 <li><a href="#branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</a></li>
 </ul>
 </li>
-<li><a href="#7-who-owns-which-document">7. Who owns which document</a></li>
+<li><a href="#9-who-owns-which-document">9. Who owns which document</a></li>
+<li><a href="#10-troubleshooting">10. Troubleshooting</a></li>
+<li><a href="#11-known-limits">11. Known limits</a></li>
+<li><a href="#version-history">Version history</a></li>
 </ul></nav><hr/>
 <div class="keep k2"><h2 id="1-what-you-get"><span class="num">1</span>What you get</h2><p>Three plugins with one rule: every document and change reaches <code>main</code> through a reviewed PR, and the next step will not run until the previous PR is merged.</p></div>
 
@@ -214,7 +234,8 @@ h2.pb{break-before:page;margin-top:0}
 <p><code>cuevik-docs</code> installs automatically: both other plugins depend on it.</p>
 <p>Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.</p>
 <hr/>
-<div class="keep k2"><h2 id="3-how-it-works"><span class="num">3</span>How it works</h2><ul>
+<h2 id="3-how-it-works"><span class="num">3</span>How it works</h2>
+<ul>
 <li><strong>One step, one session.</strong> Run one step per session. Ask for a second step in the same session and it tells you to start a new one.</li>
 <li><strong>One PR per step.</strong> A step works on its own branch (<code>init/&lt;name&gt;</code> in <code>cuevik-start</code>), commits there, and opens a PR to <code>main</code> once you approve. It never commits to <code>main</code>.</li>
 <li><strong>Merged means final.</strong> A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.</li>
@@ -223,17 +244,16 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>Owners and reviewers.</strong> Every document has an owner role and reviewer roles. Claude acts as the owner while it drafts, and each reviewer applies their own checklist at PR review. These are roles, not GitHub accounts.</li>
 <li><strong>Solo is fine.</strong> GitHub does not let you approve your own PR, so when one person holds every role, the self-review checklist in <code>CONTRIBUTING.md</code> is the approval. Wait a few hours (ideally a day), check every required section is covered and no upstream document changed on <code>main</code>, then merge. Change hats on purpose.</li>
 <li><strong>Finished means finished.</strong> Re-running a finished step stops and sends you to <code>/cuevik-docs:update &lt;document&gt;</code>.</li>
-</ul></div>
-
-<div class="keep k3"><h3 id="what-happens-inside-a-step">What happens inside a step</h3><ol>
+</ul>
+<h3 id="what-happens-inside-a-step">What happens inside a step</h3>
+<ol>
 <li>You start the command in a fresh session, in the project folder.</li>
 <li>It checks the ground: clean working tree, <code>main</code> up to date, the previous step's PR merged, upstream documents on <code>main</code>, and this step's output not already final.</li>
 <li>It shows the checklist, waits for your <code>yes</code>, then creates the step's branch from <code>main</code>.</li>
 <li>It interviews you, drafts, and revises until you approve, then commits on the branch.</li>
 <li>On your approval it pushes and opens the PR, with a summary and the reviewer checklist.</li>
 <li>You review and merge on GitHub, then start the next step in a new session.</li>
-</ol></div>
-
+</ol>
 <div class="keep k3"><h3 id="what-lands-in-your-repo">What lands in your repo</h3><p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> holds the project board's ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p></div>
 
 <hr/>
@@ -502,12 +522,12 @@ h2.pb{break-before:page;margin-top:0}
 <text class="pill-t" text-anchor="middle" x="315.0" y="81">AUDIT</text>
 <text class="ttl" x="294" y="108">Audit</text>
 <text class="mono" x="294" y="123">audit</text>
-<text class="note" x="294" y="137">Nothing (report only)</text>
+<text class="note" x="294" y="137">A findings report</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
 <text class="note" x="40" y="115">Read the report</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
 <text class="ttl" x="548" y="107">No PR</text>
-<text class="note" x="548" y="124">Nothing (report only)</text>
+<text class="note" x="548" y="124">A findings report</text>
 <rect class="card claude" height="66" rx="10" width="216" x="280" y="164"></rect>
 <rect class="pill" height="16" rx="8" width="52" x="292" y="156"></rect>
 <text class="pill-t" text-anchor="middle" x="318.0" y="167">UPDATE</text>
@@ -589,7 +609,135 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
-<div class="keep k2"><h2 id="6-command-reference"><span class="num">6</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
+<div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads the board's ids from <code>.cuevik/config.json</code>. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 8.</p></div>
+
+<h3 id="how-it-differs-from-cuevik-start">How it differs from cuevik-start</h3>
+<ul>
+<li><strong>One issue at a time.</strong> Each issue gets its own git worktree, so several issues can be in flight at once. Where worktrees live is a setting on your machine, not committed to the project.</li>
+<li><strong>One rule.</strong> Files under <code>docs/ship/&lt;n&gt;-&lt;slug&gt;/</code> go to the issue's own branch, <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>. Everything else goes to <code>main</code>. <code>docs/ship/</code> never reaches <code>main</code>.</li>
+<li><strong>The issue branch</strong> holds only that folder and is never merged. <code>01-brainstorm</code> creates it, or <code>04-plan-intent</code> does for an issue that has none, such as a bug fix or a split story.</li>
+<li><strong>Where each step goes.</strong> Steps 01, 04, 05 and 06 work on a branch under <code>ship/&lt;n&gt;-&lt;slug&gt;/</code> and their PRs go back into the issue branch. Steps 02 and 07 are cut from <code>main</code> and their PRs go to <code>main</code>. Step 03 writes to GitHub only: no branch, no PR.</li>
+<li><strong>Merged means final,</strong> as in <code>cuevik-start</code>: each step checks that the previous step's PR is merged before it does anything.</li>
+<li><strong>References.</strong> The issue description carries a <code>## References</code> section between <code>&lt;!-- cuevik-ship:references --&gt;</code> markers: links to the issue's files, never file content. Every command refreshes it, so do not edit between the markers.</li>
+<li><strong>Labels only.</strong> <code>idea</code>, <code>epic</code>, <code>story</code> and <code>priority:*</code>. GitHub issue types are not used, because user-owned repos do not have them.</li>
+</ul>
+<div class="keep k3"><h3 id="01-brainstorm">01-brainstorm</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/01-brainstorm</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> GitHub issue and brainstorming folder  ·  <strong>You:</strong> Approve or reject, then merge</p></div>
+
+<p>Takes an idea or an existing issue number.</p>
+<ul>
+<li><strong>Duplicates first.</strong> Before it asks anything, it checks existing <code>idea</code> issues in any state, and stories, so a duplicate never gets a number.</li>
+<li><strong>Issue at the start.</strong> For a new idea it asks for 2–3 sentences, files a GitHub issue labelled <code>idea</code> straight away, then creates the issue branch, the worktree and the brainstorming folder, so findings are saved from the first minute.</li>
+<li><strong>The folder.</strong> <code>docs/ship/&lt;n&gt;-&lt;slug&gt;/brainstorming/</code> holds <code>brainstorm.md</code>, plus attachments and any other files found along the way.</li>
+<li><strong>An existing issue.</strong> It refuses an epic, sends a bug to <code>04-plan-intent</code>, and accepts an existing story (step 03 then treats it as changed). It never closes a story that already existed.</li>
+<li><strong>The outcome</strong> is the PR into the issue branch. If you reject the idea, that PR is the record, and the issue is closed as <em>not planned</em> once you say yes. An abandoned idea is closed the same way and cleaned up like a rejection.</li>
+<li><strong>The board.</strong> An idea may land on the project board, and its card carries through when the idea becomes a story.</li>
+</ul>
+<div class="keep k3"><h3 id="02-audit-prd">02-audit-prd</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/02-audit-prd</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> <code>PRODUCT.md</code> and <code>PRD.md</code> changes  ·  <strong>You:</strong> Review and merge</p></div>
+
+<p>Checks the approved idea against <code>docs/PRODUCT.md</code> and <code>docs/PRD.md</code>, and ratifies it into new or changed requirements. It uses <code>/cuevik-docs:audit</code> for the check.</p>
+<ul>
+<li><strong>Cut from <code>main</code>,</strong> not from the issue branch, and its PR goes to <code>main</code>. <code>PRODUCT.md</code> and <code>PRD.md</code> are shared by every issue, and requirement numbers (<code>PRD-NNN</code>) must be allocated in one place. Cutting from <code>main</code> also means no <code>docs/ship/</code> file can leak into the PR.</li>
+<li><strong><code>Refs #n</code>, never <code>Closes</code>.</strong> Merging this PR must not close the issue; steps 04–07 still need it.</li>
+<li><strong>The ratification record</strong> is a machine-readable block in this PR's body, plus a <code>Docs PR:</code> line in the issue's References. The brainstorm file keeps only step 01's decision.</li>
+<li><strong>Rejection here</strong> is a comment on the issue and closing it, with no PR.</li>
+</ul>
+<div class="keep k3"><h3 id="03-create-backlog">03-create-backlog</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> GitHub issues: epic and stories  ·  <strong>You:</strong> Approve the list</p></div>
+
+<p>Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write <code>docs/BACKLOG.md</code>, which is what <code>/cuevik-start:07-backlog</code> does once at setup.</p>
+<ul>
+<li><strong>The idea becomes a story.</strong> Its title becomes <code>PRD-NNN: &lt;Title&gt; (&lt;Priority&gt;)</code> and the <code>idea</code> label is removed. Epics and stories share the labels <code>epic</code>, <code>story</code> and <code>priority:*</code> with <code>cuevik-start</code>.</li>
+<li><strong>Finding the epic.</strong> In order: the parent of existing stories in the same PRD section, then an <code>epic</code> issue citing that section, then <code>docs/BACKLOG.md</code>, then a new epic. If several candidates fit it asks, and it never moves a story to another parent without your yes.</li>
+<li><strong>Splitting.</strong> An idea that covers several requirements becomes several stories. The original issue keeps the first ID in prerequisite order, and you can change that in the approval table. Each extra story goes under its own PRD section's epic and starts its own branch set at <code>04-plan-intent</code>, linking back to the original's brainstorming.</li>
+<li><strong>The board.</strong> Issues are added to the project board only from a local session.</li>
+<li><strong>The gate for step 04.</strong> Step 04 checks that the References have an <code>Epic:</code> line and that the issue no longer has the <code>idea</code> label.</li>
+</ul>
+<div class="keep k3"><h3 id="04-plan-intent">04-plan-intent</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/04-plan-intent</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>intent.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+
+<p>States the problem and scope before any solution is proposed, in <code>intent.md</code> in the issue's work folder. It creates the issue branch and worktree when the issue has none: a bug fix or refactor starts here, and so does each extra story from a split.</p>
+<div class="keep k3"><h3 id="05-design-spec">05-design-spec</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/05-design-spec</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>spec.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+
+<p>Writes <code>spec.md</code> in the work folder: behaviour, data, rules and tests. If a later step changes an earlier file, the issue's References are refreshed.</p>
+<div class="keep k3"><h3 id="06-build-plan">06-build-plan</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/06-build-plan</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>plan.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+
+<p>Turns the spec into <code>plan.md</code>: a dependency-ordered task list that a fresh session can execute.</p>
+<div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
+
+<p>Builds the plan on a code branch cut from <code>main</code>, reading <code>plan.md</code> from the issue branch, and opens the code PR to <code>main</code>. That PR carries only the code, so no <code>docs/ship/</code> file reaches <code>main</code>. Its <code>Closes #n</code> is what closes the issue, and the final References refresh happens here.</p>
+<div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
+
+<p><code>/cuevik-ship:cleanup &lt;issue#&gt;</code> removes everything local for an issue and keeps what the links need.</p>
+<ul>
+<li><strong>Gate:</strong> the code PR is merged, or the issue was closed as <em>not planned</em>. There is no override flag, and it refuses while any <code>ship/&lt;n&gt;-*</code> PR is still open.</li>
+<li><strong>Removes</strong> the issue's worktree (it refuses if there are uncommitted or unpushed changes) and the local <code>ship/&lt;n&gt;-&lt;slug&gt;/*</code> branches. Removing the worktree also removes the local <code>docs/ship/&lt;n&gt;-&lt;slug&gt;/</code> folder, since <code>main</code> never has it.</li>
+<li><strong>Archives</strong> the remote issue branch as the tag <code>ship-archive/&lt;n&gt;-&lt;slug&gt;</code> and then deletes the branch. The tag keeps the commits reachable, so the links in the References keep working.</li>
+<li><strong>Does not close the issue.</strong> The code PR does. A split story is cleaned up on its own, per issue.</li>
+<li><strong>Lists everything</strong> it will delete and asks first. Run it from the main checkout, never from inside the worktree it removes.</li>
+</ul>
+<hr/>
+<div class="keep k2"><h2 id="7-cuevik-docs-keep-the-documents-true"><span class="num">7</span>cuevik-docs: keep the documents true</h2><p>Two commands for the source-of-truth documents named in <code>.cuevik/lineage.json</code>. <code>cuevik-start</code> and <code>cuevik-ship</code> both depend on this plugin, so it installs with them. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
+
+<div class="keep k3"><h3 id="audit">audit</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> A findings report  ·  <strong>You:</strong> Read the report</p></div>
+
+<p>Reads the project's documents once and runs three lenses over them:</p>
+<ul>
+<li><strong>Align.</strong> Terms, goals, scope or acceptance criteria that do not cohere, and sections that are missing rather than wrong.</li>
+<li><strong>Drift.</strong> Documents that contradict each other, the files on disk, or a decision already taken.</li>
+<li><strong>Absorb.</strong> Two files that say the same thing twice, and which copy is better.</li>
+</ul>
+<p>The lineage decides which documents are audited. <code>/cuevik-ship:02-audit-prd</code> calls it.</p>
+<div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
+
+<p>Revises one source-of-truth document after its step has merged. Use it any time reality diverges from a document, instead of re-running the step.</p>
+<ul>
+<li>The document's owner role drafts the change, and its reviewers (from the lineage) approve the PR.</li>
+<li>It then builds a downstream checklist: every document built from the one you changed. Review each flagged document, and do not mark the checklist complete until all of them are reviewed.</li>
+<li>Frozen documents, such as <code>docs/BACKLOG.md</code>, are skipped.</li>
+</ul>
+<p>What a change to each document flags, from the default lineage:</p>
+<div class="tbl short"><table>
+<thead>
+<tr>
+<th>When you change</th>
+<th>It flags for review</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CONTRIBUTING.md</code></td>
+<td class="nw">nothing</td>
+</tr>
+<tr>
+<td><code>docs/PRODUCT.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>docs/PRD.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+<tr>
+<td><code>docs/ARCHITECTURE.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+<tr>
+<td><code>docs/TECH-STACK.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+<tr>
+<td><code>docs/AI-TOOL-GUIDE.md</code></td>
+<td class="nw"><code>README.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>README.md</code></td>
+<td class="nw">nothing</td>
+</tr>
+<tr>
+<td><code>docs/BACKLOG.md</code></td>
+<td class="nw">nothing</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<div class="keep k2"><h2 id="8-command-reference"><span class="num">8</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
 
 <div class="tbl"><table>
 <thead>
@@ -601,32 +749,32 @@ h2.pb{break-before:page;margin-top:0}
 </thead>
 <tbody>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:00-bootstrap</code></td>
+<td><code>/cuevik-start:00-bootstrap</code></td>
 <td class="nw">Bootstrap</td>
 <td>Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:01-product-concept</code></td>
+<td><code>/cuevik-start:01-product-concept</code></td>
 <td>Product Concept</td>
 <td>Drafts the product concept with you: what it is, who it is for and why it exists.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:02-product-requirements</code></td>
+<td><code>/cuevik-start:02-product-requirements</code></td>
 <td class="nw">Requirements</td>
 <td>Turns the concept into numbered, testable requirements (the PRD).</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:03-architecture</code></td>
+<td><code>/cuevik-start:03-architecture</code></td>
 <td class="nw">Architecture</td>
 <td>Designs the system: components, data, integrations and the decisions behind them.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:04-tech-stack</code></td>
+<td><code>/cuevik-start:04-tech-stack</code></td>
 <td class="nw">Tech Stack</td>
 <td>Locks the approved technologies and the build, test and lint commands.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:05-ai-tool-guide</code></td>
+<td><code>/cuevik-start:05-ai-tool-guide</code></td>
 <td>AI Tool Guide</td>
 <td>Sets the rules for AI coding assistants and generates the files each one reads.</td>
 </tr>
@@ -641,7 +789,7 @@ h2.pb{break-before:page;margin-top:0}
 <td>Derives epics and stories from the product docs and files them as GitHub issues.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-start:08-finalize</code></td>
+<td><code>/cuevik-start:08-finalize</code></td>
 <td>Finalize Governance</td>
 <td>Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones.</td>
 </tr>
@@ -656,37 +804,37 @@ h2.pb{break-before:page;margin-top:0}
 <td>Deletes local <code>init/*</code> branches whose PR is merged, after listing them for your confirmation.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:01-brainstorm</code></td>
+<td><code>/cuevik-ship:01-brainstorm</code></td>
 <td class="nw">Brainstorm</td>
 <td>Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:02-audit-prd</code></td>
+<td><code>/cuevik-ship:02-audit-prd</code></td>
 <td class="nw">Audit PRD</td>
 <td>Checks the approved idea against the product docs and ratifies it into new or changed requirements.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:03-create-backlog</code></td>
+<td><code>/cuevik-ship:03-create-backlog</code></td>
 <td>Create Backlog</td>
 <td>Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:04-plan-intent</code></td>
+<td><code>/cuevik-ship:04-plan-intent</code></td>
 <td class="nw">Plan Intent</td>
 <td>States the problem and scope, before any solution, in the issue's own work folder.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:05-design-spec</code></td>
+<td><code>/cuevik-ship:05-design-spec</code></td>
 <td class="nw">Design Spec</td>
 <td>Writes the spec: behaviour, data, rules and tests.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:06-build-plan</code></td>
+<td><code>/cuevik-ship:06-build-plan</code></td>
 <td class="nw">Build Plan</td>
 <td>Turns the spec into a dependency-ordered task list that a fresh session can execute.</td>
 </tr>
 <tr>
-<td><code class="wrap">/<wbr/>cuevik-ship:07-execute-plan</code></td>
+<td><code>/cuevik-ship:07-execute-plan</code></td>
 <td class="nw">Execute Plan</td>
 <td>Builds the plan on a code branch and opens the code PR to <code>main</code>.</td>
 </tr>
@@ -794,7 +942,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-docs:audit</code></td>
 <td class="nw">—</td>
 <td class="nw">—</td>
-<td>Nothing (report only)</td>
+<td>A findings report</td>
 <td>Read the report</td>
 </tr>
 <tr>
@@ -807,7 +955,7 @@ h2.pb{break-before:page;margin-top:0}
 </tbody>
 </table></div>
 <hr/>
-<div class="keep k2"><h2 id="7-who-owns-which-document"><span class="num">7</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
+<div class="keep k2"><h2 id="9-who-owns-which-document"><span class="num">9</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
 
 <div class="tbl short"><table>
 <thead>
@@ -868,4 +1016,127 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 </tbody>
-</table></div><div class="foot">Cuevik Plugins · Walkthrough · Generated from Cuevik-Plugins_Walkthrough.md by docs/guides/build_docs.py</div></main></body></html>
+</table></div>
+<hr/>
+<div class="keep k2"><h2 id="10-troubleshooting"><span class="num">10</span>Troubleshooting</h2><p>A step stops with a message rather than guessing. Fix the cause and re-run it. <code>00-bootstrap</code> skips what it already did, so a re-run does not create anything twice.</p></div>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>You see</th>
+<th>Cause and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gh is not signed in</code></td>
+<td>Run <code>gh auth login</code>, then re-run.</td>
+</tr>
+<tr>
+<td><code>gh cannot read Projects for &lt;owner&gt;</code></td>
+<td>The token lacks the <code>project</code> scope. In a local session run <code>gh auth refresh -s project</code>. Cloud sessions cannot reach Projects.</td>
+</tr>
+<tr>
+<td><code>Uncommitted changes detected</code></td>
+<td>A step starts from a clean working tree. Commit or stash, then re-run.</td>
+</tr>
+<tr>
+<td><code>Could not fast-forward main</code></td>
+<td>Local <code>main</code> has diverged, or there is no network. Fix the pull error, then re-run.</td>
+</tr>
+<tr>
+<td>Run <code>/cuevik-start:00-bootstrap</code> and merge its PR first</td>
+<td><code>.cuevik/config.json</code> or <code>.cuevik/lineage.json</code> is not on <code>main</code> yet.</td>
+</tr>
+<tr>
+<td>The previous step's PR must be merged first</td>
+<td>The message names the step. Merge that PR (an open PR does not count), then re-run.</td>
+</tr>
+<tr>
+<td>A document is missing from <code>main</code></td>
+<td>An upstream document is not merged yet. Merge the step that writes it first.</td>
+</tr>
+<tr>
+<td>The step is already complete</td>
+<td>Its output is already final on <code>main</code>. Revise it with <code>/cuevik-docs:update</code>.</td>
+</tr>
+<tr>
+<td>The step's branch already exists</td>
+<td>A closed, unmerged PR leaves its branch behind. The step asks you to reuse it or delete it (after a <code>yes</code>); it never picks another name.</td>
+</tr>
+<tr>
+<td><code>This folder is inside the git repo at &lt;path&gt;</code></td>
+<td>Run from the project repo's root, or move the folder out of the parent repo. Never delete a <code>.git</code> folder yourself.</td>
+</tr>
+<tr>
+<td><code>This folder has files but is not a git repo</code></td>
+<td>Commit the files to a repo yourself, then re-run. Bootstrap never commits your files.</td>
+</tr>
+<tr>
+<td><code>origin points at &lt;url&gt;, which does not exist or you cannot access</code></td>
+<td>Fix or remove <code>origin</code>, then re-run.</td>
+</tr>
+<tr>
+<td><code>origin</code> is not on github.com</td>
+<td>GitHub is the only supported host.</td>
+</tr>
+<tr>
+<td>The default branch is not <code>main</code>, or you lack admin rights</td>
+<td>Every step uses <code>main</code>. Bootstrap changes a repo setting and links a board, so it needs admin rights.</td>
+</tr>
+<tr>
+<td><code>This repo is already bootstrapped</code></td>
+<td><code>.cuevik/</code> is already on <code>main</code>. To change the board, open a PR that edits <code>.cuevik/config.json</code>.</td>
+</tr>
+<tr>
+<td>A <code>00-bootstrap</code> PR is already open</td>
+<td>Merge it, or close it and delete its branch, then re-run.</td>
+</tr>
+<tr>
+<td>The board needs a single-select field named <code>Status</code></td>
+<td>Add that field to the board, or choose another board.</td>
+</tr>
+<tr>
+<td>No template board can be read</td>
+<td>Choose an existing board, or a blank one. A blank board gets only <code>Todo</code>, <code>In Progress</code> and <code>Done</code>.</td>
+</tr>
+<tr>
+<td>Linking the board fails</td>
+<td>The step stops and shows GitHub's error. Fix the cause and re-run; it does not retry with another owner.</td>
+</tr>
+<tr>
+<td>You asked for a second step in the same session</td>
+<td>One step per session. Start a new session for the next step.</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<h2 id="11-known-limits"><span class="num">11</span>Known limits</h2>
+<ul>
+<li><strong>GitHub only,</strong> and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.</li>
+<li><strong>Approval is process-enforced.</strong> GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.</li>
+<li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying the default template board as another user.</li>
+<li><strong>Board copies:</strong> bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).</li>
+<li><strong>Not yet verified:</strong> creating sub-issue and blocked-by links from a cloud session, which <code>/cuevik-ship:03-create-backlog</code> relies on.</li>
+<li><strong>Plugin settings:</strong> in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. <code>cuevik-ship</code>'s worktree-folder setting uses the same mechanism and is untested.</li>
+<li><strong>Labels, not issue types.</strong> GitHub issue types are not used, because user-owned repos do not have them.</li>
+<li><strong><code>docs/BACKLOG.md</code> is a snapshot.</strong> After setup, GitHub is the backlog.</li>
+</ul>
+<hr/>
+<div class="keep k2"><h2 id="version-history">Version history</h2><div class="tbl short"><table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="nw">0.1</td>
+<td class="nw">Unreleased</td>
+<td>First version of the guide, covering <code>cuevik-start</code> 0.1, <code>cuevik-ship</code> 0.1 and <code>cuevik-docs</code> 0.1</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="foot">Cuevik Plugins · Walkthrough · Generated from Cuevik-Plugins_Walkthrough.md by docs/guides/build_docs.py</div></main></body></html>

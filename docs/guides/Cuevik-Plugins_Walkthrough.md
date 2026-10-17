@@ -363,7 +363,180 @@ To revise a document after its step is merged, use `/cuevik-docs:update <documen
 
 ---
 
-## 6. Command reference
+## 6. cuevik-ship: deliver one issue at a time
+
+Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through `00-bootstrap`, because it reads the board's ids from `.cuevik/config.json`. Every command is `/cuevik-ship:<name>`. `<n>` is the issue number and `<slug>` its short name. The line under each heading is generated from the branches-and-files table in section 8.
+
+### How it differs from cuevik-start
+
+- **One issue at a time.** Each issue gets its own git worktree, so several issues can be in flight at once. Where worktrees live is a setting on your machine, not committed to the project.
+- **One rule.** Files under `docs/ship/<n>-<slug>/` go to the issue's own branch, `ship/<n>-<slug>/issue`. Everything else goes to `main`. `docs/ship/` never reaches `main`.
+- **The issue branch** holds only that folder and is never merged. `01-brainstorm` creates it, or `04-plan-intent` does for an issue that has none, such as a bug fix or a split story.
+- **Where each step goes.** Steps 01, 04, 05 and 06 work on a branch under `ship/<n>-<slug>/` and their PRs go back into the issue branch. Steps 02 and 07 are cut from `main` and their PRs go to `main`. Step 03 writes to GitHub only: no branch, no PR.
+- **Merged means final,** as in `cuevik-start`: each step checks that the previous step's PR is merged before it does anything.
+- **References.** The issue description carries a `## References` section between `<!-- cuevik-ship:references -->` markers: links to the issue's files, never file content. Every command refreshes it, so do not edit between the markers.
+- **Labels only.** `idea`, `epic`, `story` and `priority:*`. GitHub issue types are not used, because user-owned repos do not have them.
+
+### 01-brainstorm
+
+<!-- gen:cmd-cuevik-ship-01-brainstorm -->
+
+**Branch:** `ship/<n>-<slug>/01-brainstorm`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** GitHub issue and brainstorming folder  ·  **You:** Approve or reject, then merge
+
+<!-- /gen:cmd-cuevik-ship-01-brainstorm -->
+
+Takes an idea or an existing issue number.
+
+- **Duplicates first.** Before it asks anything, it checks existing `idea` issues in any state, and stories, so a duplicate never gets a number.
+- **Issue at the start.** For a new idea it asks for 2–3 sentences, files a GitHub issue labelled `idea` straight away, then creates the issue branch, the worktree and the brainstorming folder, so findings are saved from the first minute.
+- **The folder.** `docs/ship/<n>-<slug>/brainstorming/` holds `brainstorm.md`, plus attachments and any other files found along the way.
+- **An existing issue.** It refuses an epic, sends a bug to `04-plan-intent`, and accepts an existing story (step 03 then treats it as changed). It never closes a story that already existed.
+- **The outcome** is the PR into the issue branch. If you reject the idea, that PR is the record, and the issue is closed as *not planned* once you say yes. An abandoned idea is closed the same way and cleaned up like a rejection.
+- **The board.** An idea may land on the project board, and its card carries through when the idea becomes a story.
+
+### 02-audit-prd
+
+<!-- gen:cmd-cuevik-ship-02-audit-prd -->
+
+**Branch:** `ship/<n>-<slug>/02-audit-prd` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** `PRODUCT.md` and `PRD.md` changes  ·  **You:** Review and merge
+
+<!-- /gen:cmd-cuevik-ship-02-audit-prd -->
+
+Checks the approved idea against `docs/PRODUCT.md` and `docs/PRD.md`, and ratifies it into new or changed requirements. It uses `/cuevik-docs:audit` for the check.
+
+- **Cut from `main`,** not from the issue branch, and its PR goes to `main`. `PRODUCT.md` and `PRD.md` are shared by every issue, and requirement numbers (`PRD-NNN`) must be allocated in one place. Cutting from `main` also means no `docs/ship/` file can leak into the PR.
+- **`Refs #n`, never `Closes`.** Merging this PR must not close the issue; steps 04–07 still need it.
+- **The ratification record** is a machine-readable block in this PR's body, plus a `Docs PR:` line in the issue's References. The brainstorm file keeps only step 01's decision.
+- **Rejection here** is a comment on the issue and closing it, with no PR.
+
+### 03-create-backlog
+
+<!-- gen:cmd-cuevik-ship-03-create-backlog -->
+
+**Branch:** none  ·  **PR to:** none  ·  **Writes:** GitHub issues: epic and stories  ·  **You:** Approve the list
+
+<!-- /gen:cmd-cuevik-ship-03-create-backlog -->
+
+Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write `docs/BACKLOG.md`, which is what `/cuevik-start:07-backlog` does once at setup.
+
+- **The idea becomes a story.** Its title becomes `PRD-NNN: <Title> (<Priority>)` and the `idea` label is removed. Epics and stories share the labels `epic`, `story` and `priority:*` with `cuevik-start`.
+- **Finding the epic.** In order: the parent of existing stories in the same PRD section, then an `epic` issue citing that section, then `docs/BACKLOG.md`, then a new epic. If several candidates fit it asks, and it never moves a story to another parent without your yes.
+- **Splitting.** An idea that covers several requirements becomes several stories. The original issue keeps the first ID in prerequisite order, and you can change that in the approval table. Each extra story goes under its own PRD section's epic and starts its own branch set at `04-plan-intent`, linking back to the original's brainstorming.
+- **The board.** Issues are added to the project board only from a local session.
+- **The gate for step 04.** Step 04 checks that the References have an `Epic:` line and that the issue no longer has the `idea` label.
+
+### 04-plan-intent
+
+<!-- gen:cmd-cuevik-ship-04-plan-intent -->
+
+**Branch:** `ship/<n>-<slug>/04-plan-intent`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `intent.md` in the work folder  ·  **You:** Review and merge
+
+<!-- /gen:cmd-cuevik-ship-04-plan-intent -->
+
+States the problem and scope before any solution is proposed, in `intent.md` in the issue's work folder. It creates the issue branch and worktree when the issue has none: a bug fix or refactor starts here, and so does each extra story from a split.
+
+### 05-design-spec
+
+<!-- gen:cmd-cuevik-ship-05-design-spec -->
+
+**Branch:** `ship/<n>-<slug>/05-design-spec`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `spec.md` in the work folder  ·  **You:** Review and merge
+
+<!-- /gen:cmd-cuevik-ship-05-design-spec -->
+
+Writes `spec.md` in the work folder: behaviour, data, rules and tests. If a later step changes an earlier file, the issue's References are refreshed.
+
+### 06-build-plan
+
+<!-- gen:cmd-cuevik-ship-06-build-plan -->
+
+**Branch:** `ship/<n>-<slug>/06-build-plan`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `plan.md` in the work folder  ·  **You:** Review and merge
+
+<!-- /gen:cmd-cuevik-ship-06-build-plan -->
+
+Turns the spec into `plan.md`: a dependency-ordered task list that a fresh session can execute.
+
+### 07-execute-plan
+
+<!-- gen:cmd-cuevik-ship-07-execute-plan -->
+
+**Branch:** `ship/<n>-<slug>/07-execute-plan` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** The code  ·  **You:** Review and merge the code PR
+
+<!-- /gen:cmd-cuevik-ship-07-execute-plan -->
+
+Builds the plan on a code branch cut from `main`, reading `plan.md` from the issue branch, and opens the code PR to `main`. That PR carries only the code, so no `docs/ship/` file reaches `main`. Its `Closes #n` is what closes the issue, and the final References refresh happens here.
+
+### cleanup
+
+<!-- gen:cmd-cuevik-ship-cleanup -->
+
+**Branch:** none  ·  **PR to:** none  ·  **Writes:** Worktree, local branches, archive tag  ·  **You:** Confirm the list
+
+<!-- /gen:cmd-cuevik-ship-cleanup -->
+
+`/cuevik-ship:cleanup <issue#>` removes everything local for an issue and keeps what the links need.
+
+- **Gate:** the code PR is merged, or the issue was closed as *not planned*. There is no override flag, and it refuses while any `ship/<n>-*` PR is still open.
+- **Removes** the issue's worktree (it refuses if there are uncommitted or unpushed changes) and the local `ship/<n>-<slug>/*` branches. Removing the worktree also removes the local `docs/ship/<n>-<slug>/` folder, since `main` never has it.
+- **Archives** the remote issue branch as the tag `ship-archive/<n>-<slug>` and then deletes the branch. The tag keeps the commits reachable, so the links in the References keep working.
+- **Does not close the issue.** The code PR does. A split story is cleaned up on its own, per issue.
+- **Lists everything** it will delete and asks first. Run it from the main checkout, never from inside the worktree it removes.
+
+---
+
+## 7. cuevik-docs: keep the documents true
+
+Two commands for the source-of-truth documents named in `.cuevik/lineage.json`. `cuevik-start` and `cuevik-ship` both depend on this plugin, so it installs with them. Every command is `/cuevik-docs:<name>`.
+
+### audit
+
+<!-- gen:cmd-cuevik-docs-audit -->
+
+**Branch:** none  ·  **PR to:** none  ·  **Writes:** A findings report  ·  **You:** Read the report
+
+<!-- /gen:cmd-cuevik-docs-audit -->
+
+Reads the project's documents once and runs three lenses over them:
+
+- **Align.** Terms, goals, scope or acceptance criteria that do not cohere, and sections that are missing rather than wrong.
+- **Drift.** Documents that contradict each other, the files on disk, or a decision already taken.
+- **Absorb.** Two files that say the same thing twice, and which copy is better.
+
+The lineage decides which documents are audited. `/cuevik-ship:02-audit-prd` calls it.
+
+### update
+
+<!-- gen:cmd-cuevik-docs-update -->
+
+**Branch:** `docs/update/<doc>`  ·  **PR to:** `main`  ·  **Writes:** The document, via PR  ·  **You:** Review and merge
+
+<!-- /gen:cmd-cuevik-docs-update -->
+
+Revises one source-of-truth document after its step has merged. Use it any time reality diverges from a document, instead of re-running the step.
+
+- The document's owner role drafts the change, and its reviewers (from the lineage) approve the PR.
+- It then builds a downstream checklist: every document built from the one you changed. Review each flagged document, and do not mark the checklist complete until all of them are reviewed.
+- Frozen documents, such as `docs/BACKLOG.md`, are skipped.
+
+What a change to each document flags, from the default lineage:
+
+<!-- gen:downstream -->
+
+| When you change | It flags for review |
+|---|---|
+| `CONTRIBUTING.md` | nothing |
+| `docs/PRODUCT.md` | `CONTRIBUTING.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/PRD.md` | `CONTRIBUTING.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/ARCHITECTURE.md` | `CONTRIBUTING.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/TECH-STACK.md` | `CONTRIBUTING.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/AI-TOOL-GUIDE.md` | `README.md` |
+| `README.md` | nothing |
+| `docs/BACKLOG.md` | nothing |
+
+<!-- /gen:downstream -->
+
+---
+
+## 8. Command reference
 
 ### What each command does
 
@@ -407,12 +580,12 @@ The nine numbered `cuevik-start` steps are not repeated here: see section 5. In 
 | `/cuevik-ship:06-build-plan` | `ship/<n>-<slug>/06-build-plan` | `ship/<n>-<slug>/issue` | `plan.md` in the work folder | Review and merge |
 | `/cuevik-ship:07-execute-plan` | `ship/<n>-<slug>/07-execute-plan` (cut from `main`) | `main` | The code | Review and merge the code PR |
 | `/cuevik-ship:cleanup` | — | — | Worktree, local branches, archive tag | Confirm the list |
-| `/cuevik-docs:audit` | — | — | Nothing (report only) | Read the report |
+| `/cuevik-docs:audit` | — | — | A findings report | Read the report |
 | `/cuevik-docs:update` | `docs/update/<doc>` | `main` | The document, via PR | Review and merge |
 
 ---
 
-## 7. Who owns which document
+## 9. Who owns which document
 
 From the default lineage: who owns each document, who reviews a change to it, and what it is built from.
 
@@ -430,3 +603,53 @@ From the default lineage: who owns each document, who reviews a change to it, an
 | `docs/BACKLOG.md` | Product Owner | Product Owner | `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
 
 <!-- /gen:doc-owners -->
+
+---
+
+## 10. Troubleshooting
+
+A step stops with a message rather than guessing. Fix the cause and re-run it. `00-bootstrap` skips what it already did, so a re-run does not create anything twice.
+
+| You see | Cause and fix |
+|---|---|
+| `gh is not signed in` | Run `gh auth login`, then re-run. |
+| `gh cannot read Projects for <owner>` | The token lacks the `project` scope. In a local session run `gh auth refresh -s project`. Cloud sessions cannot reach Projects. |
+| `Uncommitted changes detected` | A step starts from a clean working tree. Commit or stash, then re-run. |
+| `Could not fast-forward main` | Local `main` has diverged, or there is no network. Fix the pull error, then re-run. |
+| Run `/cuevik-start:00-bootstrap` and merge its PR first | `.cuevik/config.json` or `.cuevik/lineage.json` is not on `main` yet. |
+| The previous step's PR must be merged first | The message names the step. Merge that PR (an open PR does not count), then re-run. |
+| A document is missing from `main` | An upstream document is not merged yet. Merge the step that writes it first. |
+| The step is already complete | Its output is already final on `main`. Revise it with `/cuevik-docs:update`. |
+| The step's branch already exists | A closed, unmerged PR leaves its branch behind. The step asks you to reuse it or delete it (after a `yes`); it never picks another name. |
+| `This folder is inside the git repo at <path>` | Run from the project repo's root, or move the folder out of the parent repo. Never delete a `.git` folder yourself. |
+| `This folder has files but is not a git repo` | Commit the files to a repo yourself, then re-run. Bootstrap never commits your files. |
+| `origin points at <url>, which does not exist or you cannot access` | Fix or remove `origin`, then re-run. |
+| `origin` is not on github.com | GitHub is the only supported host. |
+| The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting and links a board, so it needs admin rights. |
+| `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To change the board, open a PR that edits `.cuevik/config.json`. |
+| A `00-bootstrap` PR is already open | Merge it, or close it and delete its branch, then re-run. |
+| The board needs a single-select field named `Status` | Add that field to the board, or choose another board. |
+| No template board can be read | Choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
+| Linking the board fails | The step stops and shows GitHub's error. Fix the cause and re-run; it does not retry with another owner. |
+| You asked for a second step in the same session | One step per session. Start a new session for the next step. |
+
+---
+
+## 11. Known limits
+
+- **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
+- **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
+- **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying the default template board as another user.
+- **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
+- **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.
+- **Plugin settings:** in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. `cuevik-ship`'s worktree-folder setting uses the same mechanism and is untested.
+- **Labels, not issue types.** GitHub issue types are not used, because user-owned repos do not have them.
+- **`docs/BACKLOG.md` is a snapshot.** After setup, GitHub is the backlog.
+
+---
+
+## Version history
+
+| Version | Date | Change |
+|---|---|---|
+| 0.1 | Unreleased | First version of the guide, covering `cuevik-start` 0.1, `cuevik-ship` 0.1 and `cuevik-docs` 0.1 |

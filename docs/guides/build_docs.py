@@ -218,9 +218,40 @@ def doc_owners(d):
     return "\n".join(rows)
 
 
+def command_facts(t2):
+    """One facts line per cuevik-ship / cuevik-docs command, from the branches-and-files table."""
+    none = lambda cell: "none" if cell == "—" else cell
+    return {f"cmd-{p}-{c}": f"**Branch:** {none(branch)}  ·  **PR to:** {none(pr_to)}  ·  **Writes:** {writes}  ·  **You:** {you}"
+            for (p, c), (branch, pr_to, writes, you) in t2.items() if p != "cuevik-start"}
+
+
+def downstream(d):
+    """For each document: what a change to it flags for review (every document built from it, frozen ones skipped)."""
+    docs = d["docs"]
+
+    def built_from(path):
+        seen, todo = set(), [path]
+        while todo:
+            cur = todo.pop()
+            for x in docs:
+                if cur in x["upstream"] and x["path"] not in seen:
+                    seen.add(x["path"])
+                    todo.append(x["path"])
+        return seen
+
+    rows = ["| When you change | It flags for review |", "|---|---|"]
+    for x in docs:
+        hit = built_from(x["path"])
+        flagged = [y["path"] for y in docs if y["path"] in hit and not y.get("frozen")]
+        rows.append(f"| `{x['path']}` | {', '.join(f'`{p}`' for p in flagged) or 'nothing'} |")
+    return "\n".join(rows)
+
+
 def render_blocks(d, t1, t2):
     blocks = {name: mermaid(*model) for name, model in diagrams(d, t1, t2).items()}
     blocks.update(step_facts(d))
+    blocks.update(command_facts(t2))
+    blocks["downstream"] = downstream(d)
     blocks["doc-owners"] = doc_owners(d)
     return blocks
 
@@ -570,12 +601,12 @@ def shape(body_html, eyebrow, foot, overview=False):
         for td in t.find_all("td"):
             if len(td.get_text(strip=True)) <= 12:
                 td["class"] = "nw"
-        for code in t.find_all("code"):
-            if len(code.get_text()) > 24:  # long paths may wrap, at a slash
+        for code in t.find_all("code") if len(t.find_all("th")) >= 5 else []:
+            if len(code.get_text()) > 24:  # only a wide table needs its long paths to wrap, at a slash
                 marked = code.decode_contents().replace("/", "/<wbr>")
                 code.clear(); code.append(BeautifulSoup(marked, "html.parser")); code["class"] = "wrap"
     for p in soup.find_all("p"):
-        if p.get_text().startswith("Owner:") and p.find("strong"):  # the generated facts line under a step heading
+        if p.get_text().startswith(("Owner:", "Branch:")) and p.find("strong"):  # the generated facts line under a command heading
             p["class"] = "facts"
     for n, fig in enumerate(soup.find_all("figure", class_="sw")):  # a diagram is most of a page: start it on a fresh one
         h = fig.find_previous(["h2", "h3"])
@@ -589,6 +620,8 @@ def shape(body_html, eyebrow, foot, overview=False):
             continue
         if "tbl" in (nxt.get("class") or []) and len(nxt.find_all("tr")) > 9:
             continue  # long tables may split across pages (header row repeats); short ones stay with their heading
+        if nxt.name in ("ul", "ol") and len(nxt.find_all("li")) > 4:
+            continue  # a long list may split; the heading's own break-after:avoid keeps it with the first item
         keep = soup.new_tag("div", attrs={"class": f"keep k{h.name[1]}"})
         h.insert_before(keep); keep.append(h.extract()); keep.append(nxt.extract())
     if foot:
