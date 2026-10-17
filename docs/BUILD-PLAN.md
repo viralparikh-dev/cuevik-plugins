@@ -82,8 +82,8 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | # | Phase | Builds | Main sources | Status |
 |---|---|---|---|---|
 | 00 | Scaffold | `marketplace.json`, 3 `plugin.json`, `docs/` | — | ☑ |
-| 01 | Contracts | `contracts/config/` + `contracts/lineage/` (schema + example + README), `contracts/consumers.json`, `scripts/check-contracts.py`, skills frontmatter key confirmed | DECISIONS §3–§5, D15; `vrp-cuevikflow-plugin/contracts/` | ◐ (this PR) |
-| 02 | cuevik-start foundation | `references/`: runner (from `_run-step.md`), step registry (from `_steps.yml`, renumbered 00–08, 01 merged into 00), templates, `_writing-rules`, `_doc-references` | `cs-kickstart/docs/guides/proj-init/` | ☐ |
+| 01 | Contracts | `contracts/config/` + `contracts/lineage/` (schema + example + README), `contracts/consumers.json`, `scripts/check-contracts.py`, skills frontmatter key confirmed | DECISIONS §3–§5, D15; `vrp-cuevikflow-plugin/contracts/` | ☑ |
+| 02 | cuevik-start foundation | `references/`: runner (from `_run-step.md`), step registry (from `_steps.yml`, renumbered 00–08, 01 merged into 00), templates, `_writing-rules`, `_doc-references` | `cs-kickstart/docs/guides/proj-init/` | ◐ (this PR) |
 | 03 | `cuevik-start:00-bootstrap` | `gh` auth check; repo + board: ask, or create and link on confirmation (DECISIONS §3); governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☐ |
 | 04 | `cuevik-start:status` | Step progress from git + PR state | `doc-status.md` | ☐ |
 | 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☐ |
