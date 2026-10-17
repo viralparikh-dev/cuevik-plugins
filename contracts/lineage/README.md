@@ -57,4 +57,6 @@ declared in [`../consumers.json`](../consumers.json).
 1. Edit `lineage.schema.json` and/or the example. Increase `schemaVersion` when a key is added,
    removed or renamed.
 2. Copy this folder over every consumer's copy listed in `consumers.json`.
-3. Run `python scripts/check-contracts.py`. It fails on any copy that differs.
+3. Run `python scripts/check-contracts.py` (once: `python -m pip install -r scripts/requirements.txt`).
+   It fails on an invalid example or any copy that differs. `--target <repo>` also checks that
+   repo's `.cuevik/` files.

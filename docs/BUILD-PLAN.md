@@ -52,8 +52,8 @@ Plan first and wait for my approval before writing files.
 - **Shared contracts** (`.cuevik/config.json`, `.cuevik/lineage.json`) are defined once in
   `contracts/<name>/` and copied into each plugin that uses them at
   `plugins/<plugin>/references/contracts/<name>/`. Declare each copy in `contracts/consumers.json`
-  in the same PR; `python scripts/check-contracts.py` fails on a missing, drifted or undeclared copy
-  (same pattern as `vrp-cuevikflow-plugin/contracts/` + `scripts/test_contract.py`).
+  in the same PR; `python scripts/check-contracts.py` fails on an example that breaks its schema or
+  a missing, drifted or undeclared copy (needs `pip install -r scripts/requirements.txt`; same pattern as `vrp-cuevikflow-plugin/contracts/` + `scripts/test_contract.py`).
 - **Wording:** "story", never "PBI" (D5). `gh` via the Bash tool, not PowerShell.
 - **Gate:** every step checks the previous step's PR is `MERGED` before doing anything.
 
@@ -84,7 +84,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 00 | Scaffold | `marketplace.json`, 3 `plugin.json`, `docs/` | — | ☑ |
 | 01 | Contracts | `contracts/config/` + `contracts/lineage/` (schema + example + README), `contracts/consumers.json`, `scripts/check-contracts.py`, skills frontmatter key confirmed | DECISIONS §3–§5, D15; `vrp-cuevikflow-plugin/contracts/` | ◐ (this PR) |
 | 02 | cuevik-start foundation | `references/`: runner (from `_run-step.md`), step registry (from `_steps.yml`, renumbered 00–08, 01 merged into 00), templates, `_writing-rules`, `_doc-references` | `cs-kickstart/docs/guides/proj-init/` | ☐ |
-| 03 | `cuevik-start:00-bootstrap` | In-repo check (git repo, remote, `gh` auth), governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☐ |
+| 03 | `cuevik-start:00-bootstrap` | `gh` auth check; repo + board: ask, or create and link on confirmation (DECISIONS §3); governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☐ |
 | 04 | `cuevik-start:status` | Step progress from git + PR state | `doc-status.md` | ☐ |
 | 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☐ |
 | 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ☐ |

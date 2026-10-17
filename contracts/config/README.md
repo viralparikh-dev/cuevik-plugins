@@ -16,8 +16,9 @@ repo, so every clone and every session sees the same values (DECISIONS D15).
 | Repo owner/name | the git remote (`gh repo view --json nameWithOwner`) |
 | Worktree root folder | `cuevik-ship` plugin `userConfig` (machine fact, not project fact) |
 
-The board is **required**: `00-bootstrap` does not finish without one. `project.owner` is stored
-because a board can belong to a different user or organisation than the repo.
+The board is **required**: `00-bootstrap` asks for one and creates and links it, after
+confirmation, when it does not exist (DECISIONS §3). `project.owner` is stored because a board can
+belong to a different user or organisation than the repo.
 
 `statusField.options` holds every option on the board, by the board's own names. Skills look up an
 id by name; which names a skill moves cards to is decided by that skill, not by this contract.
@@ -47,4 +48,6 @@ declared in [`../consumers.json`](../consumers.json).
 1. Edit `config.schema.json` and the example. Increase `schemaVersion` when a key is added,
    removed or renamed.
 2. Copy this folder over every consumer's copy listed in `consumers.json`.
-3. Run `python scripts/check-contracts.py`. It fails on any copy that differs.
+3. Run `python scripts/check-contracts.py` (once: `python -m pip install -r scripts/requirements.txt`).
+   It fails on an invalid example or any copy that differs. `--target <repo>` also checks that
+   repo's `.cuevik/` files.

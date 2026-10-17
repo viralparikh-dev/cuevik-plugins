@@ -1,20 +1,30 @@
 #!/usr/bin/env python3
 """Check the shared contracts and every plugin's copy of them.
 
-Usage:  python scripts/check-contracts.py
+Usage:  python scripts/check-contracts.py                  check this repo
+        python scripts/check-contracts.py --target <repo>  also check <repo>/.cuevik/*.json
+Needs:  python -m pip install -r scripts/requirements.txt
 
 Checks
   1. Every contracts/<name>/ folder is declared in contracts/consumers.json, and every declared
      contract and plugin exists.
-  2. Every .json file under contracts/ parses.
+  2. Every .json file under contracts/ parses; each <name>.schema.json is valid JSON Schema 2020-12
+     and <name>.example.json validates against it.
   3. The lineage example is a valid graph: unique paths, upstream paths known, no self-links, no cycles.
   4. Each declared copy at plugins/<plugin>/references/contracts/<name>/ exists and matches
      contracts/<name>/ file for file (line endings ignored, since core.autocrlf rewrites them).
   5. No plugin holds an undeclared copy.
-Any failure exits non-zero. JSON Schema validation of the examples is not done (stdlib only).
+  6. With --target: <repo>/.cuevik/<name>.json exists and passes checks 2 and 3.
+Any failure exits non-zero.
 """
-import json, sys
+import argparse, json, sys
 from pathlib import Path
+
+try:
+    from jsonschema import Draft202012Validator
+    from jsonschema.exceptions import SchemaError
+except ImportError:
+    sys.exit("jsonschema is not installed: python -m pip install -r scripts/requirements.txt")
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTRACTS = ROOT / "contracts"
@@ -31,7 +41,7 @@ def load(path):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as e:
-        failures.append(f"{path.relative_to(ROOT).as_posix()}: {e}")
+        failures.append(f"{path.as_posix()}: {e}")
         return None
 
 
@@ -43,22 +53,39 @@ def text(path):
     return path.read_bytes().replace(b"\r\n", b"\n")
 
 
-def check_lineage(lineage):
-    docs = lineage.get("documents", [])
+def validate(name, instance, label):
+    """Validate instance against contracts/<name>/<name>.schema.json; report every error."""
+    schema = load(CONTRACTS / name / f"{name}.schema.json")
+    if schema is None or instance is None:
+        return
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as e:
+        failures.append(f"contracts/{name}/{name}.schema.json is not valid JSON Schema: {e.message}")
+        return
+    for e in sorted(Draft202012Validator(schema).iter_errors(instance), key=lambda e: list(e.absolute_path)):
+        where = "/".join(str(p) for p in e.absolute_path) or "(root)"
+        failures.append(f"{label}: {where}: {e.message}")
+    if name == "lineage" and isinstance(instance, dict):
+        check_lineage(instance, label)
+
+
+def check_lineage(lineage, label):
+    docs = [d for d in lineage.get("documents", []) if isinstance(d, dict)]
     paths = [d.get("path") for d in docs]
-    check(len(paths) == len(set(paths)), f"lineage: duplicate paths {sorted(p for p in set(paths) if paths.count(p) > 1)}")
+    check(len(paths) == len(set(paths)), f"{label}: duplicate paths {sorted(p for p in set(paths) if paths.count(p) > 1)}")
     up = {d.get("path"): d.get("upstream", []) for d in docs}
     for path, ups in up.items():
         for u in ups:
-            check(u in up, f"lineage: {path} upstream {u} is not a listed document")
-            check(u != path, f"lineage: {path} lists itself as upstream")
+            check(u in up, f"{label}: {path} upstream {u} is not a listed document")
+            check(u != path, f"{label}: {path} lists itself as upstream")
     state = {}  # path -> 1 visiting, 2 done
 
     def visit(p, trail):  # depth-first; returns True once a cycle is reported
         if state.get(p) == 2 or p not in up:
             return False
         if state.get(p) == 1:
-            failures.append("lineage: cycle " + " -> ".join(trail[trail.index(p):] + [p]))
+            failures.append(f"{label}: cycle " + " -> ".join(trail[trail.index(p):] + [p]))
             return True
         state[p] = 1
         if any(visit(u, trail + [p]) for u in up[p]):
@@ -70,6 +97,9 @@ def check_lineage(lineage):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Check the shared contracts and every plugin's copy of them.")
+    parser.add_argument("--target", type=Path, help="project repo whose .cuevik/*.json to validate too")
+    args = parser.parse_args()
     consumers = load(CONTRACTS / "consumers.json") or {}
     declared = {k: v for k, v in consumers.items() if not k.startswith("$")}
     contracts = {p.name for p in CONTRACTS.iterdir() if p.is_dir()}
@@ -80,9 +110,18 @@ def main():
 
     for path in sorted(CONTRACTS.rglob("*.json")):
         load(path)
-    lineage = load(CONTRACTS / "lineage" / "lineage.example.json")
-    if lineage:
-        check_lineage(lineage)
+    for name in sorted(contracts):
+        example = CONTRACTS / name / f"{name}.example.json"
+        validate(name, load(example), f"contracts/{name}/{example.name}")
+
+    target = args.target
+    if target:
+        for name in sorted(contracts):
+            path = target / ".cuevik" / f"{name}.json"
+            if path.is_file():
+                validate(name, load(path), path.as_posix())
+            else:
+                failures.append(f"{path.as_posix()} is missing")
 
     for name, plugins in sorted(declared.items()):
         if name not in contracts:
@@ -116,7 +155,8 @@ def main():
             print("  -", f)
         sys.exit(1)
     print(f"contract checks passed ({len(contracts)} contracts, "
-          f"{sum(len(v) for v in declared.values())} plugin copies)")
+          f"{sum(len(v) for v in declared.values())} plugin copies"
+          + (f", target {target.as_posix()}" if target else "") + ")")
 
 
 if __name__ == "__main__":
