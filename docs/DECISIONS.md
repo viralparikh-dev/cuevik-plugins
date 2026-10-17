@@ -54,8 +54,18 @@ Two-digit numbered steps; utilities unnumbered.
 
 ## 3. cuevik-start behaviour — Locked
 
-- Runs **inside the project repo**; the current folder is the target. No control-plane folder, no
-  `.proj-init/state.json`.
+- Runs **inside the project repo**; the current folder is the target (`00-bootstrap` makes it a
+  repo if it is not one yet). No control-plane folder, no `.proj-init/state.json`.
+- **`00-bootstrap` requires a GitHub repo and a project board, and creates whichever is missing**
+  (decided 2026-10-17). Each create is listed and confirmed first.
+  - Repo: if the current folder has no GitHub `origin`, ask for owner, name and visibility. An
+    existing repo is connected as `origin`. A missing one is created with
+    `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
+  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is created with
+    `gh project create --owner <owner> --title <name>` and linked with `gh project link`. Its ids
+    are then read back into `.cuevik/config.json` (contract: `contracts/config/`).
+  - Needs the `project` token scope and a local session: cloud sessions cannot reach Projects v2.
+  - Unverified: linking a board owned by a user to a repo owned by an organisation. Test in Phase 03.
 - Old Step-01 (repo setup / governance / `CONTRIBUTING.md`) is **merged into `00-bootstrap`**;
   steps renumbered 00–08 with no gap.
 - Each step opens a PR to `main`; the next step refuses to run until that PR is merged.
