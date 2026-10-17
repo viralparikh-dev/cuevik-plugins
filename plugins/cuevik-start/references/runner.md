@@ -21,6 +21,10 @@ Run exactly one step per session.
 - If the user asks to run a different step in the same session, stop and tell them to start a new
   session for that step.
 
+A step with `bootstrap: true` skips the status call (there is nothing to report before `.cuevik/`
+exists) and runs §1 checks 1–2 only where its `SKILL.md` order says, once the folder is a repo
+with `main` on GitHub.
+
 ## Inputs
 
 Before starting, load:
