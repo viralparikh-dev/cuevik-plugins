@@ -22,6 +22,7 @@ belong to a different user or organisation than the repo.
 
 `statusField.options` holds every option on the board, by the board's own names. Skills look up an
 id by name; which names a skill moves cards to is decided by that skill, not by this contract.
+The order of `options` carries no meaning (`gh --jq` sorts keys); read the board for its order.
 
 ## Where the values come from
 

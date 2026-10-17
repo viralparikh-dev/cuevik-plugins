@@ -127,8 +127,18 @@ If any item fails, stop and resolve it before continuing.
 From an up-to-date `main`, create and switch to the branch named in the step's `branch` field:
 `git checkout -b <branch>`.
 
-If the branch already exists, do not reuse it silently. Ask the operator whether to reuse it,
-delete it, or create a new branch name.
+First check whether the branch already exists locally (`git rev-parse --verify -q
+refs/heads/<branch>` exits 0) or on GitHub (`git ls-remote --heads origin <branch>` prints a line).
+A closed, unmerged PR leaves both behind: auto-delete only fires on merge. If either exists, do not
+reuse it silently. Ask the operator to:
+
+- **Reuse it** — `git checkout <branch>`, or `git checkout -b <branch> --track origin/<branch>`
+  when it exists only on GitHub; then continue from its content.
+- **Delete it** — after a `yes`, `git branch -D <branch>` and/or
+  `git push origin --delete <branch>`; then create it fresh as above.
+
+Never use a different branch name: the next step's gate (§1 check 4) finds this step's PR by
+its exact `branch`.
 
 ## 4. Produce The Output
 
