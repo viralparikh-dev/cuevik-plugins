@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/viralparikh-dev/cuevik-plugins/contracts/config/config.schema.json",
+  "title": ".cuevik/config.json",
+  "description": "Project facts for the cuevik plugins, committed in the project repo. Owner/repo come from the git remote; the worktree root is plugin userConfig. Neither belongs here (DECISIONS D15).",
+  "type": "object",
+  "required": ["schemaVersion", "project"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": {
+      "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
+      "const": 1
+    },
+    "project": {
+      "description": "The GitHub Projects (v2) board that issues are added to and whose Status field cuevik-ship moves.",
+      "type": "object",
+      "required": ["owner", "number", "id", "statusField"],
+      "additionalProperties": false,
+      "properties": {
+        "owner": {
+          "description": "Login of the user or organisation that owns the board. Can differ from the repo owner.",
+          "type": "string",
+          "minLength": 1
+        },
+        "number": {
+          "description": "Board number, as used by `gh project ... <number> --owner <owner>`.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "id": {
+          "description": "Board node id, as used by `gh project item-edit --project-id`.",
+          "type": "string",
+          "pattern": "^PVT_"
+        },
+        "statusField": {
+          "description": "The board's single-select Status field.",
+          "type": "object",
+          "required": ["id", "options"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "description": "Field node id, as used by `gh project item-edit --field-id`.",
+              "type": "string",
+              "pattern": "^PVTSSF_"
+            },
+            "options": {
+              "description": "Every Status option on the board: option name -> option id (`--single-select-option-id`). Names are the board's own.",
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

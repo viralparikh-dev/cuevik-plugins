@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "owner": "example-org",
+    "number": 1,
+    "id": "PVT_kwDOExample0001",
+    "statusField": {
+      "id": "PVTSSF_lADOExample0001zhExample",
+      "options": {
+        "Todo": "0000aaa1",
+        "In Progress": "0000aaa2",
+        "Done": "0000aaa3"
+      }
+    }
+  }
+}
