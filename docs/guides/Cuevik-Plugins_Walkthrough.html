@@ -63,6 +63,7 @@ hr{display:none}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--primary-border);background:var(--primary-muted);color:var(--primary-text);
   border-radius:999px;padding:2px 10px;font-size:var(--text-xs);font-weight:600}
 .chip.neutral{border-color:var(--border);background:var(--card);color:var(--foreground)}
+.chip .lbl{font-weight:700}
 .chip code{background:none;padding:0;color:inherit;font-size:var(--text-xs)}
 .lead{font-size:var(--text-md);line-height:var(--leading-snug);max-width:165mm}
 
@@ -84,6 +85,41 @@ tr:last-child td{border-bottom:0}
 tr{break-inside:avoid}
 td:first-child,td.nw{white-space:nowrap}
 td code{white-space:nowrap}
+td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
+tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
+
+/* by-actor diagrams */
+figure.sw{margin:10px 0 14px;break-inside:avoid}
+.sw svg{display:block;width:100%;height:auto}
+.sw text{font-family:var(--font-sans);fill:var(--foreground)}
+.sw .lane{stroke:none}
+.sw .lane.warm{fill:var(--warning-muted)} .sw .lane.cool{fill:var(--info-muted)}
+.sw .lane.claude{fill:var(--primary-muted)} .sw .lane.gh{fill:var(--muted)}
+.sw .lane-h{font-size:13px;font-weight:600}
+.sw .lane-s{font-size:10.5px;fill:var(--muted-foreground)}
+.sw .card{fill:var(--card);stroke-width:1.4}
+.sw .card.warm{stroke:var(--warning)} .sw .card.cool{stroke:var(--info)}
+.sw .card.claude{stroke:var(--primary)} .sw .card.gh{stroke:var(--muted-foreground)}
+.sw .dash{fill:var(--card);stroke:var(--muted-foreground);stroke-width:1.2;stroke-dasharray:4 3}
+.sw .pill{fill:var(--foreground)}
+.sw .pill-t{font-size:9px;font-weight:600;letter-spacing:0.06em;fill:var(--card)}
+.sw .ttl{font-size:12.5px;font-weight:600}
+.sw .mono{font-family:var(--font-mono);font-size:10px;fill:var(--primary-text)}
+.sw .note{font-size:10.5px;fill:var(--muted-foreground)}
+.sw .link{stroke:var(--muted-foreground);stroke-width:1.4;fill:none}
+.sw .link.side{stroke-dasharray:4 3}
+.sw .arrow{fill:var(--muted-foreground)}
+.page{break-after:page} .page:last-child{break-after:auto}
+.page h1{font-size:var(--text-lg);margin:0 0 4px}
+.page>p{color:var(--muted-foreground);font-size:var(--text-sm)}
+
+/* overview */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 6px}
+.card-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs);padding:12px 14px}
+.card-box .keep{margin-top:0}
+.card-box h3{margin:0 0 4px}
+.card-box p{margin:0;font-size:var(--text-sm)}
+h2.pb{break-before:page;margin-top:0}
 
 /* footer note */
 .foot{margin-top:22px;padding-top:8px;border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--muted-foreground)}
@@ -91,51 +127,694 @@ td code{white-space:nowrap}
 @page{size:A4;margin:12mm 0 14mm}
 @media print{main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
 @media screen{main{background:var(--background)}}
-@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip">Plugins <code>cuevik-start</code>, <code>cuevik-ship</code>, <code>cuevik-docs</code></span><span class="chip neutral">Marketplace <code>cuevik-plugins</code></span><span class="chip neutral">Author Viral Parikh</span></div><p class="lead">Draft. This page only proves the build pipeline (markdown to HTML to PDF). The walkthrough itself is written in later steps.</p></header>
+@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards{grid-template-columns:1fr}}
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.1, cuevik-ship 0.1, cuevik-docs 0.1</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Draft. Sections 1–5 hold the diagrams and reference tables, which are generated from the plugins or checked against them. The step-by-step prose is written next.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
-<li><a href="#1-pipeline-check">1. Pipeline check</a><ul>
-<li><a href="#sub-heading">Sub-heading</a></li>
+<li><a href="#1-the-three-plugins">1. The three plugins</a></li>
+<li><a href="#2-the-flow-by-actor">2. The flow by actor</a><ul>
+<li><a href="#cuevik-start">cuevik-start</a></li>
+<li><a href="#cuevik-ship">cuevik-ship</a></li>
+<li><a href="#cuevik-docs">cuevik-docs</a></li>
 </ul>
 </li>
-<li><a href="#2-table-check">2. Table check</a></li>
+<li><a href="#3-cuevik-start-steps">3. cuevik-start steps</a></li>
+<li><a href="#4-command-reference">4. Command reference</a><ul>
+<li><a href="#what-each-command-does">What each command does</a></li>
+<li><a href="#branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</a></li>
+</ul>
+</li>
+<li><a href="#5-who-owns-which-document">5. Who owns which document</a></li>
 </ul></nav><hr/>
-<div class="keep k2"><h2 id="1-pipeline-check"><span class="num">1</span>Pipeline check</h2><p>A paragraph with <strong>bold</strong>, <code>inline code</code> and a <a href="#2-table-check">link to the table</a>.</p></div>
-
-<pre><code>/cuevik-start:00-bootstrap
-</code></pre>
-<div class="keep k3"><h3 id="sub-heading">Sub-heading</h3><ul>
-<li>First point</li>
-<li>Second point</li>
-</ul></div>
-
-<hr/>
-<div class="keep k2"><h2 id="2-table-check"><span class="num">2</span>Table check</h2><div class="tbl short"><table>
+<div class="keep k2"><h2 id="1-the-three-plugins"><span class="num">1</span>The three plugins</h2><div class="tbl short"><table>
 <thead>
 <tr>
 <th>Plugin</th>
-<th>Command</th>
-<th>Output</th>
+<th>Use it to</th>
+<th>Commands</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="nw"><code>cuevik-start</code></td>
-<td><code>/cuevik-start:00-bootstrap</code></td>
-<td>CONTRIBUTING.md</td>
+<td>Start a project the governed way</td>
+<td><code>00</code>–<code>08</code>, <code>status</code>, <code>cleanup</code></td>
 </tr>
 <tr>
 <td class="nw"><code>cuevik-ship</code></td>
-<td><code>/cuevik-ship:01-brainstorm</code></td>
-<td>Brainstorm file</td>
+<td>Deliver one issue at a time, from idea to code PR</td>
+<td><code>01</code>–<code>07</code>, <code>cleanup</code></td>
 </tr>
 <tr>
 <td class="nw"><code>cuevik-docs</code></td>
-<td><code>/cuevik-docs:audit</code></td>
-<td class="nw">Audit report</td>
+<td>Audit and update source-of-truth documents</td>
+<td class="nw"><code>audit</code>, <code>update</code></td>
 </tr>
 </tbody>
 </table></div></div>
-<div class="foot">Cuevik Plugins · Walkthrough · Generated from Cuevik-Plugins_Walkthrough.md by docs/guides/build_docs.py</div></main></body></html>
+
+<hr/>
+<div class="keep k2"><h2 id="2-the-flow-by-actor"><span class="num">2</span>The flow by actor</h2><p>Who acts at each step, one diagram per plugin. They are also the three pages of <code>Cuevik-Plugins_WalkthroughByActor.pdf</code>.</p></div>
+
+<div class="keep k3"><h3 id="cuevik-start">cuevik-start</h3><p>Lanes are the document owners from the project's lineage. Every command is <code>/cuevik-start:&lt;name&gt;</code>.</p></div>
+
+<figure class="sw"><svg aria-label="flow-start by actor" role="img" viewbox="0 0 780 850" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="ah0" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
+<rect class="lane warm" height="826" rx="14" width="244" x="12" y="12"></rect>
+<text class="lane-h" x="28" y="34">Product Owner</text>
+<text class="lane-s" x="28" y="50">owns 01 · 02 · 07</text>
+<rect class="lane cool" height="826" rx="14" width="244" x="266" y="12"></rect>
+<text class="lane-h" x="282" y="34">Architect</text>
+<text class="lane-s" x="282" y="50">owns 00 · 03 · 04 · 05 · 06 · 08</text>
+<rect class="lane gh" height="826" rx="14" width="244" x="520" y="12"></rect>
+<text class="lane-h" x="536" y="34">GitHub</text>
+<text class="lane-s" x="536" y="50">PR to main, then merge</text>
+<path class="link" d="M388 144 V154 H134 V164" marker-end="url(#ah0)"></path>
+<path class="link" d="M134 230 V250" marker-end="url(#ah0)"></path>
+<path class="link" d="M134 316 V326 H388 V336" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 402 V422" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 488 V508" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 574 V594" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 660 V670 H134 V680" marker-end="url(#ah0)"></path>
+<path class="link" d="M134 746 V756 H388 V766" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 111 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M242 197 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M242 283 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 369 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M280 369 H242" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 455 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 541 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 627 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M242 713 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 799 H534" marker-end="url(#ah0)"></path>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="78"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="70"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="81">STEP 00</text>
+<text class="ttl" x="294" y="108">Bootstrap</text>
+<text class="mono" x="294" y="123">00-bootstrap</text>
+<text class="note" x="294" y="137">CONTRIBUTING.md + 3 more</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
+<text class="ttl" x="548" y="107">PR → main</text>
+<text class="note" x="548" y="124">Approved by Architect</text>
+<rect class="card warm" height="66" rx="10" width="216" x="26" y="164"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="38" y="156"></rect>
+<text class="pill-t" text-anchor="middle" x="67.5" y="167">STEP 01</text>
+<text class="ttl" x="40" y="194">Product Concept</text>
+<text class="mono" x="40" y="209">01-product-concept</text>
+<text class="note" x="40" y="223">docs/PRODUCT.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
+<text class="ttl" x="548" y="193">PR → main</text>
+<text class="note" x="548" y="210">Approved by Product Owner</text>
+<rect class="card warm" height="66" rx="10" width="216" x="26" y="250"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="38" y="242"></rect>
+<text class="pill-t" text-anchor="middle" x="67.5" y="253">STEP 02</text>
+<text class="ttl" x="40" y="280">Requirements</text>
+<text class="mono" x="40" y="295">02-product-requirements</text>
+<text class="note" x="40" y="309">docs/PRD.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="258"></rect>
+<text class="ttl" x="548" y="279">PR → main</text>
+<text class="note" x="548" y="296">Approved by Product Owner</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="336"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="328"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="339">STEP 03</text>
+<text class="ttl" x="294" y="366">Architecture</text>
+<text class="mono" x="294" y="381">03-architecture</text>
+<text class="note" x="294" y="395">docs/ARCHITECTURE.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="344"></rect>
+<text class="ttl" x="548" y="365">PR → main</text>
+<text class="note" x="548" y="382">Approved by Architect + Product Owner</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="355"></rect>
+<text class="note" x="40" y="373">Product Owner co-reviews</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="422"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="414"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="425">STEP 04</text>
+<text class="ttl" x="294" y="452">Tech Stack</text>
+<text class="mono" x="294" y="467">04-tech-stack</text>
+<text class="note" x="294" y="481">docs/TECH-STACK.md + 1 more</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="430"></rect>
+<text class="ttl" x="548" y="451">PR → main</text>
+<text class="note" x="548" y="468">Approved by Architect</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="508"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="500"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="511">STEP 05</text>
+<text class="ttl" x="294" y="538">AI Tool Guide</text>
+<text class="mono" x="294" y="553">05-ai-tool-guide</text>
+<text class="note" x="294" y="567">docs/AI-TOOL-GUIDE.md + 2 more</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="516"></rect>
+<text class="ttl" x="548" y="537">PR → main</text>
+<text class="note" x="548" y="554">Approved by Architect</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="594"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="586"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="597">STEP 06</text>
+<text class="ttl" x="294" y="624">README</text>
+<text class="mono" x="294" y="639">06-readme</text>
+<text class="note" x="294" y="653">README.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
+<text class="ttl" x="548" y="623">PR → main</text>
+<text class="note" x="548" y="640">Approved by Architect</text>
+<rect class="card warm" height="66" rx="10" width="216" x="26" y="680"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="38" y="672"></rect>
+<text class="pill-t" text-anchor="middle" x="67.5" y="683">STEP 07</text>
+<text class="ttl" x="40" y="710">Initial Backlog</text>
+<text class="mono" x="40" y="725">07-backlog</text>
+<text class="note" x="40" y="739">docs/BACKLOG.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
+<text class="ttl" x="548" y="709">PR → main</text>
+<text class="note" x="548" y="726">Approved by Product Owner</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="766"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="758"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="769">STEP 08</text>
+<text class="ttl" x="294" y="796">Finalize Governance</text>
+<text class="mono" x="294" y="811">08-finalize</text>
+<text class="note" x="294" y="825">CONTRIBUTING.md</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="774"></rect>
+<text class="ttl" x="548" y="795">PR → main</text>
+<text class="note" x="548" y="812">Approved by Architect</text>
+</svg></figure>
+<div class="keep k3"><h3 id="cuevik-ship">cuevik-ship</h3><p>You approve and merge, Claude runs each command in its own session, and GitHub holds the issue, branches and PRs. Every command is <code>/cuevik-ship:&lt;name&gt;</code>.</p></div>
+
+<figure class="sw"><svg aria-label="flow-ship by actor" role="img" viewbox="0 0 780 764" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="ah1" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
+<rect class="lane warm" height="740" rx="14" width="244" x="12" y="12"></rect>
+<text class="lane-h" x="28" y="34">You</text>
+<text class="lane-s" x="28" y="50">approve, review, merge</text>
+<rect class="lane claude" height="740" rx="14" width="244" x="266" y="12"></rect>
+<text class="lane-h" x="282" y="34">Claude</text>
+<text class="lane-s" x="282" y="50">runs each command in its own session</text>
+<rect class="lane gh" height="740" rx="14" width="244" x="520" y="12"></rect>
+<text class="lane-h" x="536" y="34">GitHub</text>
+<text class="lane-s" x="536" y="50">issue, branches, PRs</text>
+<path class="link" d="M388 144 V164" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 230 V250" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 316 V336" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 402 V422" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 488 V508" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 574 V594" marker-end="url(#ah1)"></path>
+<path class="link" d="M388 660 V680" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 111 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 111 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 197 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 197 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 283 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 283 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 369 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 369 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 455 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 455 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 541 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 541 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 627 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 627 H534" marker-end="url(#ah1)"></path>
+<path class="link side" d="M280 713 H242" marker-end="url(#ah1)"></path>
+<path class="link side" d="M496 713 H534" marker-end="url(#ah1)"></path>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="78"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="70"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="81">STEP 01</text>
+<text class="ttl" x="294" y="108">Brainstorm</text>
+<text class="mono" x="294" y="123">01-brainstorm</text>
+<text class="note" x="294" y="137">GitHub issue and brainstorming folder</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
+<text class="note" x="40" y="115">Approve or reject, then merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
+<text class="ttl" x="548" y="107">PR → …/issue</text>
+<text class="note" x="548" y="124">…/01-brainstorm</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="164"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="156"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="167">STEP 02</text>
+<text class="ttl" x="294" y="194">Audit PRD</text>
+<text class="mono" x="294" y="209">02-audit-prd</text>
+<text class="note" x="294" y="223">PRODUCT.md and PRD.md changes</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="183"></rect>
+<text class="note" x="40" y="201">Review and merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
+<text class="ttl" x="548" y="193">PR → main</text>
+<text class="note" x="548" y="210">…/02-audit-prd</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="250"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="242"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="253">STEP 03</text>
+<text class="ttl" x="294" y="280">Create Backlog</text>
+<text class="mono" x="294" y="295">03-create-backlog</text>
+<text class="note" x="294" y="309">GitHub issues: epic and stories</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="269"></rect>
+<text class="note" x="40" y="287">Approve the list</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="258"></rect>
+<text class="ttl" x="548" y="279">No PR</text>
+<text class="note" x="548" y="296">GitHub issues: epic and stories</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="336"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="328"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="339">STEP 04</text>
+<text class="ttl" x="294" y="366">Plan Intent</text>
+<text class="mono" x="294" y="381">04-plan-intent</text>
+<text class="note" x="294" y="395">intent.md in the work folder</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="355"></rect>
+<text class="note" x="40" y="373">Review and merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="344"></rect>
+<text class="ttl" x="548" y="365">PR → …/issue</text>
+<text class="note" x="548" y="382">…/04-plan-intent</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="422"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="414"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="425">STEP 05</text>
+<text class="ttl" x="294" y="452">Design Spec</text>
+<text class="mono" x="294" y="467">05-design-spec</text>
+<text class="note" x="294" y="481">spec.md in the work folder</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="441"></rect>
+<text class="note" x="40" y="459">Review and merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="430"></rect>
+<text class="ttl" x="548" y="451">PR → …/issue</text>
+<text class="note" x="548" y="468">…/05-design-spec</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="508"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="500"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="511">STEP 06</text>
+<text class="ttl" x="294" y="538">Build Plan</text>
+<text class="mono" x="294" y="553">06-build-plan</text>
+<text class="note" x="294" y="567">plan.md in the work folder</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="527"></rect>
+<text class="note" x="40" y="545">Review and merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="516"></rect>
+<text class="ttl" x="548" y="537">PR → …/issue</text>
+<text class="note" x="548" y="554">…/06-build-plan</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="594"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="586"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="597">STEP 07</text>
+<text class="ttl" x="294" y="624">Execute Plan</text>
+<text class="mono" x="294" y="639">07-execute-plan</text>
+<text class="note" x="294" y="653">The code</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="613"></rect>
+<text class="note" x="40" y="631">Review and merge the code PR</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
+<text class="ttl" x="548" y="623">PR → main</text>
+<text class="note" x="548" y="640">…/07-execute-plan</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="680"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="672"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="683">CLEANUP</text>
+<text class="ttl" x="294" y="710">Clean up</text>
+<text class="mono" x="294" y="725">cleanup</text>
+<text class="note" x="294" y="739">Worktree, local branches, archive tag</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="699"></rect>
+<text class="note" x="40" y="717">Confirm the list</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
+<text class="ttl" x="548" y="709">No PR</text>
+<text class="note" x="548" y="726">Worktree, local branches, archive tag</text>
+</svg></figure>
+<div class="keep k3"><h3 id="cuevik-docs">cuevik-docs</h3><p>Same lanes as <code>cuevik-ship</code>. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
+
+<figure class="sw"><svg aria-label="flow-docs by actor" role="img" viewbox="0 0 780 248" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="ah2" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
+<rect class="lane warm" height="224" rx="14" width="244" x="12" y="12"></rect>
+<text class="lane-h" x="28" y="34">You</text>
+<text class="lane-s" x="28" y="50">approve, review, merge</text>
+<rect class="lane claude" height="224" rx="14" width="244" x="266" y="12"></rect>
+<text class="lane-h" x="282" y="34">Claude</text>
+<text class="lane-s" x="282" y="50">runs each command in its own session</text>
+<rect class="lane gh" height="224" rx="14" width="244" x="520" y="12"></rect>
+<text class="lane-h" x="536" y="34">GitHub</text>
+<text class="lane-s" x="536" y="50">issue, branches, PRs</text>
+<path class="link" d="M388 144 V164" marker-end="url(#ah2)"></path>
+<path class="link side" d="M280 111 H242" marker-end="url(#ah2)"></path>
+<path class="link side" d="M496 111 H534" marker-end="url(#ah2)"></path>
+<path class="link side" d="M280 197 H242" marker-end="url(#ah2)"></path>
+<path class="link side" d="M496 197 H534" marker-end="url(#ah2)"></path>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="78"></rect>
+<rect class="pill" height="16" rx="8" width="46" x="292" y="70"></rect>
+<text class="pill-t" text-anchor="middle" x="315.0" y="81">AUDIT</text>
+<text class="ttl" x="294" y="108">Audit</text>
+<text class="mono" x="294" y="123">audit</text>
+<text class="note" x="294" y="137">Nothing (report only)</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
+<text class="note" x="40" y="115">Read the report</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
+<text class="ttl" x="548" y="107">No PR</text>
+<text class="note" x="548" y="124">Nothing (report only)</text>
+<rect class="card claude" height="66" rx="10" width="216" x="280" y="164"></rect>
+<rect class="pill" height="16" rx="8" width="52" x="292" y="156"></rect>
+<text class="pill-t" text-anchor="middle" x="318.0" y="167">UPDATE</text>
+<text class="ttl" x="294" y="194">Update</text>
+<text class="mono" x="294" y="209">update</text>
+<text class="note" x="294" y="223">The document, via PR</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="183"></rect>
+<text class="note" x="40" y="201">Review and merge</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
+<text class="ttl" x="548" y="193">PR → main</text>
+<text class="note" x="548" y="210">docs/update/&lt;doc&gt;</text>
+</svg></figure>
+<hr/>
+<div class="keep k2"><h2 id="3-cuevik-start-steps"><span class="num">3</span>cuevik-start steps</h2><p>Each step runs in its own session on branch <code>init/&lt;name&gt;</code> and ends in a PR to <code>main</code>. Every command is <code>/cuevik-start:&lt;name&gt;</code>. Owner, reviewers and the documents a step reads come from the lineage; the outputs come from the step registry.</p></div>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Owner</th>
+<th>Reviewers</th>
+<th>Reads</th>
+<th>Writes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="nw"><code>00-bootstrap</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/TECH-STACK.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code></td>
+</tr>
+<tr>
+<td><code>01-product-concept</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td class="nw">—</td>
+<td><code>docs/PRODUCT.md</code></td>
+</tr>
+<tr>
+<td><code>02-product-requirements</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td><code>docs/PRODUCT.md</code></td>
+<td class="nw"><code>docs/PRD.md</code></td>
+</tr>
+<tr>
+<td><code>03-architecture</code></td>
+<td class="nw">Architect</td>
+<td>Architect, Product Owner</td>
+<td class="nw"><code>docs/PRD.md</code></td>
+<td><code>docs/ARCHITECTURE.md</code></td>
+</tr>
+<tr>
+<td><code>04-tech-stack</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code></td>
+<td><code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code></td>
+</tr>
+<tr>
+<td><code>05-ai-tool-guide</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code></td>
+<td><code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code class="wrap">.github/<wbr/>copilot-instructions.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>06-readme</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code></td>
+<td class="nw"><code>README.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>07-backlog</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>docs/BACKLOG.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>08-finalize</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/TECH-STACK.md</code></td>
+<td><code>CONTRIBUTING.md</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<div class="keep k2"><h2 id="4-command-reference"><span class="num">4</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Title</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:00-bootstrap</code></td>
+<td class="nw">Bootstrap</td>
+<td>Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:01-product-concept</code></td>
+<td>Product Concept</td>
+<td>Drafts the product concept with you: what it is, who it is for and why it exists.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:02-product-requirements</code></td>
+<td class="nw">Requirements</td>
+<td>Turns the concept into numbered, testable requirements (the PRD).</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:03-architecture</code></td>
+<td class="nw">Architecture</td>
+<td>Designs the system: components, data, integrations and the decisions behind them.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:04-tech-stack</code></td>
+<td class="nw">Tech Stack</td>
+<td>Locks the approved technologies and the build, test and lint commands.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:05-ai-tool-guide</code></td>
+<td>AI Tool Guide</td>
+<td>Sets the rules for AI coding assistants and generates the files each one reads.</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:06-readme</code></td>
+<td class="nw">README</td>
+<td>Replaces the boilerplate README with the project's real entry point.</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:07-backlog</code></td>
+<td>Initial Backlog</td>
+<td>Derives epics and stories from the product docs and files them as GitHub issues.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-start:08-finalize</code></td>
+<td>Finalize Governance</td>
+<td>Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones.</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:status</code></td>
+<td class="nw">Status</td>
+<td>Shows how far initiation has got, from what is merged on GitHub. Read-only.</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:cleanup</code></td>
+<td class="nw">Clean up</td>
+<td>Deletes local <code>init/*</code> branches whose PR is merged, after listing them for your confirmation.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:01-brainstorm</code></td>
+<td class="nw">Brainstorm</td>
+<td>Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:02-audit-prd</code></td>
+<td class="nw">Audit PRD</td>
+<td>Checks the approved idea against the product docs and ratifies it into new or changed requirements.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:03-create-backlog</code></td>
+<td>Create Backlog</td>
+<td>Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:04-plan-intent</code></td>
+<td class="nw">Plan Intent</td>
+<td>States the problem and scope, before any solution, in the issue's own work folder.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:05-design-spec</code></td>
+<td class="nw">Design Spec</td>
+<td>Writes the spec: behaviour, data, rules and tests.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:06-build-plan</code></td>
+<td class="nw">Build Plan</td>
+<td>Turns the spec into a dependency-ordered task list that a fresh session can execute.</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:07-execute-plan</code></td>
+<td class="nw">Execute Plan</td>
+<td>Builds the plan on a code branch and opens the code PR to <code>main</code>.</td>
+</tr>
+<tr>
+<td><code>/cuevik-ship:cleanup</code></td>
+<td class="nw">Clean up</td>
+<td>Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation.</td>
+</tr>
+<tr>
+<td><code>/cuevik-docs:audit</code></td>
+<td class="nw">Audit</td>
+<td>Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb).</td>
+</tr>
+<tr>
+<td><code>/cuevik-docs:update</code></td>
+<td class="nw">Update</td>
+<td>Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents.</td>
+</tr>
+</tbody>
+</table></div>
+<div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The nine numbered <code>cuevik-start</code> steps are not repeated here: their branch and outputs are in section 3. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
+
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Branch</th>
+<th>PR to</th>
+<th>Writes</th>
+<th>You</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/cuevik-start:status</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td>Nothing (report only)</td>
+<td>Read the report</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:cleanup</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td>Deletes merged local <code>init/*</code> branches</td>
+<td>Confirm the list</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:01-brainstorm</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>01-brainstorm</code></td>
+<td><code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code></td>
+<td>GitHub issue and brainstorming folder</td>
+<td>Approve or reject, then merge</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:02-audit-prd</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>02-audit-prd</code> (cut from <code>main</code>)</td>
+<td class="nw"><code>main</code></td>
+<td><code>PRODUCT.md</code> and <code>PRD.md</code> changes</td>
+<td>Review and merge</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:03-create-backlog</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td>GitHub issues: epic and stories</td>
+<td>Approve the list</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:04-plan-intent</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>04-plan-intent</code></td>
+<td><code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code></td>
+<td><code>intent.md</code> in the work folder</td>
+<td>Review and merge</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:05-design-spec</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>05-design-spec</code></td>
+<td><code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code></td>
+<td><code>spec.md</code> in the work folder</td>
+<td>Review and merge</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:06-build-plan</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>06-build-plan</code></td>
+<td><code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code></td>
+<td><code>plan.md</code> in the work folder</td>
+<td>Review and merge</td>
+</tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-ship:07-execute-plan</code></td>
+<td><code class="wrap">ship/<wbr/>&lt;n&gt;-&lt;slug&gt;/<wbr/>07-execute-plan</code> (cut from <code>main</code>)</td>
+<td class="nw"><code>main</code></td>
+<td class="nw">The code</td>
+<td>Review and merge the code PR</td>
+</tr>
+<tr>
+<td><code>/cuevik-ship:cleanup</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td>Worktree, local branches, archive tag</td>
+<td>Confirm the list</td>
+</tr>
+<tr>
+<td><code>/cuevik-docs:audit</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td>Nothing (report only)</td>
+<td>Read the report</td>
+</tr>
+<tr>
+<td><code>/cuevik-docs:update</code></td>
+<td><code>docs/update/&lt;doc&gt;</code></td>
+<td class="nw"><code>main</code></td>
+<td>The document, via PR</td>
+<td>Review and merge</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<div class="keep k2"><h2 id="5-who-owns-which-document"><span class="num">5</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
+
+<div class="tbl short"><table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Owner</th>
+<th>Reviewers</th>
+<th>Built from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CONTRIBUTING.md</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/TECH-STACK.md</code></td>
+</tr>
+<tr>
+<td><code>docs/PRODUCT.md</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td class="nw">—</td>
+</tr>
+<tr>
+<td class="nw"><code>docs/PRD.md</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td><code>docs/PRODUCT.md</code></td>
+</tr>
+<tr>
+<td><code>docs/ARCHITECTURE.md</code></td>
+<td class="nw">Architect</td>
+<td>Architect, Product Owner</td>
+<td class="nw"><code>docs/PRD.md</code></td>
+</tr>
+<tr>
+<td><code>docs/TECH-STACK.md</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code></td>
+</tr>
+<tr>
+<td><code>docs/AI-TOOL-GUIDE.md</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code></td>
+</tr>
+<tr>
+<td class="nw"><code>README.md</code></td>
+<td class="nw">Architect</td>
+<td class="nw">Architect</td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code></td>
+</tr>
+<tr>
+<td><code>docs/BACKLOG.md</code></td>
+<td>Product Owner</td>
+<td>Product Owner</td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+</tbody>
+</table></div><div class="foot">Cuevik Plugins · Walkthrough · Generated from Cuevik-Plugins_Walkthrough.md by docs/guides/build_docs.py</div></main></body></html>
