@@ -43,14 +43,17 @@ Plan first and wait for my approval before writing files.
 - **Layout:** `plugins/<plugin>/skills/<command>/SKILL.md`; supporting files beside it or in
   `plugins/<plugin>/references/`. Reference them as `${CLAUDE_PLUGIN_ROOT}/...` — Claude Code
   substitutes it inside skill content. Never write state under `${CLAUDE_PLUGIN_ROOT}`.
-- **Workflow steps are user-invoked only.** Frontmatter keeps the model from auto-running a step
-  (verify the exact key, e.g. `disable-model-invocation`, against the current skills docs in
-  Phase 01 and record it here).
+- **Workflow steps are user-invoked only.** Every step's `SKILL.md` frontmatter sets
+  `disable-model-invocation: true` (verified against code.claude.com/docs/en/skills, 2026-10-17:
+  stops Claude loading the skill itself; it runs only via `/name`). Not `user-invocable: false`,
+  which does the opposite: hides it from the `/` menu but leaves Claude free to invoke it.
 - **No hardcoded project facts.** Owner/repo from the git remote; board number and field IDs from
   `.cuevik/config.json`; worktree root from plugin `userConfig` (DECISIONS D15).
 - **Shared contracts** (`.cuevik/config.json`, `.cuevik/lineage.json`) are defined once in
-  `contracts/` and copied into each plugin that reads them; `scripts/check-contracts.*` fails on
-  drift (same pattern as `vrp-cuevikflow-plugin/contracts/` + `scripts/test_contract.py`).
+  `contracts/<name>/` and copied into each plugin that uses them at
+  `plugins/<plugin>/references/contracts/<name>/`. Declare each copy in `contracts/consumers.json`
+  in the same PR; `python scripts/check-contracts.py` fails on a missing, drifted or undeclared copy
+  (same pattern as `vrp-cuevikflow-plugin/contracts/` + `scripts/test_contract.py`).
 - **Wording:** "story", never "PBI" (D5). `gh` via the Bash tool, not PowerShell.
 - **Gate:** every step checks the previous step's PR is `MERGED` before doing anything.
 
@@ -78,8 +81,8 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 
 | # | Phase | Builds | Main sources | Status |
 |---|---|---|---|---|
-| 00 | Scaffold | `marketplace.json`, 3 `plugin.json`, `docs/` | — | ◐ (this PR) |
-| 01 | Contracts | `contracts/config.json` + `contracts/lineage.json` (schema + example + README), `scripts/check-contracts`, skills frontmatter key confirmed | DECISIONS §3–§5, D15; `vrp-cuevikflow-plugin/contracts/` | ☐ |
+| 00 | Scaffold | `marketplace.json`, 3 `plugin.json`, `docs/` | — | ☑ |
+| 01 | Contracts | `contracts/config/` + `contracts/lineage/` (schema + example + README), `contracts/consumers.json`, `scripts/check-contracts.py`, skills frontmatter key confirmed | DECISIONS §3–§5, D15; `vrp-cuevikflow-plugin/contracts/` | ◐ (this PR) |
 | 02 | cuevik-start foundation | `references/`: runner (from `_run-step.md`), step registry (from `_steps.yml`, renumbered 00–08, 01 merged into 00), templates, `_writing-rules`, `_doc-references` | `cs-kickstart/docs/guides/proj-init/` | ☐ |
 | 03 | `cuevik-start:00-bootstrap` | In-repo check (git repo, remote, `gh` auth), governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☐ |
 | 04 | `cuevik-start:status` | Step progress from git + PR state | `doc-status.md` | ☐ |
