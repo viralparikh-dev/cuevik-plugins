@@ -32,7 +32,7 @@ phase's files. Bump the patch version of each plugin you touch. Run
 `claude plugin validate .` and `claude plugin validate plugins/<plugin>` and show the output.
 Commit, push, open a PR to main. Do not start the next phase.
 
-Finish by giving me exact steps to test this command on cuevik-sandbox and on tx-QE4AIApps.
+Finish by giving me exact steps to test this command on cuevik-sandbox.
 Plan first and wait for my approval before writing files.
 ```
 
@@ -70,7 +70,8 @@ Plan first and wait for my approval before writing files.
 
   `cuevik-docs` is enabled automatically as a dependency. Start a new Claude session after each
   phase so the changed skill is loaded.
-- **Order:** `viralparikh-dev/cuevik-sandbox` first (throwaway), then `tx-QE4AIApps`.
+- **Target:** every phase is tested on `viralparikh-dev/cuevik-sandbox` (throwaway) only.
+  `tx-QE4AIApps` is tested once, after all phases are merged.
 - The phase branch must be checked out in `D:\vrp-repos\vrp-cuevik-plugins` while testing.
 
 ---

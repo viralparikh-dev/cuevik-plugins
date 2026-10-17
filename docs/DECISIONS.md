@@ -31,7 +31,7 @@ Note: the repo is **private** — only accounts with read access can add the mar
 | Build | Value |
 |---|---|
 | Plan | [BUILD-PLAN.md](BUILD-PLAN.md) — one phase per session, one PR per phase |
-| Test targets | `viralparikh-dev/cuevik-sandbox` (private, created 2026-10-17), then `tx-QE4AIApps` |
+| Test targets | `viralparikh-dev/cuevik-sandbox` (private, created 2026-10-17) every phase; `tx-QE4AIApps` once, after all phases |
 | Shared contracts | separate files: `.cuevik/config.json` (settings) and `.cuevik/lineage.json` (doc lineage) |
 
 ## 2. Command names
