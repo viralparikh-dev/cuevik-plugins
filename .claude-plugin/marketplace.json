@@ -1,0 +1,21 @@
+{
+  "name": "cuevik-plugins",
+  "description": "Cuevik delivery plugins: start a project the governed way, ship work one issue at a time, and keep source-of-truth docs aligned.",
+  "owner": {
+    "name": "Viral Parikh"
+  },
+  "plugins": [
+    {
+      "name": "cuevik-start",
+      "source": "./plugins/cuevik-start"
+    },
+    {
+      "name": "cuevik-ship",
+      "source": "./plugins/cuevik-ship"
+    },
+    {
+      "name": "cuevik-docs",
+      "source": "./plugins/cuevik-docs"
+    }
+  ]
+}
