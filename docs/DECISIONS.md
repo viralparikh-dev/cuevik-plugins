@@ -61,9 +61,15 @@ Two-digit numbered steps; utilities unnumbered.
   - Repo: if the current folder has no GitHub `origin`, ask for owner, name and visibility. An
     existing repo is connected as `origin`. A missing one is created with
     `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
-  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is created with
-    `gh project create --owner <owner> --title <name>` and linked with `gh project link`. Its ids
-    are then read back into `.cuevik/config.json` (contract: `contracts/config/`).
+  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is copied
+    from the template board in the `board_template` userConfig (default `viralparikh-dev/3`,
+    public; decided 2026-10-17) with `gh project copy`, and linked with `gh project link`. An
+    unreadable template: the operator picks an existing board or a blank one (`gh project create`).
+    Its ids are then read back into `.cuevik/config.json` (contract: `contracts/config/`).
+  - Template `viralparikh-dev/3` is a copy of the team's org template: fields, views and all
+    workflows copied identically, except the org's Priority (an org-level field with no options)
+    became a Priority field with Urgent/High/Medium/Low. User-owned boards cannot carry GitHub's
+    "template" flag; a copy does not need it.
   - Needs the `project` token scope and a local session: cloud sessions cannot reach Projects v2.
   - Unverified: linking a board owned by a user to a repo owned by an organisation. Test in Phase 03.
 - Old Step-01 (repo setup / governance / `CONTRIBUTING.md`) is **merged into `00-bootstrap`**;

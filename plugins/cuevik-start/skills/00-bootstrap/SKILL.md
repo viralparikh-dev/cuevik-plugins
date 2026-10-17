@@ -57,6 +57,7 @@ Detect the folder's state with:
 | State | Action |
 | --- | --- |
 | Repo, `origin` on `github.com` | `gh repo view --json nameWithOwner,isEmpty`. Ask the operator to confirm it is the project repo. `isEmpty` true: B.4. |
+| Repo, `origin` on `github.com`, `gh repo view` fails | **STOP** — `origin points at <url>, which does not exist or you cannot access. Fix or remove origin, then re-run.` |
 | Repo, `origin` not on `github.com` | **STOP** — GitHub only. |
 | Repo, no `origin` | Ask owner and name (B.1). Existing: connect it (B.2). Missing: create it (B.3). |
 | Not a repo, empty folder | Ask owner and name (B.1). Existing: confirm, then `gh repo clone <owner>/<name> .` (an empty repo then needs B.4). Missing: `git init -b main`, then create it (B.3). |
@@ -121,6 +122,7 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 3. **Pick or create.** List the open boards:
    `gh project list --owner <board-owner> --format json --jq '.projects[] | {number, title}'`.
    Ask which number to use, or whether to create a new board (suggest the repo name as title).
+   For a new board, resolve the template first (D.6).
 4. **Already linked?** For an existing board:
 
    ```sh
@@ -140,6 +142,13 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
    No output, or a `type` other than `ProjectV2SingleSelectField`: **STOP** — the board needs a
    single-select field named `Status`.
+6. **Template** (new board only). The plugin's `board_template` setting is
+   `${user_config.board_template}`, as `<template-owner>/<template-number>`. Check it can be read:
+   `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
+   - Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
+   - Empty setting, or non-zero: tell the operator the template cannot be used and why. Ask them
+     to pick an existing board, or to create a blank board, warning that a blank board gets only
+     GitHub's default Status options (`Todo`, `In Progress`, `Done`). Never pick for them.
 
 ## E. Remote changes
 
@@ -147,7 +156,24 @@ List every change below that applies in the runner §2 checklist, with its exact
 `yes` on each one separately, then run them in this order:
 
 1. **Create the board** (if chosen):
-   `gh project create --owner <board-owner> --title "<title>" --format json --jq .number`.
+   - From the template (D.6):
+     `gh project copy <template-number> --source-owner <template-owner> --target-owner <board-owner> --title "<title>" --format json --jq .number`.
+     Draft issues are not copied. Then compare the copy with the template by running this for
+     each and diffing the two results:
+
+     ```sh
+     gh api graphql -f o=<owner> -F n=<number> -f query='
+       query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
+         fields(first:50){nodes{... on ProjectV2FieldCommon{name} ... on ProjectV2SingleSelectField{options{name}}}}
+         views(first:20){nodes{name layout}} workflows(first:20){nodes{name enabled}}}}}}' \
+       --jq '.data.repositoryOwner.projectV2'
+     ```
+
+     Report every difference; do not stop on one. The operator decides whether to fix it by hand.
+   - Blank (operator chose it in D.6):
+     `gh project create --owner <board-owner> --title "<title>" --format json --jq .number`.
+
+   Then run D.5 on the new board.
 2. **Link the board** (unless already linked), from the repo folder so it links this repo:
    `gh project link <number> --owner <board-owner>`. A user-owned board linked to an
    organisation-owned repo is untested. If the link fails, **STOP** and show the error; do not
@@ -210,7 +236,8 @@ the runner, `steps.yml`, templates, roles or contracts into the repo.
 Follow runner §5–§6. The PR body covers the `prSummary`:
 
 - Repo: connected or created (owner, name, visibility), and any first commit from B.4.
-- Board: owner, number, URL; created or existing; linked now or already linked.
+- Board: owner, number, URL; existing, copied from the template (with any differences), or blank;
+  linked now or already linked.
 - Repo settings changed: auto-delete head branches.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
 - The reviewer checklist below, and the self-review gate from `CONTRIBUTING.md`.
