@@ -371,6 +371,7 @@ h2{font-size:var(--text-lg);line-height:var(--leading-snug);margin:30px 0 10px;b
 .keep.k2{margin-top:30px}
 .keep.k3{margin-top:18px}
 .keep:has(>.pg){break-before:page;margin-top:0}
+.keep:has(+ .tbl),p:has(+ .tbl),.keep:has(>.facts){break-after:avoid}
 section.sec{margin-top:30px}
 h3{font-size:var(--text-md);line-height:var(--leading-snug);margin:18px 0 6px;break-after:avoid}
 h2 .num{vertical-align:2px;margin-right:10px;display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;
@@ -448,6 +449,7 @@ figure.sw{margin:10px 0 14px;break-inside:avoid}
 
 /* overview */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 6px}
+.cards.two{grid-template-columns:repeat(2,1fr)}
 .card-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs);padding:12px 14px}
 .card-box .keep{margin-top:0}
 .card-box h3{margin:0 0 4px}
@@ -458,12 +460,14 @@ h2.pb{break-before:page;margin-top:0}
 .foot{margin-top:22px;padding-top:8px;border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--muted-foreground)}
 
 @page{size:A4;margin:12mm 0 14mm}
-@media print{main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
+@media print{:root{--background:#ffffff}main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
 @media screen{main{background:var(--background)}}
-@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards{grid-template-columns:1fr}}
+@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
+  figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
 """
 
-LANDSCAPE = "@page{size:A4 landscape;margin:12mm 0 14mm} main{max-width:297mm;padding:8mm 12mm 0}"
+LANDSCAPE = ("@page{size:A4 landscape;margin:12mm 0 14mm} main{max-width:297mm;padding:8mm 12mm 0} h1{font-size:var(--text-lg)}"
+             " .hero{margin-bottom:6px} h3{margin:10px 0 4px} .tbl{margin:4px 0 8px} .cmds{font-size:11px} .cmds th,.cmds td{padding:3px 8px}")
 # Overview: every command on one page, so rows stay one line and the command column is fixed
 OVERVIEW_CSS = "table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{padding:4px 10px} .tbl{margin:6px 0 10px}"
 
@@ -581,19 +585,20 @@ def shape(body_html, eyebrow, foot, overview=False):
             h2.append(num); h2.append(m[2])
     if overview:
         h2s = soup.find_all("h2")
-        get = next(h for h in h2s if h.get_text().startswith("What you get"))
-        sibs = []
-        for s in get.find_next_siblings():
-            if s.name == "h2":
-                break
-            sibs.append(s)
-        grid = soup.new_tag("div", attrs={"class": "cards"})
-        get.insert_after(grid)
-        box = None
-        for s in sibs:
-            if s.name == "h3":
-                box = soup.new_tag("div", attrs={"class": "card-box"}); grid.append(box)
-            box.append(s.extract())
+        for title in ("What you get", "Who signs off"):  # each H3 + its paragraph becomes a card
+            head = next(h for h in h2s if h.get_text().startswith(title))
+            sibs = []
+            for s in head.find_next_siblings():
+                if s.name == "h2":
+                    break
+                sibs.append(s)
+            grid = soup.new_tag("div", attrs={"class": "cards two" if sum(s.name == "h3" for s in sibs) == 2 else "cards"})
+            head.insert_after(grid)
+            box = None
+            for s in sibs:
+                if s.name == "h3":
+                    box = soup.new_tag("div", attrs={"class": "card-box"}); grid.append(box)
+                box.append(s.extract())
         next(h for h in h2s if h.get_text().startswith("Every command"))["class"] = "pb"
     for t in soup.find_all("table"):
         short = len(t.find_all("tr")) <= 9

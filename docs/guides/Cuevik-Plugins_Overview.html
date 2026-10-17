@@ -41,6 +41,7 @@ h2{font-size:var(--text-lg);line-height:var(--leading-snug);margin:30px 0 10px;b
 .keep.k2{margin-top:30px}
 .keep.k3{margin-top:18px}
 .keep:has(>.pg){break-before:page;margin-top:0}
+.keep:has(+ .tbl),p:has(+ .tbl),.keep:has(>.facts){break-after:avoid}
 section.sec{margin-top:30px}
 h3{font-size:var(--text-md);line-height:var(--leading-snug);margin:18px 0 6px;break-after:avoid}
 h2 .num{vertical-align:2px;margin-right:10px;display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;
@@ -118,6 +119,7 @@ figure.sw{margin:10px 0 14px;break-inside:avoid}
 
 /* overview */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 6px}
+.cards.two{grid-template-columns:repeat(2,1fr)}
 .card-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs);padding:12px 14px}
 .card-box .keep{margin-top:0}
 .card-box h3{margin:0 0 4px}
@@ -128,9 +130,10 @@ h2.pb{break-before:page;margin-top:0}
 .foot{margin-top:22px;padding-top:8px;border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--muted-foreground)}
 
 @page{size:A4;margin:12mm 0 14mm}
-@media print{main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
+@media print{:root{--background:#ffffff}main{padding-top:0;padding-bottom:0}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere}}
 @media screen{main{background:var(--background)}}
-@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards{grid-template-columns:1fr}}
+@media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
+  figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
 table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{padding:4px 10px} .tbl{margin:6px 0 10px}</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Overview</div><h1 id="cuevik-plugins-overview">Cuevik Plugins — Overview</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>Cuevik Start, Cuevik Ship, Cuevik Docs</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude Code plugins that take a software project from an empty folder to delivered work, with every document and change reviewed and approved by a person before it counts.</p></header>
 
 
@@ -145,9 +148,14 @@ table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{paddi
 <div class="keep k2"><h2 id="how-it-works">How it works</h2><ul>
 <li><strong>Reviewed, not trusted.</strong> Every step ends in a change that a person approves. Nothing counts until it is approved.</li>
 <li><strong>One step at a time.</strong> Each command does one job and will not run until the step before it is approved.</li>
-<li><strong>Clear ownership.</strong> Each document has a named owner and reviewers, so the right person signs off.</li>
+<li><strong>Clear ownership.</strong> Each document has a named owner and reviewers, so the right person signs off. On a small team one person can hold both roles.</li>
 <li><strong>Built on GitHub.</strong> Works with your GitHub repository and project board.</li>
 </ul></div>
+
+<div class="keep k2"><h2 id="who-signs-off">Who signs off</h2><div class="cards two"><div class="card-box"><div class="keep k3"><h3 id="product-owner">Product Owner</h3><p>Owns what gets built: the product concept, the requirements and the backlog.</p></div></div><div class="card-box"><div class="keep k3"><h3 id="architect">Architect</h3><p>Owns how it gets built: the architecture, the technology choices, the AI coding rules, the README and the project's working rules.</p></div></div></div></div>
+
+
+
 
 <div class="keep k2"><h2 class="pb" id="every-command">Every command</h2><h3 id="cuevik-start_1">Cuevik Start</h3></div>
 

@@ -24,8 +24,18 @@ Keep the documents that define the project honest: audit them for gaps, contradi
 
 - **Reviewed, not trusted.** Every step ends in a change that a person approves. Nothing counts until it is approved.
 - **One step at a time.** Each command does one job and will not run until the step before it is approved.
-- **Clear ownership.** Each document has a named owner and reviewers, so the right person signs off.
+- **Clear ownership.** Each document has a named owner and reviewers, so the right person signs off. On a small team one person can hold both roles.
 - **Built on GitHub.** Works with your GitHub repository and project board.
+
+## Who signs off
+
+### Product Owner
+
+Owns what gets built: the product concept, the requirements and the backlog.
+
+### Architect
+
+Owns how it gets built: the architecture, the technology choices, the AI coding rules, the README and the project's working rules.
 
 ## Every command
 
