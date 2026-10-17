@@ -1,0 +1,10 @@
+{
+  "name": "cuevik-docs",
+  "displayName": "Cuevik Docs",
+  "version": "0.1.0",
+  "description": "Keep a project's source-of-truth documents aligned: audit them for drift and redundancy, and update any of them through a reviewed PR.",
+  "author": {
+    "name": "Viral Parikh"
+  },
+  "keywords": ["documentation", "audit", "governance", "cuevik"]
+}
