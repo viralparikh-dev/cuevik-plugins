@@ -1,0 +1,150 @@
+# cuevik-start step registry. Execution metadata only; references/runner.md is the workflow and
+# each step's skills/<id>/SKILL.md is its content contract.
+#
+# Not here, on purpose: upstream documents, owner and reviewers. Those live in the project's
+# .cuevik/lineage.json (contract: contracts/lineage/). The runner reads them from there:
+#   - a step's upstream inputs = the `upstream` of its primary output (the first `outputs` entry)
+#   - its owner and reviewers  = that same document's `owner` and `reviewers`
+#
+# Fields:
+#   id                  step id = skill name (/cuevik-start:<id>); order in this list is run order
+#   title               human title
+#   bootstrap           true only for 00-bootstrap: runs before .cuevik/ exists, so it has no
+#                       lineage, gate or upstream checks (runner §1)
+#   branch              working branch, always init/<id>
+#   outputs             files the step writes; the first is the primary output
+#   conditionalOutputs  true when some outputs are written only if the step's skill says so
+#   template            file under references/templates/ that owns the primary output's structure
+#   replacesExisting    true when the primary output is expected on main already (runner §1.6)
+#   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
+
+steps:
+  - id: 00-bootstrap
+    title: Bootstrap
+    bootstrap: true
+    branch: init/00-bootstrap
+    outputs:
+      - CONTRIBUTING.md
+      - .cuevik/config.json
+      - .cuevik/lineage.json
+      - .markdownlint.json
+    commitMessage: "docs: add repo governance baseline and .cuevik config (00-bootstrap)"
+    prSummary: "Summarize the branching + self-review governance, the repo and project board connected or created, and the repo settings changed."
+    finalReminder: "Repo governance becomes final only when the Architect merges the PR (self-review checklist complete). Then run /cuevik-start:01-product-concept in a new session."
+    specialPreconditions:
+      - "gh is authenticated with the repo and project scopes, in a local session (cloud sessions cannot reach Projects v2)."
+    specialActions:
+      - "Make the current folder a git repo if it is not one, and connect or create the GitHub repo as origin (DECISIONS §3). List and confirm every create first."
+      - "Connect or create and link the project board, then read its ids back into .cuevik/config.json."
+      - "Write .cuevik/lineage.json with the default lineage."
+      - "Write .markdownlint.json at the repo root (default rules, MD013 off, MD024 siblings_only) so _writing-rules' lint rule has a config to run against."
+      - "Turn on the repo's auto-delete head branches setting."
+      - "Write the governance layer of CONTRIBUTING.md, with the initiation-only rules inside the INITIATION-ONLY fence. Do not add stack-specific commands yet."
+      - "Never copy plugin machinery (runner, registry, templates, roles) into the repo."
+
+  - id: 01-product-concept
+    title: Product Concept
+    branch: init/01-product-concept
+    outputs:
+      - docs/PRODUCT.md
+    template: PRODUCT.template.md
+    commitMessage: "docs: add PRODUCT.md (01-product-concept)"
+    prSummary: "Summarize the product concept decisions and include the 01-product-concept reviewer checklist."
+    finalReminder: "PRODUCT.md becomes final only when the Product Owner approves and merges the PR."
+
+  - id: 02-product-requirements
+    title: Product Requirements Document
+    branch: init/02-product-requirements
+    outputs:
+      - docs/PRD.md
+    template: PRD.template.md
+    commitMessage: "docs: add PRD.md (02-product-requirements)"
+    prSummary: "Summarize the requirements and include the 02-product-requirements reviewer checklist."
+    finalReminder: "PRD.md becomes final only when the Product Owner approves and merges the PR."
+
+  - id: 03-architecture
+    title: Architecture
+    branch: init/03-architecture
+    outputs:
+      - docs/ARCHITECTURE.md
+    template: ARCHITECTURE.template.md
+    commitMessage: "docs: add ARCHITECTURE.md (03-architecture)"
+    prSummary: "Summarize the design decisions and include the 03-architecture reviewer checklist."
+    finalReminder: "ARCHITECTURE.md becomes final only when the Architect and Product Owner approve and merge the PR."
+
+  - id: 04-tech-stack
+    title: Tech Stack
+    branch: init/04-tech-stack
+    outputs:
+      - docs/TECH-STACK.md
+      - CONTRIBUTING.md
+    template: TECH-STACK.template.md
+    commitMessage: "docs: add TECH-STACK.md and CONTRIBUTING tooling layer (04-tech-stack)"
+    prSummary: "Summarize the stack choices, the tooling commands added, and include the 04-tech-stack reviewer checklist."
+    finalReminder: "TECH-STACK.md and the CONTRIBUTING.md tooling layer become final only when the Architect approves and merges the PR."
+    specialActions:
+      - "Append the tooling layer to CONTRIBUTING.md using only technologies approved in TECH-STACK.md. Preserve the 00-bootstrap governance layer."
+
+  - id: 05-ai-tool-guide
+    title: AI Tool Guide
+    branch: init/05-ai-tool-guide
+    outputs:
+      - docs/AI-TOOL-GUIDE.md
+      - CLAUDE.md
+      - .github/copilot-instructions.md
+    conditionalOutputs: true
+    template: AI-TOOL-GUIDE.template.md
+    commitMessage: "docs: add AI-TOOL-GUIDE.md and tool adapters (05-ai-tool-guide)"
+    prSummary: "Summarize the AI rules, list the generated adapter files, and include the 05-ai-tool-guide reviewer checklist."
+    finalReminder: "AI-TOOL-GUIDE.md and generated adapter files become final only when the Architect approves and merges the PR."
+    specialActions:
+      - "Ask which AI tools the team will use before generating adapters."
+      - "Generate AI-TOOL-GUIDE.md always."
+      - "Generate only the adapter files required for the selected tools."
+      - "Keep shared rules in AI-TOOL-GUIDE.md; adapters contain only tool-specific config."
+      - "Generate .github/copilot-instructions.md as the project's own Copilot rules only. The cuevik-start runner stays in the plugin and is never copied into the repo."
+
+  - id: 06-readme
+    title: README
+    branch: init/06-readme
+    outputs:
+      - README.md
+    replacesExisting: true
+    template: README.template.md
+    commitMessage: "docs: replace boilerplate README with project README (06-readme)"
+    prSummary: "Note that the boilerplate README is replaced and include the 06-readme reviewer checklist."
+    finalReminder: "README.md becomes final only when the Architect approves and merges the PR. Initiation is complete only after 08-finalize is merged."
+    specialActions:
+      - "Replace the repo's current README with the generated project README."
+      - "Remove any leftover placeholder or boilerplate content from README.md."
+      - "Test every command included in README.md before committing."
+
+  - id: 07-backlog
+    title: Initial Backlog
+    branch: init/07-backlog
+    outputs:
+      - docs/BACKLOG.md
+    template: BACKLOG.template.md
+    commitMessage: "docs: add BACKLOG.md (07-backlog)"
+    prSummary: "State the epic count, story count, priority breakdown, and include the 07-backlog reviewer checklist."
+    finalReminder: "BACKLOG.md becomes final only when the Product Owner approves and merges the PR. Once merged, run /cuevik-start:08-finalize in a new session to finalize CONTRIBUTING.md."
+    specialActions:
+      - "Derive epics and stories from PRODUCT.md and PRD.md before creating GitHub issues."
+      - "Present the derived backlog and wait for approval before any GitHub or file writes."
+      - "Create GitHub issues one at a time with gh and capture their numbers."
+
+  - id: 08-finalize
+    title: Finalize Governance
+    branch: init/08-finalize
+    outputs:
+      - CONTRIBUTING.md
+    replacesExisting: true    # CONTRIBUTING.md is already on main; this step transforms it
+    commitMessage: "docs: finalize CONTRIBUTING.md for the development phase (08-finalize)"
+    prSummary: "State that the init-only governance block was removed, the permanent core and tooling layer were preserved, and the development-phase stub was left for the team; include the 08-finalize reviewer checklist."
+    finalReminder: "CONTRIBUTING.md becomes final for the development phase only when the Architect merges the PR. Initiation is complete once this is merged; run /cuevik-start:cleanup afterward."
+    specialActions:
+      - "Read CONTRIBUTING.md from main."
+      - "Remove only the fenced INITIATION-ONLY block (markers included). Preserve the permanent governance rules and the entire 04-tech-stack tooling layer verbatim."
+      - "Insert the DEVELOPMENT-PHASE-GOVERNANCE stub from the step's skill where the removed block was."
+      - "If the INITIATION-ONLY markers are absent from CONTRIBUTING.md on main, STOP. Do not delete lines by inference."
+      - "Do not author a full development-phase policy; leave the stub for the team to expand via /cuevik-docs:update."
