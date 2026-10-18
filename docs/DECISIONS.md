@@ -236,3 +236,10 @@ report (C) was dropped.
   disagrees (story closed with no merged PR, open after its PR merged, missing) and never changes
   a row or the Next line because of it.
 - `status` prints `<one cell per step> <merged>/<steps> · next: <id>` above its table.
+- The cards move through the board's workflows. Bootstrap requires seven on for a board it
+  creates (`Auto-add sub-issues to project`, `Auto-add to project`, `Auto-close issue`,
+  `Item added to project`, `Item closed`, `Pull request linked to issue`, `Pull request merged`);
+  an existing board needs only `Item closed`. No API turns a workflow on, so bootstrap reads
+  `enabled` and guides the operator through the UI until they are on. `Auto-add to project` is
+  never on in a template copy (it names a repo): the operator picks this repo with filter
+  `is:issue,pr is:open label:bug`.

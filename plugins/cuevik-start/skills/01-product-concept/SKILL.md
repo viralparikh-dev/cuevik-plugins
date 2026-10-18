@@ -40,7 +40,8 @@ section must contain. Fill every section; add or drop none.
 
 ## Interview
 
-Runner §4 rules apply: one question at a time, never assume an answer. Ask in this order, then
+Runner §4 rules apply: one question at a time through `AskUserQuestion` (runner, Asking The
+Operator), never assume an answer. Ask in this order, then
 write the document in template order:
 
 1. Problem Statement

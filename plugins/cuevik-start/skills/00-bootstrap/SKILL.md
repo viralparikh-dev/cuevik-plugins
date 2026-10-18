@@ -21,7 +21,8 @@ Owner and reviewers come from the `CONTRIBUTING.md` entry of
 `${CLAUDE_PLUGIN_ROOT}/references/contracts/lineage/lineage.example.json` (runner Inputs §3).
 
 GitHub only. Run every `gh` command through the Bash tool. Ask one question at a time and never
-use a value the operator has not given or confirmed.
+use a value the operator has not given or confirmed. Every question and confirmation goes through
+`AskUserQuestion` (runner, Asking The Operator); `private` is the only `(Recommended)` option here.
 
 ## Order
 
@@ -237,6 +238,44 @@ List every change below that applies in the runner §2 checklist, with its exact
      board's own workflows move a card when its issue closes.
 
    Report the epic and story numbers; §F writes them to `.cuevik/config.json`.
+5. **Board workflows.** The initiation cards move only through the board's own workflows. These
+   seven must be on:
+
+   | Workflow | Note |
+   | --- | --- |
+   | `Auto-add sub-issues to project` | |
+   | `Auto-add to project` | A template copy never has it on: it needs this repo in its filter |
+   | `Auto-close issue` | |
+   | `Item added to project` | |
+   | `Item closed` | |
+   | `Pull request linked to issue` | |
+   | `Pull request merged` | |
+
+   Read them (a workflow that was never set up is not listed; treat it as off):
+
+   ```sh
+   gh api graphql -f o=<board-owner> -F n=<number> -f query='
+     query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
+       workflows(first:50){nodes{name enabled}}}}}}' \
+     --jq '.data.repositoryOwner.projectV2.workflows.nodes[] | "\(.enabled) \(.name)"'
+   ```
+
+   No API turns a workflow on or changes its settings, so guide the operator through each one
+   that is off. Open `https://github.com/users/<board-owner>/projects/<number>/workflows`
+   (`orgs/` instead of `users/` for an organisation), then for each workflow:
+   - Click it in the left list, click **Edit**, switch it **On**, click **Save and turn on**.
+   - `Auto-add to project` also needs its filter: in **Filters**, pick the repository
+     `<repo-name>` and set the filter text to `is:issue,pr is:open label:bug`.
+
+   Ask with options `Done, check again` and `Stop bootstrap`. On `Done`, re-read and repeat until
+   all seven are on. On `Stop`, **STOP** and report what is on and what is not.
+   - A board created in §E.1: all seven are required.
+   - An existing board: only `Item closed` is required. List the others that are off and offer
+     the same steps; the operator may decline, and the PR body says which are off.
+
+   The API shows only whether a workflow is on, not its settings (which Status `Item closed` sets,
+   or the repository in `Auto-add to project`). Ask the operator to confirm the Auto-add
+   repository and filter as set; a copied board's other settings are the template's.
 
 Report each result. If one fails, **STOP** and report what was done and what was not. A re-run
 finds the board in the list, sees the link, skips the setting and reuses the `initiation` issues by
@@ -302,6 +341,8 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
   linked now or already linked.
 - Repo settings changed: auto-delete head branches.
 - Initiation issues: the epic and each story, by number, created now or reused.
+- Board workflows: which of the seven (§E.5) are on, and that `Auto-add to project` filters this
+  repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
 - The reviewer checklist below, and the self-review gate from `CONTRIBUTING.md`.
 
@@ -317,4 +358,5 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
       story per step after 00, each a sub-issue of the epic and on the board. No `epic` or `story`
       label on any of them.
 - [ ] `gh repo view --json deleteBranchOnMerge` returns `true`.
+- [ ] The board's seven workflows (§E.5) are on; `Auto-add to project` names this repo.
 - [ ] No plugin machinery (runner, registry, templates, roles, contracts) is in the diff.

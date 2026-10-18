@@ -54,6 +54,26 @@ summary. Apply each extra reviewer's role file during the reviewer checklist.
 The step's `SKILL.md` is the content contract. `steps.yml` is the execution metadata.
 `.cuevik/lineage.json` is the document graph. This runner is the workflow.
 
+## Asking The Operator
+
+Ask every question and every confirmation with the `AskUserQuestion` tool: one question per call,
+2–4 options. The tool adds an `Other` choice where the operator types a free answer.
+
+- **Confirmations** (the §2 checklist, each remote change, a push, approving a draft): options
+  `Yes` and `No`. The question names exactly what will run or be written. Only `Yes` is a yes.
+- **Choices** (a visibility, a board, template or blank, reuse or delete a branch): the real
+  choices as options. With more than 4 (e.g. boards), offer the 3 most likely plus one more, list
+  the rest in the question text, and take any of them through `Other`. Mark an option
+  `(Recommended)` only where the step's skill names one.
+- **Open answers** (interview sections, names, titles): an option may only be a draft taken from
+  an upstream document, an answer given earlier in this session, or a value read from git or
+  GitHub. Prefix each with its source, e.g. `From PRODUCT.md §2: …` or `Your GitHub login: …`.
+  Never invent a candidate answer and never mark a draft `(Recommended)`. With fewer than two
+  sourced drafts, fill the options with `Help me think it through` (ask narrower questions next)
+  and `Skip for now` (come back to it before drafting); the operator types the answer in `Other`.
+- A picked draft is the operator's answer only for what it says. Challenge it exactly as the step
+  challenges a typed answer.
+
 ## 1. Preconditions
 
 Run these checks before creating a branch or writing files. Do not proceed on assumption.
@@ -152,7 +172,7 @@ Use these shared rules for every step:
 - Read every upstream document from `main` (`git show main:<document>`) and use it as source of
   truth.
 - Interview the operator for every section the step requires.
-- Ask one focused question at a time.
+- Ask one focused question at a time, with `AskUserQuestion` (Asking The Operator).
 - Ask as many focused questions as needed until every required section is complete and every
   template placeholder is resolved.
 - Never assume an answer.
