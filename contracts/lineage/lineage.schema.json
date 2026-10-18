@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/viralparikh-dev/cuevik-plugins/contracts/lineage/lineage.schema.json",
   "title": ".cuevik/lineage.json",
   "description": "The project's source-of-truth documents and how they depend on each other. Only direct upstream links are stored; a document's downstream set is every document that reaches it through upstream links.",
   "type": "object",
@@ -51,7 +50,7 @@
             "items": { "type": "string", "minLength": 1 }
           },
           "frozen": {
-            "description": "true = no longer updated after initiation (docs/BACKLOG.md, D7). Absent = false.",
+            "description": "true = no longer updated after initiation (docs/BACKLOG.md: GitHub is the backlog after initiation). Absent = false.",
             "type": "boolean"
           }
         }

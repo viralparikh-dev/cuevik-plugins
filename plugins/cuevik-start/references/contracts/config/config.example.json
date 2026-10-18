@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": {
     "owner": "example-org",
     "number": 1,
@@ -11,6 +11,19 @@
         "In Progress": "0000aaa2",
         "Done": "0000aaa3"
       }
+    }
+  },
+  "initiation": {
+    "epic": 2,
+    "stories": {
+      "01-product-concept": 3,
+      "02-product-requirements": 4,
+      "03-architecture": 5,
+      "04-tech-stack": 6,
+      "05-ai-tool-guide": 7,
+      "06-readme": 8,
+      "07-backlog": 9,
+      "08-finalize": 10
     }
   }
 }

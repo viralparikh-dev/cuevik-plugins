@@ -1,0 +1,7 @@
+{
+  "$comment": "The Cuevik board template 00-bootstrap offers first (§D.6). The only account reference allowed in the plugin. Change it here only; the skill never hardcodes it.",
+  "owner": "viralparikh-dev",
+  "number": 3,
+  "title": "Cuevik Issue Tracker Template",
+  "url": "https://github.com/users/viralparikh-dev/projects/3"
+}

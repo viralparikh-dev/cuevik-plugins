@@ -50,7 +50,7 @@ Run commands in your project folder (the repo root), in a new Claude Code sessio
 - **One PR per step.** A step works on its own branch (`init/<name>` in `cuevik-start`), commits there, and opens a PR to `main` once you approve. It never commits to `main`.
 - **Merged means final.** A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.
 - **Nothing happens without a yes.** Before it creates a branch, writes files, files issues or pushes, a step shows a checklist of what it verified and waits for your explicit `yes`.
-- **One question at a time, fixed structure.** Claude interviews you for each section, never assumes an answer, and fills a template, so every project gets the same sections in the same order, with no placeholders left.
+- **One question at a time, fixed structure.** Claude interviews you for each section with pick-or-type questions, offers only drafts it can trace to an earlier document or answer, never assumes an answer, and fills a template, so every project gets the same sections in the same order, with no placeholders left.
 - **Owners and reviewers.** Every document has an owner role and reviewer roles. Claude acts as the owner while it drafts, and each reviewer applies their own checklist at PR review. These are roles, not GitHub accounts.
 - **Solo is fine.** GitHub does not let you approve your own PR, so when one person holds every role, the self-review checklist in `CONTRIBUTING.md` is the approval. Wait a few hours (ideally a day), check every required section is covered and no upstream document changed on `main`, then merge. Change hats on purpose.
 - **Finished means finished.** Re-running a finished step stops and sends you to `/cuevik-docs:update <document>`.
@@ -235,11 +235,12 @@ Two small files describe the project to the plugins; `00-bootstrap` writes and c
 
 <!-- /gen:step-00-bootstrap -->
 
-Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it lists every change and waits for a separate `yes` on each.
+Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it shows its checks, lists every change with its commands, and asks once to make them all.
 
 - **Repo.** Connects the folder to a GitHub repo, or creates one. It asks for the owner and name, and for the visibility of a new repo (private is suggested). In an empty folder it clones an existing repo. It stops if the folder has files but no repo (it never commits your files for you), if the folder sits inside another repo, or if `origin` is not on GitHub.
-- **Board.** Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board is a copy of a template board: you can name one as `<owner>/<number>`, and a default is offered. If no template can be read, you pick an existing board or a blank one, and a blank board gets only GitHub's default Status options (`Todo`, `In Progress`, `Done`). The board needs a single-select field named `Status`.
-- **Remote changes.** Each is confirmed on its own: create the board, link it to the repo, and turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges.
+- **Board.** Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board starts from one of three choices: the Cuevik template (recommended), your own template (pick one of your boards or paste its link), or a blank board. If the template cannot be read, it asks again. A blank board gets only GitHub's default Status options (`Todo`, `In Progress`, `Done`). The board needs a single-select field named `Status`.
+- **Remote changes.** Approved together with one yes: create the board, link it to the repo, turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then it checks the board's seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including `Auto-add to project` with this repo in its filter.
+- **Initiation issues.** An `Epic: Project Initiation` epic and one story per later step, such as `INIT-01: Product Concept`, labelled `initiation`, assigned to you, added to the board as sub-issues of the epic, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields. On a board with no sprints yet, it creates `Sprint-00` and puts them all in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the `epic` or `story` labels, so the real backlog never picks them up.
 - **The PR.** Opens `init/00-bootstrap` with `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json` and `.markdownlint.json`. An existing `.markdownlint.json` is kept. An existing `CONTRIBUTING.md` keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, `chore: initialize repository`, on `main` and pushes it. That is the only commit bootstrap makes on `main`.
 - **The governance text** covers the review flow, Conventional Commits and the rule never to push to `main`. It also carries the initiation-only branching table and the self-review checklist, which `08-finalize` removes.
 - **It stops, and says what to fix,** if `gh` is not signed in, the default branch is not `main`, you lack admin rights on the repo, the repo is already bootstrapped, or a `00-bootstrap` PR is already open.
@@ -248,7 +249,7 @@ Review the PR:
 
 - `CONTRIBUTING.md` holds the governance text verbatim, with both `INITIATION-ONLY` markers. If it already existed, your text is unchanged.
 - No stack-specific commands in `CONTRIBUTING.md`.
-- `.cuevik/config.json` names the board linked to this repo, with ids read from GitHub.
+- `.cuevik/config.json` names the board linked to this repo, with ids read from GitHub, and the initiation issue numbers.
 - `.cuevik/lineage.json` matches the plugin's default lineage.
 - Auto-delete is on: `gh repo view --json deleteBranchOnMerge` returns `true`.
 - No plugin files (runner, registry, templates, roles) in the diff.
@@ -362,7 +363,9 @@ Initiation is complete when this PR is merged.
 
 <!-- /gen:cmd-cuevik-start-status -->
 
-Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.
+Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.
+
+It starts with a progress line, one cell per step, such as `██░░░░░░░ 2/9 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue on the board disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row.
 
 ### cleanup
 
@@ -644,7 +647,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To change the board, open a PR that edits `.cuevik/config.json`. |
 | A `00-bootstrap` PR is already open | Merge it, or close it and delete its branch, then re-run. |
 | The board needs a single-select field named `Status` | Add that field to the board, or choose another board. |
-| No template board can be read | Choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
+| The template board cannot be read | Name another template, choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
 | Linking the board fails | The step stops and shows GitHub's error. Fix the cause and re-run; it does not retry with another owner. |
 | You asked for a second step in the same session | One step per session. Start a new session for the next step. |
 
@@ -654,7 +657,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 - **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
 - **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
-- **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying the default template board as another user.
+- **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying another user's template board.
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.
 - **Plugin settings:** in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. `cuevik-ship`'s worktree-folder setting uses the same mechanism and is untested.

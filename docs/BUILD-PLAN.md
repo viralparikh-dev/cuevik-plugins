@@ -47,6 +47,11 @@ Plan first and wait for my approval before writing files.
   `disable-model-invocation: true` (verified against code.claude.com/docs/en/skills, 2026-10-17:
   stops Claude loading the skill itself; it runs only via `/name`). Not `user-invocable: false`,
   which does the opposite: hides it from the `/` menu but leaves Claude free to invoke it.
+- **Self-contained (DECISIONS §7).** Plugin files never name `cs-kickstart`, `proj-init`,
+  `cuevikflow`, a local path, a `viralparikh-*` account (only exception:
+  `references/board-template.json`) or these temporary docs, and depend on no
+  other plugin except `cuevik-docs`. Port the content; drop the provenance.
+- **Templates** live beside their step skill: `skills/<id>/<DOC>.template.md`.
 - **No hardcoded project facts.** Owner/repo from the git remote; board number and field IDs from
   `.cuevik/config.json`; worktree root from plugin `userConfig` (DECISIONS D15).
 - **Shared contracts** (`.cuevik/config.json`, `.cuevik/lineage.json`) are defined once in
@@ -73,6 +78,10 @@ Plan first and wait for my approval before writing files.
 - **Target:** every phase is tested on `viralparikh-dev/cuevik-sandbox` (throwaway) only.
   `tx-QE4AIApps` is tested once, after all phases are merged.
 - The phase branch must be checked out in `D:\vrp-repos\vrp-cuevik-plugins` while testing.
+- **Restart Claude Code before each test, not just a new chat.** A skill's `SKILL.md` body is read
+  once per process and cached: in the Phase 05a test a new VS Code chat ran a `SKILL.md` three
+  commits old, while files the skill opens with Read (the runner) were current. In VS Code run
+  **Developer: Reload Window**; in the desktop app, quit and reopen.
 
 ---
 
@@ -87,15 +96,17 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 02 | cuevik-start foundation | `references/`: runner (from `_run-step.md`), step registry (from `_steps.yml`, renumbered 00–08, 01 merged into 00), templates, `_writing-rules`, `_doc-references` | `cs-kickstart/docs/guides/proj-init/` | ☑ |
 | 03 | `cuevik-start:00-bootstrap` | `gh` auth check; repo + board: ask, or create and link on confirmation (DECISIONS §3); governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☑ |
 | 04 | `cuevik-start:status` | Step progress from git + PR state | `doc-status.md` | ☑ |
-| 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ◐ (this PR) |
+| 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☑ |
+| 05a | Pre-06 design changes | Templates beside skills; self-contained plugin (one exception: `references/board-template.json`); bootstrap: board choice Cuevik template / your template / blank, initiation epic + `INIT-NN` stories (`initiation` label, assignee, Item Type, Priority, Size, Efforts, `Sprint-00` on an empty Sprint field), 7 workflows with required Status settings, one plan approval, no trailer on the empty commit; config v2 (`initiation`); runner: AskUserQuestion rules, `Closes #n`, board bookkeeping (Working + dates); status progress line + issue cross-check. Tested live: bootstrap on the sandbox (new repo, Cuevik template) and on tx-QE4AIApps (existing repo + board). One PR. | DECISIONS §3, §7–§9 | ◐ (this PR) |
+| 05b | 01 deep interview | `01-product-concept` interview driven by the required `superpowers:brainstorming` (its spec file and `writing-plans` hand-off switched off; PRODUCT.md is the only output); dependency mechanism; then the deferred sandbox 01 test (Working → Reviewing → Done, `Closes #2`, Start/End dates) | DECISIONS §10 | ☐ |
 | 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ☐ |
 | 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ☐ |
 | 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ☐ |
-| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters | `06-ai-tool-guide.md` | ☐ |
+| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ☐ |
 | 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ☐ |
-| 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5) | `08-backlog.md` | ☐ |
+| 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ☐ |
 | 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ☐ |
-| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches | `cleanup.md`, DECISIONS §3 | ☐ |
+| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ☐ |
 | 14 | `cuevik-docs:update` | Update any source-of-truth doc via PR, driven by `.cuevik/lineage.json` | `doc-update.md` | ☐ |
 | 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ☐ |
 | 16 | cuevik-ship foundation | `references/`: process overview, branch/worktree model, References-block format, gate check, config read | `cs-cueviksync/docs/work/README.md`, DECISIONS §4 | ☐ |
@@ -107,7 +118,22 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 22 | `cuevik-ship:06-build-plan` | `plan.md` | `work/6-plan.md` | ☐ |
 | 23 | `cuevik-ship:07-execute-plan` | Code branch from `main`, code PR to `main`, final References refresh | `work/7-execute.md` | ☐ |
 | 24 | `cuevik-ship:cleanup` | Gate, worktree + local branches, `ship-archive/<n>-<slug>` tag | DECISIONS §4 cleanup | ☐ |
-| 25 | Tidy and release | Plugin READMEs; delete `DECISIONS.md`, `DRYRUN-01-03.md`, this file; tag `v0.1.0` | — | ☐ |
+| 25 | Tidy and release | Plugin READMEs; delete `DECISIONS.md`, `DRYRUN-01-03.md`, this file; delete `D:\vrp-repos\cs-kickstart` (Phase 14 is the last phase that reads it); tag `v0.1.0` | — | ☐ |
 
 Source paths without a repo prefix are under `D:\vrp-repos\cs-kickstart\docs\guides\proj-init\`
 (phases 02–14) or `D:\vrp-repos\cs-cueviksync\.claude\commands\` (phases 15–24).
+
+---
+
+## TODO after the current phases: existing-project mode
+
+Not built, not scheduled. Running cuevik-start on a project that already has code ("reverse
+engineering") needs its own design pass:
+
+- Code cannot supply PRODUCT / PRD intent. The mode drafts from evidence (code, issues, docs), then
+  interviews the owner to confirm or correct it.
+- Keep-or-replace for an existing `CONTRIBUTING.md`, `README.md` and docs.
+- Branch protection on a live repo with other contributors.
+- Import existing issues for `07-backlog` instead of deriving every story fresh.
+- Store the mode (`new` / `existing`) in `.cuevik/config.json` (a contract change).
+- `00-bootstrap`, `01-product-concept` and `status` need rework for it.

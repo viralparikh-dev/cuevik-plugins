@@ -1,7 +1,7 @@
 # Contract: `.cuevik/config.json`
 
 Project facts the cuevik plugins need and cannot work out on their own. Committed in the project
-repo, so every clone and every session sees the same values (DECISIONS D15).
+repo, so every clone and every session sees the same values.
 
 | File | What it is |
 |---|---|
@@ -12,17 +12,24 @@ repo, so every clone and every session sees the same values (DECISIONS D15).
 
 | Fact | Home |
 |---|---|
-| Project board: owner, number, node id, Status field id and option ids | **here** |
+| Project board: owner, number, node id, Status field id and option ids | **here** (`project`) |
+| Initiation tracking issues: epic and one story per step | **here** (`initiation`) |
 | Repo owner/name | the git remote (`gh repo view --json nameWithOwner`) |
 | Worktree root folder | `cuevik-ship` plugin `userConfig` (machine fact, not project fact) |
 
 The board is **required**: `00-bootstrap` asks for one and creates and links it, after
-confirmation, when it does not exist (DECISIONS §3). `project.owner` is stored because a board can
+confirmation, when it does not exist. `project.owner` is stored because a board can
 belong to a different user or organisation than the repo.
 
 `statusField.options` holds every option on the board, by the board's own names. Skills look up an
 id by name; which names a skill moves cards to is decided by that skill, not by this contract.
 The order of `options` carries no meaning (`gh --jq` sorts keys); read the board for its order.
+
+`initiation` holds the issue numbers `00-bootstrap` creates to show initiation on the board: one
+`Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per step after `00-bootstrap` (the board does not exist before it),
+keyed by step id. They carry only the `initiation` label, never `epic` or `story`, so
+`cuevik-start:07-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic lookup never pick them up.
+The merged PR stays the source of truth for a step; the issues only mirror it.
 
 ## Where the values come from
 
@@ -33,12 +40,13 @@ gh project field-list <number> --owner <owner> --format json \
 ```
 
 Both need the `read:project` token scope. A recreated board gets new ids: re-read them, never guess.
+The `initiation` numbers are the ones `gh issue create` printed when `00-bootstrap` filed them.
 
 ## Consumers
 
 | Plugin | Uses it to | Access |
 |---|---|---|
-| `cuevik-start` | `00-bootstrap` writes it | write |
+| `cuevik-start` | `00-bootstrap` writes it; the runner adds `Closes #<story>` to each step's PR; `status` cross-checks the issues | write, read |
 | `cuevik-ship` | add issues to the board and move their Status | read |
 
 Each consumer keeps a copy of this folder at `plugins/<plugin>/references/contracts/config/`,

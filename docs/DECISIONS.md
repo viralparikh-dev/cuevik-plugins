@@ -57,27 +57,33 @@ Two-digit numbered steps; utilities unnumbered.
 - Runs **inside the project repo**; the current folder is the target (`00-bootstrap` makes it a
   repo if it is not one yet). No control-plane folder, no `.proj-init/state.json`.
 - **`00-bootstrap` requires a GitHub repo and a project board, and creates whichever is missing**
-  (decided 2026-10-17). Each create is listed and confirmed first.
+  (decided 2026-10-17). Each create is listed and confirmed first: since 2026-10-18 by one
+  approval of the whole plan (`Yes, make all N` / `No, stop`), after a read-only ✓ table of
+  the checks. Every question uses `AskUserQuestion`, one plain sentence, with details printed
+  above it (runner, Asking The Operator).
   - Repo: if the current folder has no GitHub `origin`, ask for owner, name and visibility. An
     existing repo is connected as `origin`. A missing one is created with
     `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
-  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is copied
-    with `gh project copy` from a template board the skill asks for, default `viralparikh-dev/3`
-    (public; decided 2026-10-17), and linked with `gh project link`. Unreadable answer: fall back
-    to the default; unreadable default: the operator picks an existing board or a blank one
-    (`gh project create`). Its ids are then read back into `.cuevik/config.json` (contract:
-    `contracts/config/`).
+  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is either
+    copied with `gh project copy` from a template board the operator names as `<owner>/<number>`,
+    or created blank (`gh project create`), and linked with `gh project link`. The question
+    offers, in order: **Cuevik template** (recommended; location in the plugin's
+    `references/board-template.json`, the one §7 exception), **Your template** (pick one of the
+    owner's boards or paste a board link), **Blank board** (decided 2026-10-18). An unreadable
+    template means ask again. Its ids are then read back into
+    `.cuevik/config.json` (contract: `contracts/config/`).
   - No plugin `userConfig` for the template: in the Phase 03 sandbox test
     `${user_config.board_template}` reached the skill unsubstituted (cause unknown), so the skill
     asks instead.
-  - Template `viralparikh-dev/3` is a copy of the team's org template: fields, views and all
+  - The Cuevik template is `viralparikh-dev/3` (public), "Cuevik Issue Tracker Template". It is a
+    copy of the team's org template: fields, views and all
     workflows copied identically, except the org's Priority (an org-level field with no options)
     became a Priority field with Urgent/High/Medium/Low. User-owned boards cannot carry GitHub's
     "template" flag; a copy does not need it.
   - Needs the `project` token scope and a local session: cloud sessions cannot reach Projects v2.
   - Unverified: linking a board owned by a user to a repo owned by an organisation (not covered by
     the sandbox or tx-QE4AIApps, both user-owned), and copying the public template as another user.
-    The second is tested in the end-of-plan tx-QE4AIApps run.
+    The second is tested in the end-of-plan tx-QE4AIApps run, naming `viralparikh-dev/3`.
 - Old Step-01 (repo setup / governance / `CONTRIBUTING.md`) is **merged into `00-bootstrap`**;
   steps renumbered 00–08 with no gap.
 - Each step opens a PR to `main`; the next step refuses to run until that PR is merged.
@@ -160,6 +166,8 @@ list below, **this list wins** (D2 and D13 override it).
   shared by `cuevik-start:07-backlog` and `cuevik-ship:03-create-backlog`.
 - **D6** Epic lookup: parent of existing stories in the same PRD §6 section → `label:epic` citing the
   section → `docs/BACKLOG.md` → new epic. Several candidates → ask. Never move a parent without a yes.
+- Issues labelled `initiation` (§9) are never backlog items: D5's labels never go on them, and
+  `07-backlog`, `docs/BACKLOG.md` and the D6 lookup ignore them.
 - **D7** `docs/BACKLOG.md` is frozen after initiation; GitHub is the backlog. `07-backlog` writes a
   header saying so; `cuevik-docs:update` drops "update when epics/stories added".
 - **D8** `01` given an existing issue: refuse epics, redirect bugs to 04, allow existing stories (03
@@ -184,3 +192,106 @@ list below, **this list wins** (D2 and D13 override it).
 `03-create-backlog` covers both epic and stories. Overlaps in wording with
 `/cuevik-start:07-backlog` (which writes `docs/BACKLOG.md`); the descriptions must make clear that
 03 writes GitHub issues. Its exact epic/story logic is settled by the dry run (§5).
+
+## 7. Self-contained plugins — Locked (2026-10-18)
+
+- A plugin depends on nothing outside itself: no other repo, local path, personal account or
+  plugin, except the declared `cuevik-docs` dependency. git, `gh` and GitHub are allowed.
+- Plugin files never name `cs-kickstart`, `proj-init`, `cuevikflow`, a local drive path, a
+  `viralparikh-*` account, or these temporary docs (`DECISIONS.md`, `BUILD-PLAN.md`,
+  `DRYRUN-01-03.md`, deleted in Phase 25). Anything a skill needs lives in the plugin.
+- Account-specific values are asked for at run time, never defaulted. **One exception:**
+  `plugins/cuevik-start/references/board-template.json` names the Cuevik template board (§3). It is
+  the only file in a plugin allowed to name an account; skills read it, never hardcode it.
+  Weakness: the product's template lives on a personal account, so moving that board means editing
+  this file; long term it belongs on an organisation account.
+- `cs-kickstart` is a build-time source only; it is deleted in Phase 25 (BUILD-PLAN).
+- Templates live beside the step skill that owns them (`skills/<id>/<DOC>.template.md`); the shared
+  writing rules and reference map stay in `references/`.
+
+## 8. Team plugin setup — `05-ai-tool-guide` — Locked (2026-10-18)
+
+Built in Phase 09; recorded here so the step is designed with it.
+
+- The step writes the target repo's `.claude/settings.json`: `extraKnownMarketplaces` plus
+  `enabledPlugins`, chosen per project with the operator. Candidates:
+  - `superpowers`, `code-review`, `skill-creator`, `frontend-design` from
+    `anthropics/claude-plugins-official`;
+  - `impeccable` from `pbakaus/impeccable`;
+  - `taste-skill` from `leonxlnx/taste-skill`.
+- `graphify` is not a plugin: listed in the guide as a manual prerequisite only.
+- cuevik-start never needs any of these to run (§7). They are suggestions the operator picks from.
+- Risk for Phase 09: a hardcoded candidate list names outside repos. That is allowed (optional,
+  not a dependency), but offering the cuevik-plugins marketplace itself would hardcode an account,
+  so its source is asked for, not written into the plugin.
+- **Open:** how the claude.ai `anthropic-skills:*` (docx, pdf, xlsx, …) reach teammates who use the
+  Claude Code CLI. Not solved here.
+
+## 9. Initiation progress on the board — Locked (2026-10-18)
+
+Status visual = a progress line in `status` (A) plus initiation issues on the board (D). An HTML
+report (C) was dropped.
+
+- `00-bootstrap` files an `Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per
+  later step (e.g. `INIT-01: Product Concept`), as sub-issues of
+  the epic, added to the board. Step 00 has none: the board does not exist until bootstrap creates
+  it. A re-run reuses issues by exact title.
+- Label `initiation` only, never `epic` / `story` (D5): those feed `07-backlog` and cuevik-ship's
+  epic lookup (D6), which must never see these issues.
+- Their numbers are in `.cuevik/config.json` `initiation` (`epic`, `stories` by step id), contract
+  `schemaVersion` 2.
+- The runner ends each step's PR body with `Closes #<story>`; the last step's PR also closes the
+  epic. The board's own workflows move the cards; nothing sets Status.
+- The merged PR stays the source of truth. `status` prints a `**Check:**` line when an issue
+  disagrees (story closed with no merged PR, open after its PR merged, missing) and never changes
+  a row or the Next line because of it.
+- `status` prints `<one cell per step> <merged>/<steps> · next: <id>` above its table.
+- Bootstrap assigns every initiation issue to the user who runs it and sets `Priority` and `Size`
+  from `steps.yml` (`storyPriority`, `storySize`; all High, sizes XS–LG); the epic gets High.
+  `Efforts` gets hours from `storyEfforts` (4/12/12/6/6/3/8/1, 52h; the epic is left to the
+  board's sum). Target date stays empty.
+- `Item Type` (custom single-select: Epic / Story / Task / Bug / Feature) shows the kind of item,
+  as organisation boards' built-in Type column (org Issue Types) does. Personal accounts have no
+  Issue Types and GitHub reserves the field name `Type`, hence `Item Type`. Bootstrap sets Epic /
+  Story on the initiation issues; `07-backlog` and cuevik-ship should set it on real epics and
+  stories when the board has it. Display only: labels stay the source tooling reads (D3, D5).
+  Added to template #3, sandbox #7 and tx #2 on 2026-10-18.
+- Sprint: on a board whose `Sprint` field has no sprints at all, bootstrap creates `Sprint-00`
+  (today, the field's duration) and puts all 9 issues in it; format `Sprint-NN`. Any existing
+  sprint, completed included: nothing is created. Hard rule, because `updateProjectV2Field`
+  replaces the whole sprint list (verified on the sandbox: completed sprints were dropped).
+  Template #3 carried completed `Sprint01`/`Sprint02` from its org original; the user removes
+  them so copies start with none.
+- Story Status: `Backlog` (board, item added) → `Working` (runner, step start) → `Reviewing`
+  (board, `Pull request linked to issue`, when the step's PR links via `Closes #n`) → `Done`
+  (board, `Item closed`). Only the board sets Status after step start: the workflow runs after
+  any runner write and overwrote it (template #3's PR-linked workflow set `Testing`).
+- Runner §7 at each step's start: its story gets `Start date` = today and Status `Working`; the
+  previous story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
+  runs). `cleanup` sets the last story's and the epic's End date. Fields are found by name; a
+  board without one is skipped, never changed. A failed board update never stops a step.
+- The cards move through the board's workflows. Bootstrap requires seven on for a board it
+  creates (`Auto-add sub-issues to project`, `Auto-add to project`, `Auto-close issue`,
+  `Item added to project`, `Item closed`, `Pull request linked to issue`, `Pull request merged`);
+  an existing board needs only `Item closed`. No API turns a workflow on, so bootstrap reads
+  `enabled` and guides the operator through the UI until they are on. `Auto-add to project` is
+  never on in a template copy (it names a repo): the operator picks this repo with filter
+  `is:issue,pr is:open label:bug`.
+
+## 10. Deep product interview (Phase 05b) — Locked direction (2026-10-18)
+
+- `01-product-concept` must dig deeper. Direction chosen: **require `superpowers:brainstorming`**
+  (option C of A port / B use-if-installed / C require), and only that skill.
+- This reverses §7 and §8 for `01`: cuevik-start will need superpowers to run that step. 05b
+  rewrites §7/§8 to match.
+- Why brainstorming and not grill-me (`mattpocock/skills`, MIT): brainstorming is built for
+  discovering intent (one open question per message, real-moment anchors, 200–300-word
+  playbacks with guesses marked). grill-me stress-tests a plan in rounds with Claude's
+  recommended answers, which conflicts with "never invent an answer"; `grill-me` itself is
+  user-only (`disable-model-invocation`) and would pull in the whole `mattpocock-skills` bundle.
+  Reconsider grilling for steps with a draft to attack (02, 03).
+- To settle in 05b before building: whether `dependencies` can name a plugin from another
+  marketplace (else a start-of-step check that refuses to run); switching off brainstorming's
+  `docs/superpowers/specs` file and `writing-plans` hand-off (PRODUCT.md is the only output) and
+  testing that it obeys; how it fits runner §4 and Asking The Operator; the chicken-and-egg with
+  `05-ai-tool-guide` installing team plugins (01 runs first, so operators install superpowers by hand).

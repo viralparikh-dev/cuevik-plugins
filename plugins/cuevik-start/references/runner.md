@@ -41,7 +41,10 @@ Before starting, load:
 
    A step with `bootstrap: true` runs before `.cuevik/lineage.json` exists. It takes its owner and
    reviewers from the default lineage it is about to write, and has no upstream documents.
-4. The role file for the owner, plus one per extra reviewer:
+4. `.cuevik/config.json` from `main`: `git show main:.cuevik/config.json`. Its
+   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6). A
+   step with `bootstrap: true` writes this file, so it has neither.
+5. The role file for the owner, plus one per extra reviewer:
    - `Product Owner` → `${CLAUDE_PLUGIN_ROOT}/references/roles/product-owner.md`
    - `Architect` → `${CLAUDE_PLUGIN_ROOT}/references/roles/solution-architect.md`
 
@@ -50,6 +53,39 @@ summary. Apply each extra reviewer's role file during the reviewer checklist.
 
 The step's `SKILL.md` is the content contract. `steps.yml` is the execution metadata.
 `.cuevik/lineage.json` is the document graph. This runner is the workflow.
+
+## Asking The Operator
+
+Ask every question and every confirmation with the `AskUserQuestion` tool: one question per call,
+2–4 options. The tool adds an `Other` choice where the operator types a free answer.
+
+**Typed values** are the one exception: where a step's skill asks for a value the operator must
+type or paste (e.g. a link), ask it as one plain sentence in chat, with no options, and take the
+operator's next message as the answer. `AskUserQuestion` cannot show a text box alone.
+
+- **Wording.** The question is one short, plain sentence that says what will happen, in the
+  operator's terms, not how: `Create a private GitHub repo example-org/example-app and
+  upload an empty first commit?`, not a list of commands. Option labels are 1–4 words; each
+  description is one plain sentence on the outcome.
+- **Details go in the chat, not the question.** Right before the question, print what it covers
+  as formatted Markdown: the exact commands in a fenced `sh` block, one per line; files as a
+  list; values or lists of more than two items as a short table. The question text never holds
+  commands, numbered steps or long lists; it can say `(commands above)`.
+- **Confirmations** (the §2 plan, a push, approving a draft): options `Yes` and `No`, plus
+  nothing else. The chat block before it shows exactly what will run or be written. Only `Yes`
+  is a yes.
+- **Choices** (a visibility, a board, template or blank, reuse or delete a branch): the real
+  choices as options. With more than 4 (e.g. boards), offer the 3 most likely plus one more, list
+  them all in the chat block, and take any other through `Other`. Mark an option
+  `(Recommended)` only where the step's skill names one.
+- **Open answers** (interview sections, names, titles): an option may only be a draft taken from
+  an upstream document, an answer given earlier in this session, or a value read from git or
+  GitHub. Prefix each with its source, e.g. `From PRODUCT.md §2: …` or `Your GitHub login: …`.
+  Never invent a candidate answer and never mark a draft `(Recommended)`. With fewer than two
+  sourced drafts, fill the options with `Help me think it through` (ask narrower questions next)
+  and `Skip for now` (come back to it before drafting); the operator types the answer in `Other`.
+- A picked draft is the operator's answer only for what it says. Challenge it exactly as the step
+  challenges a typed answer.
 
 ## 1. Preconditions
 
@@ -105,22 +141,34 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 7. **Additional step preconditions** — apply any `specialPreconditions` from `steps.yml` and any
    preconditions in the step's `SKILL.md`.
 
-## 2. Confirm Before Proceeding
+## 2. Show The Checks, Then Approve The Plan
 
-Present the precondition results as a checklist and wait for an explicit `yes` before creating a
-branch, writing files, creating GitHub issues, or pushing anything.
+The checks are for the operator to read, not to approve. The approval is for what the step will
+do. Nothing is created, written or pushed before it.
 
-The checklist must include:
+1. **Checks.** Print a table of the §1 results in plain words, one row each with `✓`, for example
+   `Previous step (00-bootstrap) is merged | ✓`. Rows (N/A ones left out for `00-bootstrap`):
+   - you are acting as the step's owner (its role);
+   - the project's `.cuevik/` settings are on `main`;
+   - the previous step is merged;
+   - the documents this step reads are on `main`;
+   - this step's document is not on `main` yet (or the step replaces it);
+   - no uncommitted changes, and `main` is up to date;
+   - GitHub sign-in works, plus any `specialPreconditions`.
 
-- Operator role matches the step's owner, and the corresponding role file has been loaded.
-- `.cuevik/config.json` and `.cuevik/lineage.json` are on `main` (N/A for `00-bootstrap`).
-- The previous step's PR is merged (N/A for `00-bootstrap`).
-- Upstream documents are final on `main`.
-- This step's output is not already final on `main`, or the step is marked `replacesExisting: true`.
-- Working tree is clean and work will branch from an up-to-date `main`.
-- `gh auth status` succeeds, plus any stricter requirement in `specialPreconditions`.
+   Any check that fails: **STOP** with what to fix. There is no question to answer.
+2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
+   writes, and every change on GitHub, including the §7 board updates (with the exact commands in
+   a fenced `sh` block below it).
+3. **Approve.** Ask once, naming the count and pointing at the plan, e.g. `Make these 4 changes
+   on GitHub? For more details, review my Plan that I articulated above.` or `Start 01 Product
+   Concept on branch init/01-product-concept? For more details, review my Plan that I articulated
+   above.` Options: `Yes` (or `Yes, make
+   all <N>`) and `No, stop` (description: the step cannot finish without them). Every change in
+   the plan is required, so there is no per-change choice and no second confirmation.
 
-If any item fails, stop and resolve it before continuing.
+This one approval replaces separate yeses for the changes it lists. Later questions in the step
+(interview, approving a draft, pushing) are asked where they happen.
 
 ## 3. Create The Working Branch
 
@@ -140,6 +188,8 @@ reuse it silently. Ask the operator to:
 Never use a different branch name: the next step's gate (§1 check 4) finds this step's PR by
 its exact `branch`.
 
+Once the branch exists, update the board (§7, Step start).
+
 ## 4. Produce The Output
 
 Follow the step's `SKILL.md` exactly.
@@ -149,7 +199,7 @@ Use these shared rules for every step:
 - Read every upstream document from `main` (`git show main:<document>`) and use it as source of
   truth.
 - Interview the operator for every section the step requires.
-- Ask one focused question at a time.
+- Ask one focused question at a time, with `AskUserQuestion` (Asking The Operator).
 - Ask as many focused questions as needed until every required section is complete and every
   template placeholder is resolved.
 - Never assume an answer.
@@ -168,19 +218,20 @@ Use these token optimization rules for every step:
 - Stop asking once all required sections are complete and no placeholders remain.
 
 If the step has a `template` field, produce the primary output by filling
-`${CLAUDE_PLUGIN_ROOT}/references/templates/<template>` — do not invent the structure:
+`${CLAUDE_PLUGIN_ROOT}/skills/<id>/<template>` — the template sits beside the step's `SKILL.md`.
+Do not invent the structure:
 
 - The template owns the document's structure (its headings and their order).
 - Fill the header block from Inputs §3: `Owner` (the owner), `Last updated` (today,
   `YYYY-MM-DD`), `Source of truth for` (one line), `Derived from` (the upstream documents, or
   `(none — starting point)`), and `Downstream` (the derived downstream documents, or `(none)`).
 - Replace the `<!-- @inject: _doc-references.md -->` marker with the block between the
-  `BEGIN INJECT` / `END INJECT` markers in `${CLAUDE_PLUGIN_ROOT}/references/templates/_doc-references.md`.
+  `BEGIN INJECT` / `END INJECT` markers in `${CLAUDE_PLUGIN_ROOT}/references/_doc-references.md`.
 - Replace every `[placeholder]` with interview answers. No placeholder may remain in the committed
   document.
 - Preserve the header block, every top-level (`## N.`) heading and its order, the references
   table, and the `---` dividers. Do not add or remove top-level sections.
-- Apply `${CLAUDE_PLUGIN_ROOT}/references/templates/_writing-rules.md` to all prose, requirements,
+- Apply `${CLAUDE_PLUGIN_ROOT}/references/_writing-rules.md` to all prose, requirements,
   and tables of every generated document.
 
 If the step has `specialActions`, perform them in the order listed after the step's interview rules
@@ -206,9 +257,58 @@ After approval:
 3. Use a title that names the step id and its primary output.
 4. In the body, include the step's `prSummary` and the reviewer checklist from the step's
    `SKILL.md`.
+5. End the body with `Closes #<story>` for this step's story (Inputs §4), so the story closes and
+   its board card moves when the PR merges. The last step in `steps.yml` also adds
+   `Closes #<epic>`. A `bootstrap: true` step has no story and no line. Any other step with no
+   story in the config: leave the line out and say so in the PR body. Never write `Closes` for
+   any other issue.
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
 and merges the PR, and the next step refuses to run until then.
+
+## 7. Board Bookkeeping
+
+The initiation issues mirror the steps on the board (`.cuevik/config.json` `initiation`). The
+merged PR stays the source of truth, so a board update that fails never stops a step: report it
+in the PR body and carry on. Never create fields or options.
+
+**Field lookup.** Read the board's fields once:
+`gh project field-list <number> --owner <project owner> --format json --limit 100`. Find a field
+by exact name; a single-select option by exact name in its `options`. A missing field or option:
+skip that update and say so in the PR body.
+
+**Item lookup.** An issue's board item id:
+`gh project item-list <number> --owner <project owner> --format json --limit 500 --jq '.items[] | select(.content.url=="<issue url>") | .id'`,
+where the issue url is `https://github.com/<owner>/<repo>/issues/<n>`. Not on the board: skip.
+
+**Set a value:**
+`gh project item-edit --id <item id> --project-id <project.id> --field-id <field id>`, plus
+`--date <YYYY-MM-DD>` for a date field or `--single-select-option-id <option id>` for a
+single-select field (for Status, use `project.statusField` from the config).
+
+**Step start** (after §3, for a step with a story; a `bootstrap: true` step has none):
+
+1. This step's story: `Start date` = today, and `Status` = `Working`.
+2. The first step with a story also sets the epic's `Start date` = today, if it is empty.
+3. The previous step's story, if it has one: `End date` = the date its PR merged, from
+   `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
+   (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
+   it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
+
+**After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
+line (§6) links the PR to the story, and the board's workflows do the rest:
+
+| When | Who | Status |
+| --- | --- | --- |
+| Bootstrap adds the story | board, `Item added to project` | `Backlog` |
+| The step starts | this runner (Step start) | `Working` |
+| The step opens its PR | board, `Pull request linked to issue` | `Reviewing` |
+| The PR merges, closing the story | board, `Item closed` | `Done` |
+
+Two writers at the same moment would race, and the board's workflow runs last, which is why the
+runner does not set `Reviewing` itself. Bootstrap §E.5 has the operator set these workflows.
+
+Report the updates in one line, e.g. `Board: #2 Working, Start date 2026-10-18.`
 
 ## Rules
 
