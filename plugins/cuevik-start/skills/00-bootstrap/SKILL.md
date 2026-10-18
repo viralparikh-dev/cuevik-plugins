@@ -96,7 +96,8 @@ must be pushed before anything else.
 
 - Local `main` has no commit (`git rev-parse --verify -q main` non-zero): run
   `git commit --allow-empty -m "chore: initialize repository"` on `main`. This is the only commit
-  bootstrap makes on `main`; it holds no files.
+  bootstrap makes on `main`; it holds no files. Use exactly that message: no body, no
+  `Co-Authored-By` or other trailer, whatever the session's own commit attribution says.
 - Push `main`: B.3's `--push`, or `git push -u origin main`.
 
 Confirm the commit and push with the create or connect that needs them.
