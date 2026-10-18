@@ -72,7 +72,7 @@ operator's next message as the answer. `AskUserQuestion` cannot show a text box 
   list; values or lists of more than two items as a short table. The question text never holds
   commands, numbered steps or long lists; it can say `(commands above)`.
 - **Confirmations** (the §2 plan, a push, approving a draft): options `Yes` and `No`, plus
-  `One at a time` for the §2 plan. The chat block before it shows exactly what will run or be written. Only `Yes`
+  nothing else. The chat block before it shows exactly what will run or be written. Only `Yes`
   is a yes.
 - **Choices** (a visibility, a board, template or blank, reuse or delete a branch): the real
   choices as options. With more than 4 (e.g. boards), offer the 3 most likely plus one more, list
@@ -160,9 +160,9 @@ do. Nothing is created, written or pushed before it.
 2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
    writes, and every change on GitHub (with the exact commands in a fenced `sh` block below it).
 3. **Approve.** Ask once, naming the count, e.g. `Make these 4 changes on GitHub?` or
-   `Start 01 Product Concept on branch init/01-product-concept?`. Options: `Yes` (or `Yes, all
-   <N>`), `One at a time` (only when there are 2 or more GitHub changes: then confirm each before
-   running it), `No, stop`.
+   `Start 01 Product Concept on branch init/01-product-concept?`. Options: `Yes` (or `Yes, make
+   all <N>`) and `No, stop` (description: the step cannot finish without them). Every change in
+   the plan is required, so there is no per-change choice and no second confirmation.
 
 This one approval replaces separate yeses for the changes it lists. Later questions in the step
 (interview, approving a draft, pushing) are asked where they happen.

@@ -58,7 +58,7 @@ Two-digit numbered steps; utilities unnumbered.
   repo if it is not one yet). No control-plane folder, no `.proj-init/state.json`.
 - **`00-bootstrap` requires a GitHub repo and a project board, and creates whichever is missing**
   (decided 2026-10-17). Each create is listed and confirmed first: since 2026-10-18 by one
-  approval of the whole plan (`Yes, all` / `One at a time` / `No`), after a read-only ✓ table of
+  approval of the whole plan (`Yes, make all N` / `No, stop`), after a read-only ✓ table of
   the checks. Every question uses `AskUserQuestion`, one plain sentence, with details printed
   above it (runner, Asking The Operator).
   - Repo: if the current folder has no GitHub `origin`, ask for owner, name and visibility. An

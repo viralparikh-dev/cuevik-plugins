@@ -78,6 +78,10 @@ Plan first and wait for my approval before writing files.
 - **Target:** every phase is tested on `viralparikh-dev/cuevik-sandbox` (throwaway) only.
   `tx-QE4AIApps` is tested once, after all phases are merged.
 - The phase branch must be checked out in `D:\vrp-repos\vrp-cuevik-plugins` while testing.
+- **Restart Claude Code before each test, not just a new chat.** A skill's `SKILL.md` body is read
+  once per process and cached: in the Phase 05a test a new VS Code chat ran a `SKILL.md` three
+  commits old, while files the skill opens with Read (the runner) were current. In VS Code run
+  **Developer: Reload Window**; in the desktop app, quit and reopen.
 
 ---
 
