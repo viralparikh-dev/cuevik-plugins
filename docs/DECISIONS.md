@@ -313,7 +313,9 @@ report (C) was dropped.
     only output; draft approval goes to runner §5.
   - **Asking.** Open interview questions are plain chat sentences (a runner exception for steps
     whose skill says so); `AskUserQuestion` stays for confirmations and choices. A guess only when
-    the operator asks, labelled `My guess:`, never as an option.
+    the operator asks, labelled `My guess:`, never as an option; one section per guess, and no
+    guessed numbers (Success Criteria targets, baselines, time frames come from the operator). Added
+    after the sandbox test, where "just rewrite all once" filled five sections and invented targets.
   - Chicken-and-egg with `05-ai-tool-guide`: none left; the dependency installs superpowers before
     01 runs.
   - Unverified: the dependency install path itself (the sandbox account already has superpowers
