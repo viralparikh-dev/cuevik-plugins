@@ -237,21 +237,30 @@ once approved there, in this order:
      Reuse an open issue whose title matches exactly; create only the missing ones. A matching
      issue that is closed: say so and ask whether to reopen it (`gh issue reopen <n>`) or stop.
    - Epic, title `Initiation`:
-     `gh issue create --label initiation --title "Initiation" --body "<body>"`. Body: `Tracks
+     `gh issue create --label initiation --assignee @me --title "Initiation" --body "<body>"`. Body: `Tracks
      project initiation with /cuevik-start. Each sub-issue closes when its step's PR merges into
      main; the last step's PR closes this epic.` It prints the issue URL; the number is its last
      path segment.
    - One story per step, title `Initiation <NN>: <title>` (`<NN>` is the id's two-digit prefix,
      `<title>` the step's `title`), e.g. `Initiation 01: Product Concept`. Body: `Run
      /cuevik-start:<id> in a new session. Writes <primary output>. Closes when the <branch> PR
-     merges into main.`
+     merges into main.` Create it the same way, with `--assignee @me`.
+   - Assignee: every initiation issue is assigned to the signed-in user who runs bootstrap
+     (`@me`). A reused issue without that assignee: `gh issue edit <n> --add-assignee @me`.
    - Sub-issues: link each story to the epic, unless
      `gh api repos/<repo>/issues/<epic>/sub_issues --jq '.[].number'` already lists it:
      `gh api -X POST repos/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where `<id>` is
      `gh api repos/<repo>/issues/<story> --jq .id` (the REST id, not the number).
    - Board: `gh project item-add <number> --owner <board-owner> --url <issue url>` for the epic and
-     each story. Adding an item that is already on the board is harmless. Do not set Status; the
-     board's own workflows move a card when its issue closes.
+     each story, with `--format json --jq .id` to get each item's id. Adding an item that is
+     already on the board is harmless and returns the same id. Do not set Status; the board's own
+     workflows set it when an item is added and when its issue closes.
+   - Fields: set `Priority` and `Size` on each story's item from the step's `storyPriority` and
+     `storySize` in `steps.yml`, and `Priority` `High` on the epic. Look the fields up by name
+     (runner §7, Field lookup), then
+     `gh project item-edit --id <item id> --project-id <project id> --field-id <field id> --single-select-option-id <option id>`.
+     A board without the field, or without that option: skip it and say so in the PR body. Never
+     create fields or options.
 
    Report the epic and story numbers; §F writes them to `.cuevik/config.json`.
 5. **Board workflows.** The initiation cards move only through the board's own workflows. These
@@ -356,7 +365,8 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - Board: owner, number, URL; existing, copied from the template (with any differences), or blank;
   linked now or already linked.
 - Repo settings changed: auto-delete head branches.
-- Initiation issues: the epic and each story, by number, created now or reused.
+- Initiation issues: the epic and each story, by number, created now or reused; assignee, and the
+  Priority and Size set (or skipped because the board lacks the field or option).
 - Board workflows: which of the seven (§E.5) are on, and that `Auto-add to project` filters this
   repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.

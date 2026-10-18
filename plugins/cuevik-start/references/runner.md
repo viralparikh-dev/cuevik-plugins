@@ -158,7 +158,8 @@ do. Nothing is created, written or pushed before it.
 
    Any check that fails: **STOP** with what to fix. There is no question to answer.
 2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
-   writes, and every change on GitHub (with the exact commands in a fenced `sh` block below it).
+   writes, and every change on GitHub, including the §7 board updates (with the exact commands in
+   a fenced `sh` block below it).
 3. **Approve.** Ask once, naming the count and pointing at the plan, e.g. `Make these 4 changes
    on GitHub? For more details, review my Plan that I articulated above.` or `Start 01 Product
    Concept on branch init/01-product-concept? For more details, review my Plan that I articulated
@@ -186,6 +187,8 @@ reuse it silently. Ask the operator to:
 
 Never use a different branch name: the next step's gate (§1 check 4) finds this step's PR by
 its exact `branch`.
+
+Once the branch exists, update the board (§7, Step start).
 
 ## 4. Produce The Output
 
@@ -262,6 +265,37 @@ After approval:
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
 and merges the PR, and the next step refuses to run until then.
+
+## 7. Board Bookkeeping
+
+The initiation issues mirror the steps on the board (`.cuevik/config.json` `initiation`). The
+merged PR stays the source of truth, so a board update that fails never stops a step: report it
+in the PR body and carry on. Never create fields or options.
+
+**Field lookup.** Read the board's fields once:
+`gh project field-list <number> --owner <project owner> --format json --limit 100`. Find a field
+by exact name; a single-select option by exact name in its `options`. A missing field or option:
+skip that update and say so in the PR body.
+
+**Item lookup.** An issue's board item id:
+`gh project item-list <number> --owner <project owner> --format json --limit 500 --jq '.items[] | select(.content.url=="<issue url>") | .id'`,
+where the issue url is `https://github.com/<owner>/<repo>/issues/<n>`. Not on the board: skip.
+
+**Set a value:**
+`gh project item-edit --id <item id> --project-id <project.id> --field-id <field id>`, plus
+`--date <YYYY-MM-DD>` for a date field or `--single-select-option-id <option id>` for a
+single-select field (for Status, use `project.statusField` from the config).
+
+**Step start** (after §3, for a step with a story; a `bootstrap: true` step has none):
+
+1. This step's story: `Start date` = today, and `Status` = `Working`.
+2. The first step with a story also sets the epic's `Start date` = today, if it is empty.
+3. The previous step's story, if it has one: `End date` = the date its PR merged, from
+   `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
+   (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
+   it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
+
+Report the updates in one line, e.g. `Board: #2 Working, Start date 2026-10-18.`
 
 ## Rules
 

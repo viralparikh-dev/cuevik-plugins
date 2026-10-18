@@ -245,6 +245,13 @@ report (C) was dropped.
   disagrees (story closed with no merged PR, open after its PR merged, missing) and never changes
   a row or the Next line because of it.
 - `status` prints `<one cell per step> <merged>/<steps> · next: <id>` above its table.
+- Bootstrap assigns every initiation issue to the user who runs it and sets `Priority` and `Size`
+  from `steps.yml` (`storyPriority`, `storySize`; all High, sizes XS–LG); the epic gets High.
+  Efforts, Sprint and Target date stay empty.
+- Runner §7 at each step's start: its story gets `Start date` = today and Status `Working`; the
+  previous story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
+  runs). `cleanup` sets the last story's and the epic's End date. Fields are found by name; a
+  board without one is skipped, never changed. A failed board update never stops a step.
 - The cards move through the board's workflows. Bootstrap requires seven on for a board it
   creates (`Auto-add sub-issues to project`, `Auto-add to project`, `Auto-close issue`,
   `Item added to project`, `Item closed`, `Pull request linked to issue`, `Pull request merged`);

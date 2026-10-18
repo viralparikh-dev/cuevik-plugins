@@ -17,6 +17,8 @@
 #   template            file in the step's own folder, skills/<id>/, that owns the primary output's
 #                       structure (shared parts: references/_writing-rules.md, _doc-references.md)
 #   replacesExisting    true when the primary output is expected on main already (runner §1.6)
+#   storyPriority,      Priority and Size option names 00-bootstrap sets on this step's initiation
+#   storySize           story, when the board has those fields and options (bootstrap §E.4)
 #   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
 
 steps:
@@ -47,6 +49,8 @@ steps:
 
   - id: 01-product-concept
     title: Product Concept
+    storyPriority: High
+    storySize: SM
     branch: init/01-product-concept
     outputs:
       - docs/PRODUCT.md
@@ -57,6 +61,8 @@ steps:
 
   - id: 02-product-requirements
     title: Product Requirements Document
+    storyPriority: High
+    storySize: LG
     branch: init/02-product-requirements
     outputs:
       - docs/PRD.md
@@ -67,6 +73,8 @@ steps:
 
   - id: 03-architecture
     title: Architecture
+    storyPriority: High
+    storySize: LG
     branch: init/03-architecture
     outputs:
       - docs/ARCHITECTURE.md
@@ -77,6 +85,8 @@ steps:
 
   - id: 04-tech-stack
     title: Tech Stack
+    storyPriority: High
+    storySize: MD
     branch: init/04-tech-stack
     outputs:
       - docs/TECH-STACK.md
@@ -90,6 +100,8 @@ steps:
 
   - id: 05-ai-tool-guide
     title: AI Tool Guide
+    storyPriority: High
+    storySize: MD
     branch: init/05-ai-tool-guide
     outputs:
       - docs/AI-TOOL-GUIDE.md
@@ -109,6 +121,8 @@ steps:
 
   - id: 06-readme
     title: README
+    storyPriority: High
+    storySize: SM
     branch: init/06-readme
     outputs:
       - README.md
@@ -124,6 +138,8 @@ steps:
 
   - id: 07-backlog
     title: Initial Backlog
+    storyPriority: High
+    storySize: MD
     branch: init/07-backlog
     outputs:
       - docs/BACKLOG.md
@@ -138,6 +154,8 @@ steps:
 
   - id: 08-finalize
     title: Finalize Governance
+    storyPriority: High
+    storySize: XS
     branch: init/08-finalize
     outputs:
       - CONTRIBUTING.md
