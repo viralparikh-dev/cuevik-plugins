@@ -34,10 +34,11 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
    on GitHub.
 3. **Runner §1 checks 1, 2 and 7** — check 7 is the `steps.yml` special precondition plus §C.
 4. **Board** (§D). Questions and reads only.
-5. **Runner §2 checklist.** Show it, listing the §E changes that apply, and wait for one `yes`
-   to the checklist.
-6. **Remote changes** (§E). Then confirm each change on its own, with its own `yes`, before
-   running it.
+5. **Runner §2.** Show the checks table, then the plan: every §E change that applies, with its
+   commands. Ask once: `Make these <N> changes on GitHub?` (`Yes, all <N>` · `One at a time` ·
+   `No, stop`).
+6. **Remote changes** (§E), in order, as approved. With `One at a time`, confirm each before
+   running it. §E.5 (board workflows) then needs the operator in GitHub, so it always asks.
 7. **Runner §3** — branch `init/00-bootstrap`.
 8. **Outputs** (§F). Show the files and wait for approval before committing.
 9. **Runner §5–§6** — commit, push on approval, PR (§G).
@@ -183,8 +184,8 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
 ## E. Remote changes
 
-List every change below that applies in the runner §2 checklist, with its exact command. Wait for
-`yes` on each one separately, then run them in this order:
+List every change below that applies in the runner §2 plan, with its exact command. Run them,
+once approved there, in this order:
 
 1. **Create the board** (if chosen):
    - From the template (D.6):
@@ -229,7 +230,7 @@ List every change below that applies in the runner §2 checklist, with its exact
 4. **Initiation issues.** They show initiation's progress on the board: one epic, plus one story
    per step in `steps.yml` without `bootstrap: true`, in order (this step has none: the board does
    not exist before it). They carry only the `initiation` label, never `epic` or `story`, which
-   belong to the real backlog. This is one change with one `yes`; list every title first.
+   belong to the real backlog. This is one change in the §2 plan; list every title there.
    - Label, unless `gh label list --search initiation --json name --jq '.[].name'` prints
      `initiation`: `gh label create initiation --color 0E8A16 --description "cuevik-start initiation tracking"`.
    - Existing: `gh issue list --label initiation --state all --limit 100 --json number,title,state,url`.

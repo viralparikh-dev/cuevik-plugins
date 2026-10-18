@@ -71,8 +71,8 @@ operator's next message as the answer. `AskUserQuestion` cannot show a text box 
   as formatted Markdown: the exact commands in a fenced `sh` block, one per line; files as a
   list; values or lists of more than two items as a short table. The question text never holds
   commands, numbered steps or long lists; it can say `(commands above)`.
-- **Confirmations** (the §2 checklist, each remote change, a push, approving a draft): options
-  `Yes` and `No`. The chat block before it shows exactly what will run or be written. Only `Yes`
+- **Confirmations** (the §2 plan, a push, approving a draft): options `Yes` and `No`, plus
+  `One at a time` for the §2 plan. The chat block before it shows exactly what will run or be written. Only `Yes`
   is a yes.
 - **Choices** (a visibility, a board, template or blank, reuse or delete a branch): the real
   choices as options. With more than 4 (e.g. boards), offer the 3 most likely plus one more, list
@@ -141,22 +141,31 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 7. **Additional step preconditions** — apply any `specialPreconditions` from `steps.yml` and any
    preconditions in the step's `SKILL.md`.
 
-## 2. Confirm Before Proceeding
+## 2. Show The Checks, Then Approve The Plan
 
-Present the precondition results as a checklist and wait for an explicit `yes` before creating a
-branch, writing files, creating GitHub issues, or pushing anything.
+The checks are for the operator to read, not to approve. The approval is for what the step will
+do. Nothing is created, written or pushed before it.
 
-The checklist must include:
+1. **Checks.** Print a table of the §1 results in plain words, one row each with `✓`, for example
+   `Previous step (00-bootstrap) is merged | ✓`. Rows (N/A ones left out for `00-bootstrap`):
+   - you are acting as the step's owner (its role);
+   - the project's `.cuevik/` settings are on `main`;
+   - the previous step is merged;
+   - the documents this step reads are on `main`;
+   - this step's document is not on `main` yet (or the step replaces it);
+   - no uncommitted changes, and `main` is up to date;
+   - GitHub sign-in works, plus any `specialPreconditions`.
 
-- Operator role matches the step's owner, and the corresponding role file has been loaded.
-- `.cuevik/config.json` and `.cuevik/lineage.json` are on `main` (N/A for `00-bootstrap`).
-- The previous step's PR is merged (N/A for `00-bootstrap`).
-- Upstream documents are final on `main`.
-- This step's output is not already final on `main`, or the step is marked `replacesExisting: true`.
-- Working tree is clean and work will branch from an up-to-date `main`.
-- `gh auth status` succeeds, plus any stricter requirement in `specialPreconditions`.
+   Any check that fails: **STOP** with what to fix. There is no question to answer.
+2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
+   writes, and every change on GitHub (with the exact commands in a fenced `sh` block below it).
+3. **Approve.** Ask once, naming the count, e.g. `Make these 4 changes on GitHub?` or
+   `Start 01 Product Concept on branch init/01-product-concept?`. Options: `Yes` (or `Yes, all
+   <N>`), `One at a time` (only when there are 2 or more GitHub changes: then confirm each before
+   running it), `No, stop`.
 
-If any item fails, stop and resolve it before continuing.
+This one approval replaces separate yeses for the changes it lists. Later questions in the step
+(interview, approving a draft, pushing) are asked where they happen.
 
 ## 3. Create The Working Branch
 
