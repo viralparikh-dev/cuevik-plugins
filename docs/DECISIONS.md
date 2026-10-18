@@ -250,6 +250,12 @@ report (C) was dropped.
   from `steps.yml` (`storyPriority`, `storySize`; all High, sizes XS–LG); the epic gets High.
   `Efforts` gets hours from `storyEfforts` (4/12/12/6/6/3/8/1, 52h; the epic is left to the
   board's sum). Target date stays empty.
+- `Item Type` (custom single-select: Epic / Story / Task / Bug / Feature) shows the kind of item,
+  as organisation boards' built-in Type column (org Issue Types) does. Personal accounts have no
+  Issue Types and GitHub reserves the field name `Type`, hence `Item Type`. Bootstrap sets Epic /
+  Story on the initiation issues; `07-backlog` and cuevik-ship should set it on real epics and
+  stories when the board has it. Display only: labels stay the source tooling reads (D3, D5).
+  Added to template #3, sandbox #7 and tx #2 on 2026-10-18.
 - Sprint: on a board whose `Sprint` field has no sprints at all, bootstrap creates `Sprint-00`
   (today, the field's duration) and puts all 9 issues in it; format `Sprint-NN`. Any existing
   sprint, completed included: nothing is created. Hard rule, because `updateProjectV2Field`

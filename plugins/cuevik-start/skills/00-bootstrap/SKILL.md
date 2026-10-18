@@ -256,7 +256,9 @@ once approved there, in this order:
      already on the board is harmless and returns the same id. Do not set Status; the board's own
      workflows set it when an item is added and when its issue closes.
    - Fields: set `Priority` and `Size` on each story's item from the step's `storyPriority` and
-     `storySize` in `steps.yml`, and `Priority` `High` on the epic. Look the fields up by name
+     `storySize` in `steps.yml`, and `Priority` `High` on the epic. Set `Item Type` to `Epic` on the
+     epic and `Story` on each story (a custom field: GitHub reserves the name `Type` for
+     organisation Issue Types). Look the fields up by name
      (runner §7, Field lookup), then
      `gh project item-edit --id <item id> --project-id <project id> --field-id <field id> --single-select-option-id <option id>`.
      A board without the field, or without that option: skip it and say so in the PR body. Never
@@ -397,7 +399,8 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
   linked now or already linked.
 - Repo settings changed: auto-delete head branches.
 - Initiation issues: the epic and each story, by number, created now or reused; assignee, and the
-  Priority, Size and Efforts set, and Sprint-00 created and used (or each skipped, with why).
+  Item Type, Priority, Size and Efforts set, and Sprint-00 created and used (or each skipped, with
+  why).
 - Board workflows: which of the seven (§E.5) are on, and that `Auto-add to project` filters this
   repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
