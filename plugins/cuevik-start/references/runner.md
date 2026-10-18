@@ -59,11 +59,20 @@ The step's `SKILL.md` is the content contract. `steps.yml` is the execution meta
 Ask every question and every confirmation with the `AskUserQuestion` tool: one question per call,
 2–4 options. The tool adds an `Other` choice where the operator types a free answer.
 
+- **Wording.** The question is one short, plain sentence that says what will happen, in the
+  operator's terms, not how: `Create a private GitHub repo example-org/example-app and
+  upload an empty first commit?`, not a list of commands. Option labels are 1–4 words; each
+  description is one plain sentence on the outcome.
+- **Details go in the chat, not the question.** Right before the question, print what it covers
+  as formatted Markdown: the exact commands in a fenced `sh` block, one per line; files as a
+  list; values or lists of more than two items as a short table. The question text never holds
+  commands, numbered steps or long lists; it can say `(commands above)`.
 - **Confirmations** (the §2 checklist, each remote change, a push, approving a draft): options
-  `Yes` and `No`. The question names exactly what will run or be written. Only `Yes` is a yes.
+  `Yes` and `No`. The chat block before it shows exactly what will run or be written. Only `Yes`
+  is a yes.
 - **Choices** (a visibility, a board, template or blank, reuse or delete a branch): the real
   choices as options. With more than 4 (e.g. boards), offer the 3 most likely plus one more, list
-  the rest in the question text, and take any of them through `Other`. Mark an option
+  them all in the chat block, and take any other through `Other`. Mark an option
   `(Recommended)` only where the step's skill names one.
 - **Open answers** (interview sections, names, titles): an option may only be a draft taken from
   an upstream document, an answer given earlier in this session, or a value read from git or
