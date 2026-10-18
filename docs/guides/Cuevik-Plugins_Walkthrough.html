@@ -594,8 +594,9 @@ h2.pb{break-before:page;margin-top:0}
 <p>Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it lists every change and waits for a separate <code>yes</code> on each.</p>
 <ul>
 <li><strong>Repo.</strong> Connects the folder to a GitHub repo, or creates one. It asks for the owner and name, and for the visibility of a new repo (private is suggested). In an empty folder it clones an existing repo. It stops if the folder has files but no repo (it never commits your files for you), if the folder sits inside another repo, or if <code>origin</code> is not on GitHub.</li>
-<li><strong>Board.</strong> Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board is a copy of a template board: you can name one as <code>&lt;owner&gt;/&lt;number&gt;</code>, and a default is offered. If no template can be read, you pick an existing board or a blank one, and a blank board gets only GitHub's default Status options (<code>Todo</code>, <code>In Progress</code>, <code>Done</code>). The board needs a single-select field named <code>Status</code>.</li>
-<li><strong>Remote changes.</strong> Each is confirmed on its own: create the board, link it to the repo, and turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges.</li>
+<li><strong>Board.</strong> Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board is either a copy of a template board you name as <code>&lt;owner&gt;/&lt;number&gt;</code>, or blank. No template is suggested. If the template cannot be read, it asks again. A blank board gets only GitHub's default Status options (<code>Todo</code>, <code>In Progress</code>, <code>Done</code>). The board needs a single-select field named <code>Status</code>.</li>
+<li><strong>Remote changes.</strong> Each is confirmed on its own: create the board, link it to the repo, turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues.</li>
+<li><strong>Initiation issues.</strong> An <code>Initiation</code> epic and one story per later step (01–08), labelled <code>initiation</code>, added to the board as sub-issues of the epic. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the <code>epic</code> or <code>story</code> labels, so the real backlog never picks them up.</li>
 <li><strong>The PR.</strong> Opens <code>init/00-bootstrap</code> with <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code> and <code>.markdownlint.json</code>. An existing <code>.markdownlint.json</code> is kept. An existing <code>CONTRIBUTING.md</code> keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, <code>chore: initialize repository</code>, on <code>main</code> and pushes it. That is the only commit bootstrap makes on <code>main</code>.</li>
 <li><strong>The governance text</strong> covers the review flow, Conventional Commits and the rule never to push to <code>main</code>. It also carries the initiation-only branching table and the self-review checklist, which <code>08-finalize</code> removes.</li>
 <li><strong>It stops, and says what to fix,</strong> if <code>gh</code> is not signed in, the default branch is not <code>main</code>, you lack admin rights on the repo, the repo is already bootstrapped, or a <code>00-bootstrap</code> PR is already open.</li>
@@ -604,7 +605,7 @@ h2.pb{break-before:page;margin-top:0}
 <ul>
 <li><code>CONTRIBUTING.md</code> holds the governance text verbatim, with both <code>INITIATION-ONLY</code> markers. If it already existed, your text is unchanged.</li>
 <li>No stack-specific commands in <code>CONTRIBUTING.md</code>.</li>
-<li><code>.cuevik/config.json</code> names the board linked to this repo, with ids read from GitHub.</li>
+<li><code>.cuevik/config.json</code> names the board linked to this repo, with ids read from GitHub, and the initiation issue numbers.</li>
 <li><code>.cuevik/lineage.json</code> matches the plugin's default lineage.</li>
 <li>Auto-delete is on: <code>gh repo view --json deleteBranchOnMerge</code> returns <code>true</code>.</li>
 <li>No plugin files (runner, registry, templates, roles) in the diff.</li>
@@ -651,6 +652,7 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k3"><h3 id="status">status</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Nothing (report only)  ·  <strong>You:</strong> Read the report</p></div>
 
 <p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.</p>
+<p>It starts with a progress line, one cell per step, such as <code>██░░░░░░░ 2/9 · next: 02-product-requirements</code>, then a row per step. The merged PR decides each row. If an initiation issue on the board disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row.</p>
 <div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
 
 <p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</p>
@@ -1166,8 +1168,8 @@ h2.pb{break-before:page;margin-top:0}
 <td>Add that field to the board, or choose another board.</td>
 </tr>
 <tr>
-<td>No template board can be read</td>
-<td>Choose an existing board, or a blank one. A blank board gets only <code>Todo</code>, <code>In Progress</code> and <code>Done</code>.</td>
+<td>The template board cannot be read</td>
+<td>Name another template, choose an existing board, or a blank one. A blank board gets only <code>Todo</code>, <code>In Progress</code> and <code>Done</code>.</td>
 </tr>
 <tr>
 <td>Linking the board fails</td>
@@ -1184,7 +1186,7 @@ h2.pb{break-before:page;margin-top:0}
 <ul>
 <li><strong>GitHub only,</strong> and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.</li>
 <li><strong>Approval is process-enforced.</strong> GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.</li>
-<li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying the default template board as another user.</li>
+<li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying another user's template board.</li>
 <li><strong>Board copies:</strong> bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).</li>
 <li><strong>Not yet verified:</strong> creating sub-issue and blocked-by links from a cloud session, which <code>/cuevik-ship:03-create-backlog</code> relies on.</li>
 <li><strong>Plugin settings:</strong> in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. <code>cuevik-ship</code>'s worktree-folder setting uses the same mechanism and is untested.</li>
