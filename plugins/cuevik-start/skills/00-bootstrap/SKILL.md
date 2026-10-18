@@ -1,6 +1,6 @@
 ---
 name: 00-bootstrap
-description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo and project board, turns on auto-delete head branches, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json and .markdownlint.json.
+description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo and project board, files the initiation epic and stories on the board, turns on auto-delete head branches, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json and .markdownlint.json.
 disable-model-invocation: true
 ---
 
@@ -123,6 +123,8 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
    - Otherwise: **insert** mode (§F).
 6. `git show main:.markdownlint.json` exit 0: keep the repo's file. Do not write or commit it, and
    say so in the PR.
+7. `gh repo view <repo> --json hasIssuesEnabled --jq .hasIssuesEnabled` is `true`, or **STOP**:
+   bootstrap files the initiation issues (§E.4). Turn on Issues in the repo settings, then re-run.
 
 ## D. Board (questions and reads only)
 
@@ -208,9 +210,37 @@ List every change below that applies in the runner §2 checklist, with its exact
 3. **Auto-delete head branches** (unless
    `gh repo view <repo> --json deleteBranchOnMerge --jq .deleteBranchOnMerge` is already `true`):
    `gh repo edit <repo> --delete-branch-on-merge`.
+4. **Initiation issues.** They show initiation's progress on the board: one epic, plus one story
+   per step in `steps.yml` without `bootstrap: true`, in order (this step has none: the board does
+   not exist before it). They carry only the `initiation` label, never `epic` or `story`, which
+   belong to the real backlog. This is one change with one `yes`; list every title first.
+   - Label, unless `gh label list --search initiation --json name --jq '.[].name'` prints
+     `initiation`: `gh label create initiation --color 0E8A16 --description "cuevik-start initiation tracking"`.
+   - Existing: `gh issue list --label initiation --state all --limit 100 --json number,title,state,url`.
+     Reuse an open issue whose title matches exactly; create only the missing ones. A matching
+     issue that is closed: say so and ask whether to reopen it (`gh issue reopen <n>`) or stop.
+   - Epic, title `Initiation`:
+     `gh issue create --label initiation --title "Initiation" --body "<body>"`. Body: `Tracks
+     project initiation with /cuevik-start. Each sub-issue closes when its step's PR merges into
+     main; the last step's PR closes this epic.` It prints the issue URL; the number is its last
+     path segment.
+   - One story per step, title `Initiation <NN>: <title>` (`<NN>` is the id's two-digit prefix,
+     `<title>` the step's `title`), e.g. `Initiation 01: Product Concept`. Body: `Run
+     /cuevik-start:<id> in a new session. Writes <primary output>. Closes when the <branch> PR
+     merges into main.`
+   - Sub-issues: link each story to the epic, unless
+     `gh api repos/<repo>/issues/<epic>/sub_issues --jq '.[].number'` already lists it:
+     `gh api -X POST repos/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where `<id>` is
+     `gh api repos/<repo>/issues/<story> --jq .id` (the REST id, not the number).
+   - Board: `gh project item-add <number> --owner <board-owner> --url <issue url>` for the epic and
+     each story. Adding an item that is already on the board is harmless. Do not set Status; the
+     board's own workflows move a card when its issue closes.
+
+   Report the epic and story numbers; §F writes them to `.cuevik/config.json`.
 
 Report each result. If one fails, **STOP** and report what was done and what was not. A re-run
-finds the board in the list, sees the link and skips the setting, so nothing is created twice.
+finds the board in the list, sees the link, skips the setting and reuses the `initiation` issues by
+title, so nothing is created twice.
 
 ## F. Outputs (on `init/00-bootstrap`)
 
@@ -226,7 +256,7 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "project": {
       "owner": "<board-owner>",
       "number": <number>,
@@ -235,11 +265,16 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
         "id": "<Status field id from §D.5>",
         "options": { "<option name>": "<option id>" }
       }
+    },
+    "initiation": {
+      "epic": <epic number from §E.4>,
+      "stories": { "<step id>": <story number from §E.4> }
     }
   }
   ```
 
-  `options` holds every option from §D.5, as read. No `$schema` key. It must satisfy
+  `options` holds every option from §D.5, as read. `stories` has one entry per story from §E.4,
+  keyed by step id. No `$schema` key. It must satisfy
   `${CLAUDE_PLUGIN_ROOT}/references/contracts/config/config.schema.json`: re-read the file and check
   each rule there before committing.
 - **`.cuevik/lineage.json`** — a byte-for-byte copy of
@@ -266,6 +301,7 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - Board: owner, number, URL; existing, copied from the template (with any differences), or blank;
   linked now or already linked.
 - Repo settings changed: auto-delete head branches.
+- Initiation issues: the epic and each story, by number, created now or reused.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
 - The reviewer checklist below, and the self-review gate from `CONTRIBUTING.md`.
 
@@ -277,5 +313,8 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `.cuevik/config.json` names the board that is linked to this repo, and its ids were read
       from GitHub.
 - [ ] `.cuevik/lineage.json` matches the plugin's default lineage.
+- [ ] `.cuevik/config.json` `initiation` matches the `initiation`-labelled issues: the epic and one
+      story per step after 00, each a sub-issue of the epic and on the board. No `epic` or `story`
+      label on any of them.
 - [ ] `gh repo view --json deleteBranchOnMerge` returns `true`.
 - [ ] No plugin machinery (runner, registry, templates, roles, contracts) is in the diff.

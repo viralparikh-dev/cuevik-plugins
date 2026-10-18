@@ -50,7 +50,7 @@
             "items": { "type": "string", "minLength": 1 }
           },
           "frozen": {
-            "description": "true = no longer updated after initiation (docs/BACKLOG.md, D7). Absent = false.",
+            "description": "true = no longer updated after initiation (docs/BACKLOG.md: GitHub is the backlog after initiation). Absent = false.",
             "type": "boolean"
           }
         }

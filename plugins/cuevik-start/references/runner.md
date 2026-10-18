@@ -41,7 +41,10 @@ Before starting, load:
 
    A step with `bootstrap: true` runs before `.cuevik/lineage.json` exists. It takes its owner and
    reviewers from the default lineage it is about to write, and has no upstream documents.
-4. The role file for the owner, plus one per extra reviewer:
+4. `.cuevik/config.json` from `main`: `git show main:.cuevik/config.json`. Its
+   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6). A
+   step with `bootstrap: true` writes this file, so it has neither.
+5. The role file for the owner, plus one per extra reviewer:
    - `Product Owner` → `${CLAUDE_PLUGIN_ROOT}/references/roles/product-owner.md`
    - `Architect` → `${CLAUDE_PLUGIN_ROOT}/references/roles/solution-architect.md`
 
@@ -207,6 +210,11 @@ After approval:
 3. Use a title that names the step id and its primary output.
 4. In the body, include the step's `prSummary` and the reviewer checklist from the step's
    `SKILL.md`.
+5. End the body with `Closes #<story>` for this step's story (Inputs §4), so the story closes and
+   its board card moves when the PR merges. The last step in `steps.yml` also adds
+   `Closes #<epic>`. A `bootstrap: true` step has no story and no line. Any other step with no
+   story in the config: leave the line out and say so in the PR body. Never write `Closes` for
+   any other issue.
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
 and merges the PR, and the next step refuses to run until then.

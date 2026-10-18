@@ -161,6 +161,8 @@ list below, **this list wins** (D2 and D13 override it).
   shared by `cuevik-start:07-backlog` and `cuevik-ship:03-create-backlog`.
 - **D6** Epic lookup: parent of existing stories in the same PRD §6 section → `label:epic` citing the
   section → `docs/BACKLOG.md` → new epic. Several candidates → ask. Never move a parent without a yes.
+- Issues labelled `initiation` (§9) are never backlog items: D5's labels never go on them, and
+  `07-backlog`, `docs/BACKLOG.md` and the D6 lookup ignore them.
 - **D7** `docs/BACKLOG.md` is frozen after initiation; GitHub is the backlog. `07-backlog` writes a
   header saying so; `cuevik-docs:update` drops "update when epics/stories added".
 - **D8** `01` given an existing issue: refuse epics, redirect bugs to 04, allow existing stories (03
@@ -215,3 +217,22 @@ Built in Phase 09; recorded here so the step is designed with it.
   so its source is asked for, not written into the plugin.
 - **Open:** how the claude.ai `anthropic-skills:*` (docx, pdf, xlsx, …) reach teammates who use the
   Claude Code CLI. Not solved here.
+
+## 9. Initiation progress on the board — Locked (2026-10-18)
+
+Status visual = a progress line in `status` (A) plus initiation issues on the board (D). An HTML
+report (C) was dropped.
+
+- `00-bootstrap` files an `Initiation` epic and one story per later step (01–08), as sub-issues of
+  the epic, added to the board. Step 00 has none: the board does not exist until bootstrap creates
+  it. A re-run reuses issues by exact title.
+- Label `initiation` only, never `epic` / `story` (D5): those feed `07-backlog` and cuevik-ship's
+  epic lookup (D6), which must never see these issues.
+- Their numbers are in `.cuevik/config.json` `initiation` (`epic`, `stories` by step id), contract
+  `schemaVersion` 2.
+- The runner ends each step's PR body with `Closes #<story>`; the last step's PR also closes the
+  epic. The board's own workflows move the cards; nothing sets Status.
+- The merged PR stays the source of truth. `status` prints a `**Check:**` line when an issue
+  disagrees (story closed with no merged PR, open after its PR merged, missing) and never changes
+  a row or the Next line because of it.
+- `status` prints `<one cell per step> <merged>/<steps> · next: <id>` above its table.

@@ -1,6 +1,6 @@
 ---
 name: status
-description: Shows where project initiation stands. For each cuevik-start step (00–08), it reports whether the step's init/<id> PR is merged, open, only a branch, or not started, read from git and GitHub, then names the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
+description: Shows where project initiation stands. A progress line, then for each cuevik-start step (00–08) whether the step's init/<id> PR is merged, open, only a branch, or not started, read from git and GitHub, with the initiation issues on the board cross-checked, then the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
 disable-model-invocation: true
 ---
 
@@ -73,10 +73,35 @@ Then, for each step:
    On a `✓ merged` row whose branch still exists, append `local branch left —
    /cuevik-start:cleanup` (local) or `branch left on GitHub` (GitHub).
 
-## 3. Report
+## 3. Initiation issues
+
+The board mirrors the steps through the issues `00-bootstrap` filed. The merged PR stays the
+source of truth: this section never changes a row's Status or the Next line; it only adds
+`**Check:**` lines where GitHub's issues disagree with the rows.
+
+1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
+   silently. No `initiation` key: one Check line, `.cuevik/config.json has no initiation issues,
+   so the board does not track initiation.`, then skip the rest.
+2. `gh issue list --label initiation --state all --limit 100 --json number,state`, once.
+3. For each step in `initiation.stories`, with story `#n`:
+
+   | Condition | Check line |
+   | --- | --- |
+   | `#n` not in the list | `story #n (<id>) is not an initiation issue on GitHub (deleted, transferred or relabelled)` |
+   | `#n` closed, row not `✓ merged` | `story #n (<id>) is closed, but <id> has no merged PR` |
+   | `#n` open, row `✓ merged` | `story #n (<id>) is still open, though PR #m merged` |
+
+   A step without `bootstrap: true` that has no entry in `initiation.stories`: `no story for <id>
+   in .cuevik/config.json`.
+4. The epic `initiation.epic`: not in the list, closed while any row is not `✓ merged`, or open
+   while every row is `✓ merged` — one Check line saying which.
+
+## 4. Report
 
 ```markdown
 ## Initiation status — <owner>/<repo> (origin/main @ <short sha>)
+
+`█░░░░░░░░ 1/9 · next: 01-product-concept`
 
 | Step | Output | Status | Detail |
 | --- | --- | --- | --- |
@@ -90,9 +115,13 @@ Then, for each step:
 - Repo: `gh repo view --json nameWithOwner --jq .nameWithOwner`. Sha: `git rev-parse --short
   origin/main`.
 - Output: the primary output. A `bootstrap: true` step also lists `.cuevik/`.
+- Progress line, in a code span: one cell per row in `steps.yml` order, `█` for `✓ merged` and
+  `░` for any other status; then `<merged>/<rows>`; then `· next: <id>`, the row the Next line
+  is decided by. Every row `✓ merged`: `· complete`.
 
-After the table, print one `**Check:**` line for each `⚠ mismatch` row, and for each `✓ merged`
-row that comes after a step that is not merged (steps ran out of order). Then print one
+After the table, print one `**Check:**` line for each `⚠ mismatch` row, for each `✓ merged`
+row that comes after a step that is not merged (steps ran out of order), and for each issue
+disagreement from §3. Then print one
 `**Next:**` line. It is decided by the first row in `steps.yml` order that is not `✓ merged`:
 
 - `⚠ mismatch`: `blocked — <id> does not add up (see Check).`

@@ -30,13 +30,14 @@ steps:
       - .cuevik/lineage.json
       - .markdownlint.json
     commitMessage: "docs: add repo governance baseline and .cuevik config (00-bootstrap)"
-    prSummary: "Summarize the branching + self-review governance, the repo and project board connected or created, and the repo settings changed."
+    prSummary: "Summarize the branching + self-review governance, the repo and project board connected or created, the initiation issues filed, and the repo settings changed."
     finalReminder: "Repo governance becomes final only when the Architect merges the PR (self-review checklist complete). Then run /cuevik-start:01-product-concept in a new session."
     specialPreconditions:
       - "gh is authenticated with the repo and project scopes, in a local session (cloud sessions cannot reach Projects v2)."
     specialActions:
       - "Make the current folder a git repo if it is not one, and connect or create the GitHub repo as origin (skills/00-bootstrap/SKILL.md §B). List and confirm every create first."
       - "Connect or create and link the project board, then read its ids back into .cuevik/config.json."
+      - "File the initiation issues (label initiation only): an Initiation epic and one story per later step, as sub-issues of the epic, on the board. Record their numbers in .cuevik/config.json."
       - "Write .cuevik/lineage.json with the default lineage."
       - "Write .markdownlint.json at the repo root (default rules, MD013 off, MD024 siblings_only) so _writing-rules' lint rule has a config to run against."
       - "Turn on the repo's auto-delete head branches setting."
