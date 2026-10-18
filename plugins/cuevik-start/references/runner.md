@@ -59,6 +59,10 @@ The step's `SKILL.md` is the content contract. `steps.yml` is the execution meta
 Ask every question and every confirmation with the `AskUserQuestion` tool: one question per call,
 2–4 options. The tool adds an `Other` choice where the operator types a free answer.
 
+**Typed values** are the one exception: where a step's skill asks for a value the operator must
+type or paste (e.g. a link), ask it as one plain sentence in chat, with no options, and take the
+operator's next message as the answer. `AskUserQuestion` cannot show a text box alone.
+
 - **Wording.** The question is one short, plain sentence that says what will happen, in the
   operator's terms, not how: `Create a private GitHub repo example-org/example-app and
   upload an empty first commit?`, not a list of commands. Option labels are 1–4 words; each

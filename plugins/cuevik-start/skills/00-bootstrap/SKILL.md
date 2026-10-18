@@ -169,10 +169,9 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
    | `Your template` | `Copies a board you choose; you pick or paste its link next.` |
    | `Blank board` | `An empty board with only Todo, In Progress and Done.` |
 
-   - **Your template:** list the board owner's boards
-     (`gh project list --owner <board-owner> --format json --jq '.projects[] | {number, title, url}'`)
-     and ask `Which board should be copied?` with up to 3 of them as options (`<title> (#<number>)`,
-     read from GitHub), plus `Other` to paste a board link. Accept
+   - **Your template:** ask in plain chat, not with `AskUserQuestion` (runner, Asking The
+     Operator, typed values): `Paste the link to your template board.` Offer no options or list;
+     the operator's next message is the answer. Accept
      `https://github.com/users/<owner>/projects/<number>`, the `orgs/` form, or `<owner>/<number>`.
      Anything else: say what form is expected and ask again.
    - **Check** the chosen template can be read:
