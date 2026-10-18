@@ -19,6 +19,7 @@ they cannot drift from them. The checks stop the build when:
   4. an internal #link does not resolve, or a guide points at a temporary design doc
   5. a term from the local, gitignored .private-terms appears in a guide
   6. the Overview exposes an internal term, or lists different commands than the Walkthrough
+  7. a command's Available / Planned tag disagrees with whether its skill exists on disk
 """
 import argparse, base64, html as H, json, re, sys
 from pathlib import Path
@@ -67,6 +68,10 @@ def names(cmds):
     return ", ".join(f"/{p}:{c}" for p, c in sorted(cmds))
 
 
+def status_of(plugin, command, skills):
+    return "Available" if (plugin, command) in skills else "Planned"
+
+
 # ---------------------------------------------------------------------------------------------
 # Data: what the plugins themselves say (step registry, default lineage, versions, skills)
 # ---------------------------------------------------------------------------------------------
@@ -93,20 +98,29 @@ def load():
 
 
 def table_rows(text, heading):
-    """Body rows of the first table under the H2/H3 `heading` (header and separator dropped)."""
+    """(header, body rows) of the first table under the H2/H3 `heading`."""
     m = re.search(rf"^#{{2,3}} {re.escape(heading)}[ \t]*$", text, re.M)
     if not m:
         fail(f"{WALK.name}: no section '{heading}'")
     rest = text[m.end():]
     end = re.search(r"^#{1,6} ", rest, re.M)
     lines = [l.strip() for l in (rest[: end.start()] if end else rest).splitlines() if l.lstrip().startswith("|")]
-    return [[c.strip() for c in l.strip("|").split("|")] for l in lines][2:]
+    rows = [[c.strip() for c in l.strip("|").split("|")] for l in lines]
+    return rows[0], rows[2:]
 
 
-def command_table(text, heading, ncols):
-    """{(plugin, command): [other cells]} from a table whose first column is a `/plugin:command`."""
+def command_table(text, heading, ncols, status=False):
+    """{(plugin, command): [other cells]} from a table whose first column is a `/plugin:command`.
+    With status=True the last column is the Available / Planned tag, which is checked and not returned."""
     out = {}
-    for row in table_rows(text, heading):
+    header, rows = table_rows(text, heading)
+    if status and header[-1] != "Status":
+        fail(f"'{heading}': the last column must be Status")
+    for row in rows:
+        if status:
+            if row[-1] not in ("Available", "Planned"):
+                fail(f"'{heading}': {row[0]} needs Available or Planned in the Status column")
+            row = row[:-1]
         m = CMD.fullmatch(row[0])
         if not m or len(row) != ncols:
             fail(f"'{heading}': bad row {row[0]!r} (want a `/plugin:command` and {ncols} columns)")
@@ -128,8 +142,10 @@ def start_rows(d, t1):
     for s in d["steps"]:
         outs, num = s["outputs"], s["id"][:2]
         title = t1[("cuevik-start", s["id"])][0]
-        main = card("step", pill=f"STEP {num}", title=title, cmd=s["id"],
-                    note=outs[0] + (f" + {len(outs) - 1} more" if len(outs) > 1 else ""), m=f"{num} · {title}<br/>{s['id']}")
+        st = status_of("cuevik-start", s["id"], d["skills"])
+        main = card("step", pill=f"STEP {num}", title=title, cmd=s["id"], status=st,
+                    note=outs[0] + (f" + {len(outs) - 1} more" if len(outs) > 1 else ""),
+                    m=f"{num} · {title}<br/>{s['id']}" + ("<br/>Planned" if st == "Planned" else ""))
         side = [("gh", card("pr", l1="PR → main", l2="Approved by " + " + ".join(s["reviewers"]), m="PR → main"))]
         side += [(LANE_OF[r], card("chip", text=f"{r} co-reviews", m=f"{r} co-reviews")) for r in s["reviewers"] if r != s["owner"]]
         rows.append({"main": (LANE_OF[s["owner"]], main), "side": side})
@@ -150,7 +166,7 @@ ACTION_LANES = [{"id": "you", "cls": "warm", "title": "You", "sub": "approve, re
                 {"id": "gh", "cls": "gh", "title": "GitHub", "sub": "issue, branches, PRs"}]
 
 
-def action_rows(plugin, t1, t2):
+def action_rows(plugin, t1, t2, skills):
     def short(s):
         return plain(s).replace("ship/<n>-<slug>/", "…/")
 
@@ -165,8 +181,9 @@ def action_rows(plugin, t1, t2):
             gh = card("pr", l1="No PR", l2=clip(plain(writes), 38), m="No PR")
         else:
             gh = card("pr", l1=f"PR → {short(pr_to)}", l2=short(code[1]) if code else "", m=f"PR → {short(pr_to)}")
-        main = card("step", pill=f"STEP {num}" if num else cid.upper(), title=title, cmd=cid, note=clip(plain(writes), 38),
-                    m=f"{num + ' · ' if num else ''}{title}<br/>{cid}")
+        st = status_of(p, cid, skills)
+        main = card("step", pill=f"STEP {num}" if num else cid.upper(), title=title, cmd=cid, status=st, note=clip(plain(writes), 38),
+                    m=f"{num + ' · ' if num else ''}{title}<br/>{cid}" + ("<br/>Planned" if st == "Planned" else ""))
         rows.append({"main": ("cl", main), "side": [("you", card("chip", text=clip(you, 34), m=you)), ("gh", gh)]})
     return rows
 
@@ -174,8 +191,8 @@ def action_rows(plugin, t1, t2):
 def diagrams(d, t1, t2):
     s = start_rows(d, t1)
     return {"flow-start": (start_lanes(s), s),
-            "flow-ship": (ACTION_LANES, action_rows("cuevik-ship", t1, t2)),
-            "flow-docs": (ACTION_LANES, action_rows("cuevik-docs", t1, t2))}
+            "flow-ship": (ACTION_LANES, action_rows("cuevik-ship", t1, t2, d["skills"])),
+            "flow-docs": (ACTION_LANES, action_rows("cuevik-docs", t1, t2, d["skills"]))}
 
 
 def mermaid(lanes, rows):
@@ -205,7 +222,8 @@ def step_facts(d):
         nxt = steps[i + 1]["id"] if i + 1 < len(steps) else "cleanup"
         read_list = ", ".join(f"`{u}`" for u in reads) or "—"
         write_list = ", ".join(f"`{o}`" for o in s["outputs"])
-        out[f"step-{s['id']}"] = (f"**Owner:** {s['owner']}  ·  **Reviewers:** {', '.join(s['reviewers'])}  ·  "
+        out[f"step-{s['id']}"] = (f"**Status:** {status_of('cuevik-start', s['id'], d['skills'])}  ·  **Owner:** {s['owner']}  ·  "
+                                  f"**Reviewers:** {', '.join(s['reviewers'])}  ·  "
                                   f"**Reads:** {read_list}  ·  **Writes:** {write_list}  ·  **Then:** `/cuevik-start:{nxt}`")
     return out
 
@@ -218,11 +236,12 @@ def doc_owners(d):
     return "\n".join(rows)
 
 
-def command_facts(t2):
-    """One facts line per cuevik-ship / cuevik-docs command, from the branches-and-files table."""
+def command_facts(d, t2):
+    """One facts line per command outside the nine steps, from the branches-and-files table."""
     none = lambda cell: "none" if cell == "—" else cell
-    return {f"cmd-{p}-{c}": f"**Branch:** {none(branch)}  ·  **PR to:** {none(pr_to)}  ·  **Writes:** {writes}  ·  **You:** {you}"
-            for (p, c), (branch, pr_to, writes, you) in t2.items() if p != "cuevik-start"}
+    return {f"cmd-{p}-{c}": (f"**Status:** {status_of(p, c, d['skills'])}  ·  **Branch:** {none(branch)}  ·  "
+                             f"**PR to:** {none(pr_to)}  ·  **Writes:** {writes}  ·  **You:** {you}")
+            for (p, c), (branch, pr_to, writes, you) in t2.items()}
 
 
 def downstream(d):
@@ -250,26 +269,40 @@ def downstream(d):
 def render_blocks(d, t1, t2):
     blocks = {name: mermaid(*model) for name, model in diagrams(d, t1, t2).items()}
     blocks.update(step_facts(d))
-    blocks.update(command_facts(t2))
+    blocks.update(command_facts(d, t2))
     blocks["downstream"] = downstream(d)
     blocks["doc-owners"] = doc_owners(d)
     return blocks
 
 
-def sync_blocks(walk, d, t1, t2, write):
+STATUS_ROW = re.compile(r"^(\|\s*`/(cuevik-[a-z]+):([\w-]+)`\s*\|.*\|)\s*(?:Available|Planned)\s*\|[ \t]*$", re.M)
+
+
+def set_status(text, skills):
+    """Rewrite each command row's trailing Available / Planned cell from the skills on disk."""
+    return STATUS_ROW.sub(lambda m: f"{m[1]} {status_of(m[2], m[3], skills)} |", text)
+
+
+def sync(walk, over, d, t1, t2, write):
     blocks = render_blocks(d, t1, t2)
     found = {m[1] for m in GEN.finditer(walk)}
     for name in sorted(set(blocks) ^ found):
         fail(f"{WALK.name}: " + (f"no <!-- gen:{name} --> block" if name in blocks else f"unknown generated block '{name}'"))
     stale = [m[1] for m in GEN.finditer(walk) if m[2].strip() != blocks[m[1]]]
+    new_walk, new_over = set_status(walk, d["skills"]), set_status(over, d["skills"])
+    if new_walk != walk:
+        stale.append("Walkthrough status tags")
+    if new_over != over:
+        stale.append("Overview status tags")
     if not stale:
-        return walk
+        return walk, over
     if not write:
-        fail(f"generated blocks are stale ({', '.join(stale)}). Run: python docs/guides/build_docs.py --write")
-    new = GEN.sub(lambda m: f"<!-- gen:{m[1]} -->\n\n{blocks[m[1]]}\n\n<!-- /gen:{m[1]} -->", walk)
-    WALK.write_text(new, encoding="utf-8")
-    print(f"refreshed {', '.join(stale)} in {WALK.name}")
-    return new
+        fail(f"generated content is stale ({', '.join(stale)}). Run: python docs/guides/build_docs.py --write")
+    new_walk = GEN.sub(lambda m: f"<!-- gen:{m[1]} -->\n\n{blocks[m[1]]}\n\n<!-- /gen:{m[1]} -->", new_walk)
+    WALK.write_text(new_walk, encoding="utf-8")
+    OVER.write_text(new_over, encoding="utf-8")
+    print(f"refreshed {', '.join(stale)}")
+    return new_walk, new_over
 
 
 # ---------------------------------------------------------------------------------------------
@@ -324,6 +357,8 @@ def checks(walk, over, d, t1, t2, release):
     listed = set(re.findall(r"^\|\s*`/(cuevik-[a-z]+):([\w-]+)`", over, re.M))
     if listed != documented:
         fail(f"{OVER.name} must list the same commands as the Walkthrough; difference: {names(listed ^ documented)}")
+    if len(re.findall(r"^\|\s*`/cuevik-", over, re.M)) != len(STATUS_ROW.findall(over)):
+        fail(f"{OVER.name}: every command row needs Available or Planned in its last column")
 
 
 # ---------------------------------------------------------------------------------------------
@@ -420,6 +455,9 @@ td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:var(--text-xs);font-weight:600;border:1px solid var(--border);white-space:nowrap}
+.tag.available{background:var(--info-muted);border-color:var(--info-border);color:var(--info)}
+.tag.planned{background:var(--card);border-style:dashed;border-color:var(--muted-foreground);color:var(--muted-foreground)}
 .facts{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-sm);line-height:var(--leading-snug)}
 
 /* by-actor diagrams */
@@ -437,6 +475,8 @@ figure.sw{margin:10px 0 14px;break-inside:avoid}
 .sw .dash{fill:var(--card);stroke:var(--muted-foreground);stroke-width:1.2;stroke-dasharray:4 3}
 .sw .pill{fill:var(--foreground)}
 .sw .pill-t{font-size:9px;font-weight:600;letter-spacing:0.06em;fill:var(--card)}
+.sw .tg{stroke-width:1} .sw .tg-a{fill:var(--info-muted);stroke:var(--info-border)} .sw .tg-p{fill:var(--card);stroke:var(--muted-foreground);stroke-dasharray:3 2}
+.sw .tg-t{font-size:8.5px;font-weight:600} .sw .tg-t.a{fill:var(--info)} .sw .tg-t.p{fill:var(--muted-foreground)}
 .sw .ttl{font-size:12.5px;font-weight:600}
 .sw .mono{font-family:var(--font-mono);font-size:10px;fill:var(--primary-text)}
 .sw .note{font-size:10.5px;fill:var(--muted-foreground)}
@@ -467,9 +507,9 @@ h2.pb{break-before:page;margin-top:0}
 """
 
 LANDSCAPE = ("@page{size:A4 landscape;margin:12mm 0 14mm} main{max-width:297mm;padding:8mm 12mm 0} h1{font-size:var(--text-lg)}"
-             " .hero{margin-bottom:6px} h3{margin:10px 0 4px} .tbl{margin:4px 0 8px} .cmds{font-size:11px} .cmds th,.cmds td{padding:3px 8px}")
+             " .hero{margin-bottom:6px} h3{margin:10px 0 4px} .tbl{margin:4px 0 8px} .cmds{font-size:10.5px} .cmds th,.cmds td{padding:2px 6px}")
 # Overview: every command on one page, so rows stay one line and the command column is fixed
-OVERVIEW_CSS = "table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{padding:4px 10px} .tbl{margin:6px 0 10px}"
+OVERVIEW_CSS = "table{table-layout:fixed} th:first-child,td:first-child{width:285px} th:last-child,td:last-child{width:88px} table{font-size:12.5px} th,td{padding:3px 10px} .tbl{margin:4px 0 8px} h3{margin:12px 0 4px}"
 
 
 def font_faces():
@@ -539,6 +579,12 @@ def swimlane(uid, label, lanes, rows):
                         f'<text class="ttl" x="{x + 14}" y="{y0 + 30}">{esc(clip(c["title"], 26))}</text>',
                         f'<text class="mono" x="{x + 14}" y="{y0 + 45}">{esc(c["cmd"])}</text>',
                         f'<text class="note" x="{x + 14}" y="{y0 + 59}">{esc(clip(c["note"], 38))}</text>']
+                if c.get("status"):  # Available / Planned tag, top right
+                    st = c["status"]
+                    tw = 10 + round(5.2 * len(st))
+                    tx, kind = x + CW - 12 - tw, "a" if st == "Available" else "p"
+                    out += [f'<rect class="tg tg-{kind}" x="{tx}" y="{y0 - 8}" width="{tw}" height="16" rx="8"/>',
+                            f'<text class="tg-t {kind}" x="{tx + tw / 2}" y="{y0 + 3}" text-anchor="middle">{st}</text>']
             elif c["kind"] == "pr":
                 out += [f'<rect class="dash" x="{x}" y="{y0}" width="{CW}" height="{ch}" rx="10"/>',
                         f'<text class="ttl" x="{x + 14}" y="{y0 + 21}">{esc(c["l1"])}</text>',
@@ -552,6 +598,12 @@ def swimlane(uid, label, lanes, rows):
 # ---------------------------------------------------------------------------------------------
 # HTML documents
 # ---------------------------------------------------------------------------------------------
+def tag_el(soup, status):
+    el = soup.new_tag("span", attrs={"class": f"tag {status.lower()}"})
+    el.string = status
+    return el
+
+
 def shape(body_html, eyebrow, foot, overview=False):
     """Turn plain markdown HTML into the Cuevik document layout."""
     from bs4 import BeautifulSoup
@@ -604,15 +656,21 @@ def shape(body_html, eyebrow, foot, overview=False):
         short = len(t.find_all("tr")) <= 9
         wrap = soup.new_tag("div", attrs={"class": "tbl short" if short else "tbl"}); t.wrap(wrap)
         for td in t.find_all("td"):
-            if len(td.get_text(strip=True)) <= 12:
+            txt = td.get_text(strip=True)
+            if txt in ("Available", "Planned"):  # the status tag
+                td.clear(); td.append(tag_el(soup, txt)); td["class"] = "nw"
+            elif len(txt) <= 12:
                 td["class"] = "nw"
         for code in t.find_all("code") if len(t.find_all("th")) >= 5 else []:
             if len(code.get_text()) > 24:  # only a wide table needs its long paths to wrap, at a slash
                 marked = code.decode_contents().replace("/", "/<wbr>")
                 code.clear(); code.append(BeautifulSoup(marked, "html.parser")); code["class"] = "wrap"
     for p in soup.find_all("p"):
-        if p.get_text().startswith(("Owner:", "Branch:")) and p.find("strong"):  # the generated facts line under a command heading
+        if p.get_text().startswith("Status:") and p.find("strong"):  # the generated facts line under a command heading
             p["class"] = "facts"
+            tagged = re.sub(r"(<strong>Status:</strong>)\s*(Available|Planned)",
+                            lambda m: f'{m[1]} <span class="tag {m[2].lower()}">{m[2]}</span>', p.decode_contents())
+            p.clear(); p.append(BeautifulSoup(tagged, "html.parser"))
     for n, fig in enumerate(soup.find_all("figure", class_="sw")):  # a diagram is most of a page: start it on a fresh one
         h = fig.find_previous(["h2", "h3"])
         if n == 0 and h.name == "h3":
@@ -687,9 +745,10 @@ def byactor_html(svgs, d):
 
 
 def commands_html(d, t1, t2):
-    def row(cmd, what, approval, branch, writes):
+    def row(cmd, what, approval, branch, writes, status):
+        tag = f'<span class="tag {status.lower()}">{status}</span>'
         return (f"<tr><td><code>{H.escape(cmd)}</code></td><td>{inline(what)}</td><td>{inline(approval)}</td>"
-                f"<td>{inline(branch)}</td><td>{inline(writes)}</td></tr>")
+                f"<td>{inline(branch)}</td><td>{inline(writes)}</td><td>{tag}</td></tr>")
 
     steps = {s["id"]: s for s in d["steps"]}
     out = ['<header class="hero"><div class="eyebrow">Cuevik Plugins · Commands</div><h1>Every command</h1></header>']
@@ -700,13 +759,15 @@ def commands_html(d, t1, t2):
                 continue
             if p == "cuevik-start" and cid in steps:
                 s = steps[cid]
-                rows.append(row(f"/{p}:{cid}", what, ", ".join(s["reviewers"]), f"`{s['branch']}` → `main`", ", ".join(f"`{o}`" for o in s["outputs"])))
+                rows.append(row(f"/{p}:{cid}", what, ", ".join(s["reviewers"]), f"`{s['branch']}` → `main`", ", ".join(f"`{o}`" for o in s["outputs"]),
+                                status_of(p, cid, d["skills"])))
             else:
                 branch, pr_to, writes, you = t2[(pl, cid)]
-                rows.append(row(f"/{p}:{cid}", what, you, f"{branch} → {pr_to}" if branch != "—" else "—", writes))
-        cols = "".join(f'<col style="width:{w}%">' for w in (27, 27, 10, 19, 17))
+                rows.append(row(f"/{p}:{cid}", what, you, f"{branch} → {pr_to}" if branch != "—" else "—", writes,
+                                status_of(p, cid, d["skills"])))
+        cols = "".join(f'<col style="width:{w}%">' for w in (24, 25, 9, 19, 14, 9))
         out.append(f'<h3>{PLUGIN_TITLE[p]}</h3><div class="tbl"><table class="cmds"><colgroup>{cols}</colgroup><thead><tr><th>Command</th>'
-                   f'<th>What it does</th><th>Approved by</th><th>Branch → PR to</th><th>Writes</th></tr></thead>'
+                   f'<th>What it does</th><th>Approved by</th><th>Branch → PR to</th><th>Writes</th><th>Status</th></tr></thead>'
                    f'<tbody>{"".join(rows)}</tbody></table></div>')
     return page_html("Cuevik Plugins — Commands", "".join(out), LANDSCAPE)
 
@@ -748,15 +809,15 @@ def build(walk, over, d, t1, t2):
 
 def main():
     ap = argparse.ArgumentParser(description="Build the Cuevik Plugins guides.")
-    ap.add_argument("--write", action="store_true", help="refresh the generated blocks in the Walkthrough .md")
+    ap.add_argument("--write", action="store_true", help="refresh the generated blocks and status tags in the .md sources")
     ap.add_argument("--check", action="store_true", help="run the checks only; write nothing")
     ap.add_argument("--release", action="store_true", help="require exact plugin versions")
     args = ap.parse_args()
     d = load()
     walk, over = WALK.read_text(encoding="utf-8"), OVER.read_text(encoding="utf-8")
-    t1, t2 = command_table(walk, T1, 3), command_table(walk, T2, 5)
+    t1, t2 = command_table(walk, T1, 3, status=True), command_table(walk, T2, 5)
     checks(walk, over, d, t1, t2, args.release)
-    walk = sync_blocks(walk, d, t1, t2, args.write)
+    walk, over = sync(walk, over, d, t1, t2, args.write)
     if args.check:
         print("checks passed")
         return

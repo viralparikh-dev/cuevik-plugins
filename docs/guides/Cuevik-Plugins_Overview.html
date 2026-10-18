@@ -90,6 +90,9 @@ td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:var(--text-xs);font-weight:600;border:1px solid var(--border);white-space:nowrap}
+.tag.available{background:var(--info-muted);border-color:var(--info-border);color:var(--info)}
+.tag.planned{background:var(--card);border-style:dashed;border-color:var(--muted-foreground);color:var(--muted-foreground)}
 .facts{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-sm);line-height:var(--leading-snug)}
 
 /* by-actor diagrams */
@@ -107,6 +110,8 @@ figure.sw{margin:10px 0 14px;break-inside:avoid}
 .sw .dash{fill:var(--card);stroke:var(--muted-foreground);stroke-width:1.2;stroke-dasharray:4 3}
 .sw .pill{fill:var(--foreground)}
 .sw .pill-t{font-size:9px;font-weight:600;letter-spacing:0.06em;fill:var(--card)}
+.sw .tg{stroke-width:1} .sw .tg-a{fill:var(--info-muted);stroke:var(--info-border)} .sw .tg-p{fill:var(--card);stroke:var(--muted-foreground);stroke-dasharray:3 2}
+.sw .tg-t{font-size:8.5px;font-weight:600} .sw .tg-t.a{fill:var(--info)} .sw .tg-t.p{fill:var(--muted-foreground)}
 .sw .ttl{font-size:12.5px;font-weight:600}
 .sw .mono{font-family:var(--font-mono);font-size:10px;fill:var(--primary-text)}
 .sw .note{font-size:10.5px;fill:var(--muted-foreground)}
@@ -134,7 +139,7 @@ h2.pb{break-before:page;margin-top:0}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
   figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
-table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{padding:4px 10px} .tbl{margin:6px 0 10px}</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Overview</div><h1 id="cuevik-plugins-overview">Cuevik Plugins — Overview</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>Cuevik Start, Cuevik Ship, Cuevik Docs</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude Code plugins that take a software project from an empty folder to delivered work, with every document and change reviewed and approved by a person before it counts.</p></header>
+table{table-layout:fixed} th:first-child,td:first-child{width:285px} th:last-child,td:last-child{width:88px} table{font-size:12.5px} th,td{padding:3px 10px} .tbl{margin:4px 0 8px} h3{margin:12px 0 4px}</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Overview</div><h1 id="cuevik-plugins-overview">Cuevik Plugins — Overview</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>Cuevik Start, Cuevik Ship, Cuevik Docs</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude Code plugins that take a software project from an empty folder to delivered work, with every document and change reviewed and approved by a person before it counts.</p></header>
 
 
 <hr/>
@@ -157,59 +162,72 @@ table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{paddi
 
 
 
-<div class="keep k2"><h2 class="pb" id="every-command">Every command</h2><h3 id="cuevik-start_1">Cuevik Start</h3></div>
+<div class="keep k2"><h2 class="pb" id="every-command">Every command</h2><p>Commands tagged <strong>Planned</strong> are in design and arrive as they are built.</p></div>
 
+<h3 id="cuevik-start_1">Cuevik Start</h3>
 <div class="tbl"><table>
 <thead>
 <tr>
 <th>Command</th>
 <th>What it does</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>/cuevik-start:00-bootstrap</code></td>
-<td>Connects your GitHub repo and sets the working rules.</td>
+<td>Connects your GitHub repo and sets working rules.</td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:01-product-concept</code></td>
 <td>Captures what the product is, who it is for and why.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:02-product-requirements</code></td>
-<td>Turns the concept into clear, testable requirements.</td>
+<td>Turns the concept into testable requirements.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:03-architecture</code></td>
 <td>Designs how the system fits together, and why.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:04-tech-stack</code></td>
 <td>Chooses and locks the technologies to be used.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:05-ai-tool-guide</code></td>
 <td>Sets the rules AI coding assistants must follow.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:06-readme</code></td>
 <td>Writes the project's front page, ready to share.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:07-backlog</code></td>
 <td>Breaks the requirements into a prioritised backlog.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:08-finalize</code></td>
-<td>Hands over the permanent rules and closes out setup.</td>
+<td>Hands over permanent rules and closes out setup.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:status</code></td>
 <td>Shows how far project setup has got.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:cleanup</code></td>
 <td>Tidies up after setup is complete.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -218,40 +236,49 @@ table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{paddi
 <tr>
 <th>Command</th>
 <th>What it does</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>/cuevik-ship:01-brainstorm</code></td>
-<td>Explores a new idea and decides whether it goes ahead.</td>
+<td>Explores a new idea and decides if it goes ahead.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:02-audit-prd</code></td>
 <td>Checks the idea against the requirements.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:03-create-backlog</code></td>
 <td>Turns approved requirements into tracked work.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:04-plan-intent</code></td>
 <td>States the problem and scope before any solution.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:05-design-spec</code></td>
-<td>Writes the detailed design: behaviour, data and tests.</td>
+<td>Writes the design: behaviour, data and tests.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:06-build-plan</code></td>
 <td>Turns the design into an ordered list of tasks.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:07-execute-plan</code></td>
 <td>Builds the plan and delivers it for review.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:cleanup</code></td>
 <td>Tidies up once the work is delivered.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 </tbody>
 </table></div></div>
@@ -261,16 +288,19 @@ table{table-layout:fixed} th:first-child,td:first-child{width:285px} th,td{paddi
 <tr>
 <th>Command</th>
 <th>What it does</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>/cuevik-docs:audit</code></td>
 <td>Reviews documents for gaps, contradictions and repeats.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-docs:update</code></td>
 <td>Changes a core document through the same review.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 </tbody>
 </table></div></div>

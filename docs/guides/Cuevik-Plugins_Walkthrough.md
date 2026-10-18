@@ -16,6 +16,8 @@ Three plugins with one rule: every document and change reaches `main` through a 
 | `cuevik-ship` | Deliver one issue at a time, from idea to code PR | `01`–`07`, `cleanup` |
 | `cuevik-docs` | Audit and update source-of-truth documents | `audit`, `update` |
 
+Each command carries a tag. **Available** means you can install and run it today. **Planned** means it is described here from the design and is not installable yet. The tags are generated from the plugins, so they change as commands are built.
+
 ---
 
 ## 2. Install and prerequisites
@@ -62,10 +64,6 @@ Run commands in your project folder (the repo root), in a new Claude Code sessio
 5. On your approval it pushes and opens the PR, with a summary and the reviewer checklist.
 6. You review and merge on GitHub, then start the next step in a new session.
 
-### What lands in your repo
-
-Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` holds the project board's ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
-
 ---
 
 ## 4. The flow by actor
@@ -81,18 +79,18 @@ Lanes are the document owners from the project's lineage. Every command is `/cue
 ```mermaid
 flowchart TB
   subgraph PO["Product Owner"]
-    M1["01 · Product Concept<br/>01-product-concept"]
-    M2["02 · Requirements<br/>02-product-requirements"]
+    M1["01 · Product Concept<br/>01-product-concept<br/>Planned"]
+    M2["02 · Requirements<br/>02-product-requirements<br/>Planned"]
     S3_1["Product Owner co-reviews"]
-    M7["07 · Initial Backlog<br/>07-backlog"]
+    M7["07 · Initial Backlog<br/>07-backlog<br/>Planned"]
   end
   subgraph AR["Architect"]
     M0["00 · Bootstrap<br/>00-bootstrap"]
-    M3["03 · Architecture<br/>03-architecture"]
-    M4["04 · Tech Stack<br/>04-tech-stack"]
-    M5["05 · AI Tool Guide<br/>05-ai-tool-guide"]
-    M6["06 · README<br/>06-readme"]
-    M8["08 · Finalize Governance<br/>08-finalize"]
+    M3["03 · Architecture<br/>03-architecture<br/>Planned"]
+    M4["04 · Tech Stack<br/>04-tech-stack<br/>Planned"]
+    M5["05 · AI Tool Guide<br/>05-ai-tool-guide<br/>Planned"]
+    M6["06 · README<br/>06-readme<br/>Planned"]
+    M8["08 · Finalize Governance<br/>08-finalize<br/>Planned"]
   end
   subgraph GH["GitHub"]
     S0_0["PR → main"]
@@ -146,14 +144,14 @@ flowchart TB
     S7_0["Confirm the list"]
   end
   subgraph CL["Claude"]
-    M0["01 · Brainstorm<br/>01-brainstorm"]
-    M1["02 · Audit PRD<br/>02-audit-prd"]
-    M2["03 · Create Backlog<br/>03-create-backlog"]
-    M3["04 · Plan Intent<br/>04-plan-intent"]
-    M4["05 · Design Spec<br/>05-design-spec"]
-    M5["06 · Build Plan<br/>06-build-plan"]
-    M6["07 · Execute Plan<br/>07-execute-plan"]
-    M7["Clean up<br/>cleanup"]
+    M0["01 · Brainstorm<br/>01-brainstorm<br/>Planned"]
+    M1["02 · Audit PRD<br/>02-audit-prd<br/>Planned"]
+    M2["03 · Create Backlog<br/>03-create-backlog<br/>Planned"]
+    M3["04 · Plan Intent<br/>04-plan-intent<br/>Planned"]
+    M4["05 · Design Spec<br/>05-design-spec<br/>Planned"]
+    M5["06 · Build Plan<br/>06-build-plan<br/>Planned"]
+    M6["07 · Execute Plan<br/>07-execute-plan<br/>Planned"]
+    M7["Clean up<br/>cleanup<br/>Planned"]
   end
   subgraph GH["GitHub"]
     S0_1["PR → …/issue"]
@@ -205,8 +203,8 @@ flowchart TB
     S1_0["Review and merge"]
   end
   subgraph CL["Claude"]
-    M0["Audit<br/>audit"]
-    M1["Update<br/>update"]
+    M0["Audit<br/>audit<br/>Planned"]
+    M1["Update<br/>update<br/>Planned"]
   end
   subgraph GH["GitHub"]
     S0_1["No PR"]
@@ -227,11 +225,13 @@ flowchart TB
 
 Nine steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage.
 
+Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` holds the project board's ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
+
 ### 00-bootstrap
 
 <!-- gen:step-00-bootstrap -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** —  ·  **Writes:** `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json`, `.markdownlint.json`  ·  **Then:** `/cuevik-start:01-product-concept`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** —  ·  **Writes:** `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json`, `.markdownlint.json`  ·  **Then:** `/cuevik-start:01-product-concept`
 
 <!-- /gen:step-00-bootstrap -->
 
@@ -259,7 +259,7 @@ Not yet tested: linking a user-owned board to an organisation-owned repo.
 
 <!-- gen:step-01-product-concept -->
 
-**Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** —  ·  **Writes:** `docs/PRODUCT.md`  ·  **Then:** `/cuevik-start:02-product-requirements`
+**Status:** Planned  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** —  ·  **Writes:** `docs/PRODUCT.md`  ·  **Then:** `/cuevik-start:02-product-requirements`
 
 <!-- /gen:step-01-product-concept -->
 
@@ -269,7 +269,7 @@ Defines what the product is, who it is for and why it exists. Claude interviews 
 
 <!-- gen:step-02-product-requirements -->
 
-**Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`  ·  **Writes:** `docs/PRD.md`  ·  **Then:** `/cuevik-start:03-architecture`
+**Status:** Planned  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`  ·  **Writes:** `docs/PRD.md`  ·  **Then:** `/cuevik-start:03-architecture`
 
 <!-- /gen:step-02-product-requirements -->
 
@@ -288,7 +288,7 @@ The Product Owner blocks the PR if:
 
 <!-- gen:step-03-architecture -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect, Product Owner  ·  **Reads:** `docs/PRD.md`  ·  **Writes:** `docs/ARCHITECTURE.md`  ·  **Then:** `/cuevik-start:04-tech-stack`
+**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect, Product Owner  ·  **Reads:** `docs/PRD.md`  ·  **Writes:** `docs/ARCHITECTURE.md`  ·  **Then:** `/cuevik-start:04-tech-stack`
 
 <!-- /gen:step-03-architecture -->
 
@@ -300,7 +300,7 @@ Every significant decision is written as **Context, Decision, Alternatives rejec
 
 <!-- gen:step-04-tech-stack -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-ai-tool-guide`
+**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-ai-tool-guide`
 
 <!-- /gen:step-04-tech-stack -->
 
@@ -312,7 +312,7 @@ It then appends a tooling layer (build, test and lint commands) to `CONTRIBUTING
 
 <!-- gen:step-05-ai-tool-guide -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`  ·  **Then:** `/cuevik-start:06-readme`
+**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`  ·  **Then:** `/cuevik-start:06-readme`
 
 <!-- /gen:step-05-ai-tool-guide -->
 
@@ -324,7 +324,7 @@ The guide has ten sections: Project Context, Coding Conventions, Scope Boundarie
 
 <!-- gen:step-06-readme -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:07-backlog`
+**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:07-backlog`
 
 <!-- /gen:step-06-readme -->
 
@@ -334,7 +334,7 @@ Replaces the repo's boilerplate README with the project's real entry point, buil
 
 <!-- gen:step-07-backlog -->
 
-**Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md`  ·  **Writes:** `docs/BACKLOG.md`  ·  **Then:** `/cuevik-start:08-finalize`
+**Status:** Planned  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md`  ·  **Writes:** `docs/BACKLOG.md`  ·  **Then:** `/cuevik-start:08-finalize`
 
 <!-- /gen:step-07-backlog -->
 
@@ -346,7 +346,7 @@ After setup, GitHub is the backlog. `docs/BACKLOG.md` is a snapshot and stays fr
 
 <!-- gen:step-08-finalize -->
 
-**Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/TECH-STACK.md`  ·  **Writes:** `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:cleanup`
+**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/TECH-STACK.md`  ·  **Writes:** `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:cleanup`
 
 <!-- /gen:step-08-finalize -->
 
@@ -354,10 +354,25 @@ Ends initiation. It reads `CONTRIBUTING.md` from `main`, removes the fenced `INI
 
 Initiation is complete when this PR is merged.
 
-### status and cleanup
+### status
 
-- `/cuevik-start:status` is read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.
-- `/cuevik-start:cleanup` deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
+<!-- gen:cmd-cuevik-start-status -->
+
+**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Nothing (report only)  ·  **You:** Read the report
+
+<!-- /gen:cmd-cuevik-start-status -->
+
+Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.
+
+### cleanup
+
+<!-- gen:cmd-cuevik-start-cleanup -->
+
+**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Deletes merged local `init/*` branches  ·  **You:** Confirm the list
+
+<!-- /gen:cmd-cuevik-start-cleanup -->
+
+Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
 
 To revise a document after its step is merged, use `/cuevik-docs:update <document>` instead of re-running the step.
 
@@ -381,7 +396,7 @@ Takes one idea, or one existing issue, from brainstorm to a merged code PR: seve
 
 <!-- gen:cmd-cuevik-ship-01-brainstorm -->
 
-**Branch:** `ship/<n>-<slug>/01-brainstorm`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** GitHub issue and brainstorming folder  ·  **You:** Approve or reject, then merge
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/01-brainstorm`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** GitHub issue and brainstorming folder  ·  **You:** Approve or reject, then merge
 
 <!-- /gen:cmd-cuevik-ship-01-brainstorm -->
 
@@ -398,7 +413,7 @@ Takes an idea or an existing issue number.
 
 <!-- gen:cmd-cuevik-ship-02-audit-prd -->
 
-**Branch:** `ship/<n>-<slug>/02-audit-prd` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** `PRODUCT.md` and `PRD.md` changes  ·  **You:** Review and merge
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/02-audit-prd` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** `PRODUCT.md` and `PRD.md` changes  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-02-audit-prd -->
 
@@ -413,7 +428,7 @@ Checks the approved idea against `docs/PRODUCT.md` and `docs/PRD.md`, and ratifi
 
 <!-- gen:cmd-cuevik-ship-03-create-backlog -->
 
-**Branch:** none  ·  **PR to:** none  ·  **Writes:** GitHub issues: epic and stories  ·  **You:** Approve the list
+**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** GitHub issues: epic and stories  ·  **You:** Approve the list
 
 <!-- /gen:cmd-cuevik-ship-03-create-backlog -->
 
@@ -429,7 +444,7 @@ Turns the ratified requirements into GitHub issues. It writes to GitHub only; it
 
 <!-- gen:cmd-cuevik-ship-04-plan-intent -->
 
-**Branch:** `ship/<n>-<slug>/04-plan-intent`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `intent.md` in the work folder  ·  **You:** Review and merge
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/04-plan-intent`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `intent.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-04-plan-intent -->
 
@@ -439,7 +454,7 @@ States the problem and scope before any solution is proposed, in `intent.md` in 
 
 <!-- gen:cmd-cuevik-ship-05-design-spec -->
 
-**Branch:** `ship/<n>-<slug>/05-design-spec`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `spec.md` in the work folder  ·  **You:** Review and merge
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/05-design-spec`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `spec.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-05-design-spec -->
 
@@ -449,7 +464,7 @@ Writes `spec.md` in the work folder: behaviour, data, rules and tests. If a late
 
 <!-- gen:cmd-cuevik-ship-06-build-plan -->
 
-**Branch:** `ship/<n>-<slug>/06-build-plan`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `plan.md` in the work folder  ·  **You:** Review and merge
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/06-build-plan`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `plan.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-06-build-plan -->
 
@@ -459,7 +474,7 @@ Turns the spec into `plan.md`: a dependency-ordered task list that a fresh sessi
 
 <!-- gen:cmd-cuevik-ship-07-execute-plan -->
 
-**Branch:** `ship/<n>-<slug>/07-execute-plan` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** The code  ·  **You:** Review and merge the code PR
+**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/07-execute-plan` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** The code  ·  **You:** Review and merge the code PR
 
 <!-- /gen:cmd-cuevik-ship-07-execute-plan -->
 
@@ -469,7 +484,7 @@ Builds the plan on a code branch cut from `main`, reading `plan.md` from the iss
 
 <!-- gen:cmd-cuevik-ship-cleanup -->
 
-**Branch:** none  ·  **PR to:** none  ·  **Writes:** Worktree, local branches, archive tag  ·  **You:** Confirm the list
+**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Worktree, local branches, archive tag  ·  **You:** Confirm the list
 
 <!-- /gen:cmd-cuevik-ship-cleanup -->
 
@@ -491,7 +506,7 @@ Two commands for the source-of-truth documents named in `.cuevik/lineage.json`. 
 
 <!-- gen:cmd-cuevik-docs-audit -->
 
-**Branch:** none  ·  **PR to:** none  ·  **Writes:** A findings report  ·  **You:** Read the report
+**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** A findings report  ·  **You:** Read the report
 
 <!-- /gen:cmd-cuevik-docs-audit -->
 
@@ -507,7 +522,7 @@ The lineage decides which documents are audited. `/cuevik-ship:02-audit-prd` cal
 
 <!-- gen:cmd-cuevik-docs-update -->
 
-**Branch:** `docs/update/<doc>`  ·  **PR to:** `main`  ·  **Writes:** The document, via PR  ·  **You:** Review and merge
+**Status:** Planned  ·  **Branch:** `docs/update/<doc>`  ·  **PR to:** `main`  ·  **Writes:** The document, via PR  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-docs-update -->
 
@@ -540,29 +555,29 @@ What a change to each document flags, from the default lineage:
 
 ### What each command does
 
-| Command | Title | What it does |
-|---|---|---|
-| `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. |
-| `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. |
-| `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). |
-| `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. |
-| `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. |
-| `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. |
-| `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. |
-| `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. |
-| `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. |
-| `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. |
-| `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. |
-| `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. |
-| `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. |
-| `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. |
-| `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. |
-| `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. |
-| `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. |
-| `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. |
-| `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. |
-| `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). |
-| `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. |
+| Command | Title | What it does | Status |
+|---|---|---|---|
+| `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. | Available |
+| `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Planned |
+| `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Planned |
+| `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Planned |
+| `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Planned |
+| `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Planned |
+| `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
+| `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Planned |
+| `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Planned |
+| `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Planned |
+| `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Planned |
+| `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Planned |
+| `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Planned |
+| `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Planned |
+| `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Planned |
+| `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Planned |
+| `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |
+| `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
+| `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
+| `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Planned |
+| `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Planned |
 
 ### Branches and files (ship, docs and utility commands)
 

@@ -90,6 +90,9 @@ td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:var(--text-xs);font-weight:600;border:1px solid var(--border);white-space:nowrap}
+.tag.available{background:var(--info-muted);border-color:var(--info-border);color:var(--info)}
+.tag.planned{background:var(--card);border-style:dashed;border-color:var(--muted-foreground);color:var(--muted-foreground)}
 .facts{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-sm);line-height:var(--leading-snug)}
 
 /* by-actor diagrams */
@@ -107,6 +110,8 @@ figure.sw{margin:10px 0 14px;break-inside:avoid}
 .sw .dash{fill:var(--card);stroke:var(--muted-foreground);stroke-width:1.2;stroke-dasharray:4 3}
 .sw .pill{fill:var(--foreground)}
 .sw .pill-t{font-size:9px;font-weight:600;letter-spacing:0.06em;fill:var(--card)}
+.sw .tg{stroke-width:1} .sw .tg-a{fill:var(--info-muted);stroke:var(--info-border)} .sw .tg-p{fill:var(--card);stroke:var(--muted-foreground);stroke-dasharray:3 2}
+.sw .tg-t{font-size:8.5px;font-weight:600} .sw .tg-t.a{fill:var(--info)} .sw .tg-t.p{fill:var(--muted-foreground)}
 .sw .ttl{font-size:12.5px;font-weight:600}
 .sw .mono{font-family:var(--font-mono);font-size:10px;fill:var(--primary-text)}
 .sw .note{font-size:10.5px;fill:var(--muted-foreground)}
@@ -142,7 +147,6 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#2-install-and-prerequisites">2. Install and prerequisites</a></li>
 <li><a href="#3-how-it-works">3. How it works</a><ul>
 <li><a href="#what-happens-inside-a-step">What happens inside a step</a></li>
-<li><a href="#what-lands-in-your-repo">What lands in your repo</a></li>
 </ul>
 </li>
 <li><a href="#4-the-flow-by-actor">4. The flow by actor</a><ul>
@@ -161,7 +165,8 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#06-readme">06-readme</a></li>
 <li><a href="#07-backlog">07-backlog</a></li>
 <li><a href="#08-finalize">08-finalize</a></li>
-<li><a href="#status-and-cleanup">status and cleanup</a></li>
+<li><a href="#status">status</a></li>
+<li><a href="#cleanup">cleanup</a></li>
 </ul>
 </li>
 <li><a href="#6-cuevik-ship-deliver-one-issue-at-a-time">6. cuevik-ship: deliver one issue at a time</a><ul>
@@ -173,7 +178,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#05-design-spec">05-design-spec</a></li>
 <li><a href="#06-build-plan">06-build-plan</a></li>
 <li><a href="#07-execute-plan">07-execute-plan</a></li>
-<li><a href="#cleanup">cleanup</a></li>
+<li><a href="#cleanup_1">cleanup</a></li>
 </ul>
 </li>
 <li><a href="#7-cuevik-docs-keep-the-documents-true">7. cuevik-docs: keep the documents true</a><ul>
@@ -219,6 +224,7 @@ h2.pb{break-before:page;margin-top:0}
 </tr>
 </tbody>
 </table></div>
+<p>Each command carries a tag. <strong>Available</strong> means you can install and run it today. <strong>Planned</strong> means it is described here from the design and is not installable yet. The tags are generated from the plugins, so they change as commands are built.</p>
 <hr/>
 <div class="keep k2"><h2 id="2-install-and-prerequisites"><span class="num">2</span>Install and prerequisites</h2><p>Before you install:</p></div>
 
@@ -257,8 +263,6 @@ h2.pb{break-before:page;margin-top:0}
 <li>On your approval it pushes and opens the PR, with a summary and the reviewer checklist.</li>
 <li>You review and merge on GitHub, then start the next step in a new session.</li>
 </ol>
-<div class="keep k3"><h3 id="what-lands-in-your-repo">What lands in your repo</h3><p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> holds the project board's ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p></div>
-
 <hr/>
 <div class="keep k2"><h2 class="pg" id="4-the-flow-by-actor"><span class="num">4</span>The flow by actor</h2><p>Who acts at each step, one diagram per plugin. They are also the three pages of <code>Cuevik-Plugins_WalkthroughByActor.pdf</code>.</p></div>
 
@@ -299,6 +303,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="108">Bootstrap</text>
 <text class="mono" x="294" y="123">00-bootstrap</text>
 <text class="note" x="294" y="137">CONTRIBUTING.md + 3 more</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="70"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="81">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
 <text class="ttl" x="548" y="107">PR → main</text>
 <text class="note" x="548" y="124">Approved by Architect</text>
@@ -308,6 +314,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="40" y="194">Product Concept</text>
 <text class="mono" x="40" y="209">01-product-concept</text>
 <text class="note" x="40" y="223">docs/PRODUCT.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="184" y="156"></rect>
+<text class="tg-t p" text-anchor="middle" x="207.0" y="167">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
 <text class="ttl" x="548" y="193">PR → main</text>
 <text class="note" x="548" y="210">Approved by Product Owner</text>
@@ -317,6 +325,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="40" y="280">Requirements</text>
 <text class="mono" x="40" y="295">02-product-requirements</text>
 <text class="note" x="40" y="309">docs/PRD.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="184" y="242"></rect>
+<text class="tg-t p" text-anchor="middle" x="207.0" y="253">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="258"></rect>
 <text class="ttl" x="548" y="279">PR → main</text>
 <text class="note" x="548" y="296">Approved by Product Owner</text>
@@ -326,6 +336,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="366">Architecture</text>
 <text class="mono" x="294" y="381">03-architecture</text>
 <text class="note" x="294" y="395">docs/ARCHITECTURE.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="328"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="339">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="344"></rect>
 <text class="ttl" x="548" y="365">PR → main</text>
 <text class="note" x="548" y="382">Approved by Architect + Product Owner</text>
@@ -337,6 +349,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="452">Tech Stack</text>
 <text class="mono" x="294" y="467">04-tech-stack</text>
 <text class="note" x="294" y="481">docs/TECH-STACK.md + 1 more</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="414"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="425">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="430"></rect>
 <text class="ttl" x="548" y="451">PR → main</text>
 <text class="note" x="548" y="468">Approved by Architect</text>
@@ -346,6 +360,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="538">AI Tool Guide</text>
 <text class="mono" x="294" y="553">05-ai-tool-guide</text>
 <text class="note" x="294" y="567">docs/AI-TOOL-GUIDE.md + 2 more</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="500"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="511">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="516"></rect>
 <text class="ttl" x="548" y="537">PR → main</text>
 <text class="note" x="548" y="554">Approved by Architect</text>
@@ -355,6 +371,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="624">README</text>
 <text class="mono" x="294" y="639">06-readme</text>
 <text class="note" x="294" y="653">README.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="586"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="597">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
 <text class="ttl" x="548" y="623">PR → main</text>
 <text class="note" x="548" y="640">Approved by Architect</text>
@@ -364,6 +382,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="40" y="710">Initial Backlog</text>
 <text class="mono" x="40" y="725">07-backlog</text>
 <text class="note" x="40" y="739">docs/BACKLOG.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="184" y="672"></rect>
+<text class="tg-t p" text-anchor="middle" x="207.0" y="683">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
 <text class="ttl" x="548" y="709">PR → main</text>
 <text class="note" x="548" y="726">Approved by Product Owner</text>
@@ -373,6 +393,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="796">Finalize Governance</text>
 <text class="mono" x="294" y="811">08-finalize</text>
 <text class="note" x="294" y="825">CONTRIBUTING.md</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="758"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="769">Planned</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="774"></rect>
 <text class="ttl" x="548" y="795">PR → main</text>
 <text class="note" x="548" y="812">Approved by Architect</text>
@@ -419,6 +441,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="108">Brainstorm</text>
 <text class="mono" x="294" y="123">01-brainstorm</text>
 <text class="note" x="294" y="137">GitHub issue and brainstorming folder</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="70"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="81">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
 <text class="note" x="40" y="115">Approve or reject, then merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
@@ -430,6 +454,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="194">Audit PRD</text>
 <text class="mono" x="294" y="209">02-audit-prd</text>
 <text class="note" x="294" y="223">PRODUCT.md and PRD.md changes</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="156"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="167">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="183"></rect>
 <text class="note" x="40" y="201">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
@@ -441,6 +467,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="280">Create Backlog</text>
 <text class="mono" x="294" y="295">03-create-backlog</text>
 <text class="note" x="294" y="309">GitHub issues: epic and stories</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="242"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="253">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="269"></rect>
 <text class="note" x="40" y="287">Approve the list</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="258"></rect>
@@ -452,6 +480,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="366">Plan Intent</text>
 <text class="mono" x="294" y="381">04-plan-intent</text>
 <text class="note" x="294" y="395">intent.md in the work folder</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="328"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="339">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="355"></rect>
 <text class="note" x="40" y="373">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="344"></rect>
@@ -463,6 +493,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="452">Design Spec</text>
 <text class="mono" x="294" y="467">05-design-spec</text>
 <text class="note" x="294" y="481">spec.md in the work folder</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="414"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="425">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="441"></rect>
 <text class="note" x="40" y="459">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="430"></rect>
@@ -474,6 +506,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="538">Build Plan</text>
 <text class="mono" x="294" y="553">06-build-plan</text>
 <text class="note" x="294" y="567">plan.md in the work folder</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="500"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="511">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="527"></rect>
 <text class="note" x="40" y="545">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="516"></rect>
@@ -485,6 +519,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="624">Execute Plan</text>
 <text class="mono" x="294" y="639">07-execute-plan</text>
 <text class="note" x="294" y="653">The code</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="586"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="597">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="613"></rect>
 <text class="note" x="40" y="631">Review and merge the code PR</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
@@ -496,6 +532,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="710">Clean up</text>
 <text class="mono" x="294" y="725">cleanup</text>
 <text class="note" x="294" y="739">Worktree, local branches, archive tag</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="672"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="683">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="699"></rect>
 <text class="note" x="40" y="717">Confirm the list</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
@@ -526,6 +564,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="108">Audit</text>
 <text class="mono" x="294" y="123">audit</text>
 <text class="note" x="294" y="137">A findings report</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="70"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="81">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
 <text class="note" x="40" y="115">Read the report</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
@@ -537,6 +577,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="194">Update</text>
 <text class="mono" x="294" y="209">update</text>
 <text class="note" x="294" y="223">The document, via PR</text>
+<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="156"></rect>
+<text class="tg-t p" text-anchor="middle" x="461.0" y="167">Planned</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="183"></rect>
 <text class="note" x="40" y="201">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
@@ -546,7 +588,8 @@ h2.pb{break-before:page;margin-top:0}
 <hr/>
 <div class="keep k2"><h2 id="5-cuevik-start-set-up-a-project"><span class="num">5</span>cuevik-start: set up a project</h2><p>Nine steps, run in order, one session and one PR each. Each step reads the documents before it from <code>main</code>, so the order matters. Every command is <code>/cuevik-start:&lt;name&gt;</code> and runs on branch <code>init/&lt;name&gt;</code>. The line under each heading is generated from the plugin's own step registry and lineage.</p></div>
 
-<div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
+<p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> holds the project board's ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p>
+<div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
 
 <p>Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it lists every change and waits for a separate <code>yes</code> on each.</p>
 <ul>
@@ -567,10 +610,10 @@ h2.pb{break-before:page;margin-top:0}
 <li>No plugin files (runner, registry, templates, roles) in the diff.</li>
 </ul>
 <p>Not yet tested: linking a user-owned board to an organisation-owned repo.</p>
-<div class="keep k3"><h3 id="01-product-concept">01-product-concept</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:02-product-requirements</code></p></div>
+<div class="keep k3"><h3 id="01-product-concept">01-product-concept</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:02-product-requirements</code></p></div>
 
 <p>Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner and pushes back: every feature must answer <em>what user problem does this solve?</em>, and nothing technical belongs here. The result is <code>docs/PRODUCT.md</code> with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.</p>
-<div class="keep k3"><h3 id="02-product-requirements">02-product-requirements</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Writes:</strong> <code>docs/PRD.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:03-architecture</code></p></div>
+<div class="keep k3"><h3 id="02-product-requirements">02-product-requirements</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Writes:</strong> <code>docs/PRD.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:03-architecture</code></p></div>
 
 <p>Turns the concept into numbered, testable requirements. The result is <code>docs/PRD.md</code> with twelve sections: Overview, Target Users, Problem Statements, Features / Capabilities, User Stories, Functional Requirements, Non-Functional Requirements, Acceptance Criteria, Out of Scope (This Release), Dependencies &amp; Assumptions, Constraints (Non-Architectural), Risks &amp; Edge Cases.</p>
 <p>The Product Owner blocks the PR if:</p>
@@ -582,34 +625,35 @@ h2.pb{break-before:page;margin-top:0}
 <li>out-of-scope items are implied instead of listed</li>
 <li>requirements lack unique IDs</li>
 </ul>
-<div class="keep k3"><h3 id="03-architecture">03-architecture</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>  ·  <strong>Writes:</strong> <code>docs/ARCHITECTURE.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:04-tech-stack</code></p></div>
+<div class="keep k3"><h3 id="03-architecture">03-architecture</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>  ·  <strong>Writes:</strong> <code>docs/ARCHITECTURE.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:04-tech-stack</code></p></div>
 
 <p>Designs the system from the requirements. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
 <p>Every significant decision is written as <strong>Context, Decision, Alternatives rejected, Trade-offs</strong>. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.</p>
-<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
+<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
 
 <p>Locks the approved technologies and the trade-offs behind them. The result is <code>docs/TECH-STACK.md</code> with six sections: Languages &amp; Frameworks, Datastores, Cloud &amp; Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions &amp; Constraints.</p>
 <p>It then appends a tooling layer (build, test and lint commands) to <code>CONTRIBUTING.md</code>, using only technologies approved in <code>TECH-STACK.md</code> and leaving the governance layer from <code>00-bootstrap</code> untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.</p>
-<div class="keep k3"><h3 id="05-ai-tool-guide">05-ai-tool-guide</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-readme</code></p></div>
+<div class="keep k3"><h3 id="05-ai-tool-guide">05-ai-tool-guide</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-readme</code></p></div>
 
 <p>Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes <code>docs/AI-TOOL-GUIDE.md</code> and only the adapter files for those tools (<code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>). The shared rules live in the guide; each adapter holds only tool-specific settings.</p>
 <p>The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.</p>
-<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
+<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
 
 <p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed, and every command in the README is run before it is committed.</p>
-<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
+<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
 
 <p>Derives epics and stories from the product concept and the PRD, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
 <p>After setup, GitHub is the backlog. <code>docs/BACKLOG.md</code> is a snapshot and stays frozen.</p>
-<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
+<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
 
 <p>Ends initiation. It reads <code>CONTRIBUTING.md</code> from <code>main</code>, removes the fenced <code>INITIATION-ONLY</code> block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with <code>/cuevik-docs:update</code>. If the markers are missing it stops rather than guess which lines to delete.</p>
 <p>Initiation is complete when this PR is merged.</p>
-<div class="keep k3"><h3 id="status-and-cleanup">status and cleanup</h3><ul>
-<li><code>/cuevik-start:status</code> is read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.</li>
-<li><code>/cuevik-start:cleanup</code> deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</li>
-</ul></div>
+<div class="keep k3"><h3 id="status">status</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Nothing (report only)  ·  <strong>You:</strong> Read the report</p></div>
 
+<p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session.</p>
+<div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
+
+<p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</p>
 <p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
 <div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads the board's ids from <code>.cuevik/config.json</code>. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 8.</p></div>
@@ -624,7 +668,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>References.</strong> The issue description carries a <code>## References</code> section between <code>&lt;!-- cuevik-ship:references --&gt;</code> markers: links to the issue's files, never file content. Every command refreshes it, so do not edit between the markers.</li>
 <li><strong>Labels only.</strong> <code>idea</code>, <code>epic</code>, <code>story</code> and <code>priority:*</code>. GitHub issue types are not used, because user-owned repos do not have them.</li>
 </ul>
-<div class="keep k3"><h3 id="01-brainstorm">01-brainstorm</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/01-brainstorm</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> GitHub issue and brainstorming folder  ·  <strong>You:</strong> Approve or reject, then merge</p></div>
+<div class="keep k3"><h3 id="01-brainstorm">01-brainstorm</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/01-brainstorm</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> GitHub issue and brainstorming folder  ·  <strong>You:</strong> Approve or reject, then merge</p></div>
 
 <p>Takes an idea or an existing issue number.</p>
 <ul>
@@ -635,7 +679,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>The outcome</strong> is the PR into the issue branch. If you reject the idea, that PR is the record, and the issue is closed as <em>not planned</em> once you say yes. An abandoned idea is closed the same way and cleaned up like a rejection.</li>
 <li><strong>The board.</strong> An idea may land on the project board, and its card carries through when the idea becomes a story.</li>
 </ul>
-<div class="keep k3"><h3 id="02-audit-prd">02-audit-prd</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/02-audit-prd</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> <code>PRODUCT.md</code> and <code>PRD.md</code> changes  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="02-audit-prd">02-audit-prd</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/02-audit-prd</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> <code>PRODUCT.md</code> and <code>PRD.md</code> changes  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Checks the approved idea against <code>docs/PRODUCT.md</code> and <code>docs/PRD.md</code>, and ratifies it into new or changed requirements. It uses <code>/cuevik-docs:audit</code> for the check.</p>
 <ul>
@@ -644,7 +688,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>The ratification record</strong> is a machine-readable block in this PR's body, plus a <code>Docs PR:</code> line in the issue's References. The brainstorm file keeps only step 01's decision.</li>
 <li><strong>Rejection here</strong> is a comment on the issue and closing it, with no PR.</li>
 </ul>
-<div class="keep k3"><h3 id="03-create-backlog">03-create-backlog</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> GitHub issues: epic and stories  ·  <strong>You:</strong> Approve the list</p></div>
+<div class="keep k3"><h3 id="03-create-backlog">03-create-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> GitHub issues: epic and stories  ·  <strong>You:</strong> Approve the list</p></div>
 
 <p>Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write <code>docs/BACKLOG.md</code>, which is what <code>/cuevik-start:07-backlog</code> does once at setup.</p>
 <ul>
@@ -654,19 +698,19 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>The board.</strong> Issues are added to the project board only from a local session.</li>
 <li><strong>The gate for step 04.</strong> Step 04 checks that the References have an <code>Epic:</code> line and that the issue no longer has the <code>idea</code> label.</li>
 </ul>
-<div class="keep k3"><h3 id="04-plan-intent">04-plan-intent</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/04-plan-intent</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>intent.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="04-plan-intent">04-plan-intent</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/04-plan-intent</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>intent.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>States the problem and scope before any solution is proposed, in <code>intent.md</code> in the issue's work folder. It creates the issue branch and worktree when the issue has none: a bug fix or refactor starts here, and so does each extra story from a split.</p>
-<div class="keep k3"><h3 id="05-design-spec">05-design-spec</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/05-design-spec</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>spec.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="05-design-spec">05-design-spec</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/05-design-spec</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>spec.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Writes <code>spec.md</code> in the work folder: behaviour, data, rules and tests. If a later step changes an earlier file, the issue's References are refreshed.</p>
-<div class="keep k3"><h3 id="06-build-plan">06-build-plan</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/06-build-plan</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>plan.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="06-build-plan">06-build-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/06-build-plan</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>plan.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Turns the spec into <code>plan.md</code>: a dependency-ordered task list that a fresh session can execute.</p>
-<div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
+<div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
 
 <p>Builds the plan on a code branch cut from <code>main</code>, reading <code>plan.md</code> from the issue branch, and opens the code PR to <code>main</code>. That PR carries only the code, so no <code>docs/ship/</code> file reaches <code>main</code>. Its <code>Closes #n</code> is what closes the issue, and the final References refresh happens here.</p>
-<div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
+<div class="keep k3"><h3 id="cleanup_1">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
 
 <p><code>/cuevik-ship:cleanup &lt;issue#&gt;</code> removes everything local for an issue and keeps what the links need.</p>
 <ul>
@@ -679,7 +723,7 @@ h2.pb{break-before:page;margin-top:0}
 <hr/>
 <div class="keep k2"><h2 id="7-cuevik-docs-keep-the-documents-true"><span class="num">7</span>cuevik-docs: keep the documents true</h2><p>Two commands for the source-of-truth documents named in <code>.cuevik/lineage.json</code>. <code>cuevik-start</code> and <code>cuevik-ship</code> both depend on this plugin, so it installs with them. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
 
-<div class="keep k3"><h3 id="audit">audit</h3><p class="facts"><strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> A findings report  ·  <strong>You:</strong> Read the report</p></div>
+<div class="keep k3"><h3 id="audit">audit</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> A findings report  ·  <strong>You:</strong> Read the report</p></div>
 
 <p>Reads the project's documents once and runs three lenses over them:</p>
 <ul>
@@ -688,7 +732,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>Absorb.</strong> Two files that say the same thing twice, and which copy is better.</li>
 </ul>
 <p>The lineage decides which documents are audited. <code>/cuevik-ship:02-audit-prd</code> calls it.</p>
-<div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Revises one source-of-truth document after its step has merged. Use it any time reality diverges from a document, instead of re-running the step.</p>
 <ul>
@@ -748,6 +792,7 @@ h2.pb{break-before:page;margin-top:0}
 <th>Command</th>
 <th>Title</th>
 <th>What it does</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
@@ -755,106 +800,127 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:00-bootstrap</code></td>
 <td class="nw">Bootstrap</td>
 <td>Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR.</td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:01-product-concept</code></td>
 <td>Product Concept</td>
 <td>Drafts the product concept with you: what it is, who it is for and why it exists.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:02-product-requirements</code></td>
 <td class="nw">Requirements</td>
 <td>Turns the concept into numbered, testable requirements (the PRD).</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:03-architecture</code></td>
 <td class="nw">Architecture</td>
 <td>Designs the system: components, data, integrations and the decisions behind them.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:04-tech-stack</code></td>
 <td class="nw">Tech Stack</td>
 <td>Locks the approved technologies and the build, test and lint commands.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:05-ai-tool-guide</code></td>
 <td>AI Tool Guide</td>
 <td>Sets the rules for AI coding assistants and generates the files each one reads.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:06-readme</code></td>
 <td class="nw">README</td>
 <td>Replaces the boilerplate README with the project's real entry point.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:07-backlog</code></td>
 <td>Initial Backlog</td>
 <td>Derives epics and stories from the product docs and files them as GitHub issues.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:08-finalize</code></td>
 <td>Finalize Governance</td>
 <td>Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:status</code></td>
 <td class="nw">Status</td>
 <td>Shows how far initiation has got, from what is merged on GitHub. Read-only.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:cleanup</code></td>
 <td class="nw">Clean up</td>
 <td>Deletes local <code>init/*</code> branches whose PR is merged, after listing them for your confirmation.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:01-brainstorm</code></td>
 <td class="nw">Brainstorm</td>
 <td>Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:02-audit-prd</code></td>
 <td class="nw">Audit PRD</td>
 <td>Checks the approved idea against the product docs and ratifies it into new or changed requirements.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:03-create-backlog</code></td>
 <td>Create Backlog</td>
 <td>Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:04-plan-intent</code></td>
 <td class="nw">Plan Intent</td>
 <td>States the problem and scope, before any solution, in the issue's own work folder.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:05-design-spec</code></td>
 <td class="nw">Design Spec</td>
 <td>Writes the spec: behaviour, data, rules and tests.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:06-build-plan</code></td>
 <td class="nw">Build Plan</td>
 <td>Turns the spec into a dependency-ordered task list that a fresh session can execute.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:07-execute-plan</code></td>
 <td class="nw">Execute Plan</td>
 <td>Builds the plan on a code branch and opens the code PR to <code>main</code>.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:cleanup</code></td>
 <td class="nw">Clean up</td>
 <td>Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-docs:audit</code></td>
 <td class="nw">Audit</td>
 <td>Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb).</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-docs:update</code></td>
 <td class="nw">Update</td>
 <td>Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents.</td>
+<td class="nw"><span class="tag planned">Planned</span></td>
 </tr>
 </tbody>
 </table></div>
