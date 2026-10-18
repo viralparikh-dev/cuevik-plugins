@@ -232,7 +232,8 @@ Built in Phase 09; recorded here so the step is designed with it.
 Status visual = a progress line in `status` (A) plus initiation issues on the board (D). An HTML
 report (C) was dropped.
 
-- `00-bootstrap` files an `Initiation` epic and one story per later step (01–08), as sub-issues of
+- `00-bootstrap` files an `Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per
+  later step (e.g. `INIT-01: Product Concept`), as sub-issues of
   the epic, added to the board. Step 00 has none: the board does not exist until bootstrap creates
   it. A re-run reuses issues by exact title.
 - Label `initiation` only, never `epic` / `story` (D5): those feed `07-backlog` and cuevik-ship's
@@ -247,7 +248,14 @@ report (C) was dropped.
 - `status` prints `<one cell per step> <merged>/<steps> · next: <id>` above its table.
 - Bootstrap assigns every initiation issue to the user who runs it and sets `Priority` and `Size`
   from `steps.yml` (`storyPriority`, `storySize`; all High, sizes XS–LG); the epic gets High.
-  Efforts, Sprint and Target date stay empty.
+  `Efforts` gets hours from `storyEfforts` (4/12/12/6/6/3/8/1, 52h; the epic is left to the
+  board's sum). Target date stays empty.
+- Sprint: on a board whose `Sprint` field has no sprints at all, bootstrap creates `Sprint-00`
+  (today, the field's duration) and puts all 9 issues in it; format `Sprint-NN`. Any existing
+  sprint, completed included: nothing is created. Hard rule, because `updateProjectV2Field`
+  replaces the whole sprint list (verified on the sandbox: completed sprints were dropped).
+  Template #3 carried completed `Sprint01`/`Sprint02` from its org original; the user removes
+  them so copies start with none.
 - Runner §7 at each step's start: its story gets `Start date` = today and Status `Working`; the
   previous story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
   runs). `cleanup` sets the last story's and the epic's End date. Fields are found by name; a

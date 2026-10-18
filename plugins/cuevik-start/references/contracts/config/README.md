@@ -26,7 +26,7 @@ id by name; which names a skill moves cards to is decided by that skill, not by 
 The order of `options` carries no meaning (`gh --jq` sorts keys); read the board for its order.
 
 `initiation` holds the issue numbers `00-bootstrap` creates to show initiation on the board: one
-"Initiation" epic and one story per step after `00-bootstrap` (the board does not exist before it),
+`Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per step after `00-bootstrap` (the board does not exist before it),
 keyed by step id. They carry only the `initiation` label, never `epic` or `story`, so
 `cuevik-start:07-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic lookup never pick them up.
 The merged PR stays the source of truth for a step; the issues only mirror it.

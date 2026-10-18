@@ -236,13 +236,13 @@ once approved there, in this order:
    - Existing: `gh issue list --label initiation --state all --limit 100 --json number,title,state,url`.
      Reuse an open issue whose title matches exactly; create only the missing ones. A matching
      issue that is closed: say so and ask whether to reopen it (`gh issue reopen <n>`) or stop.
-   - Epic, title `Initiation`:
-     `gh issue create --label initiation --assignee @me --title "Initiation" --body "<body>"`. Body: `Tracks
+   - Epic, title `Epic: Project Initiation`:
+     `gh issue create --label initiation --assignee @me --title "Epic: Project Initiation" --body "<body>"`. Body: `Tracks
      project initiation with /cuevik-start. Each sub-issue closes when its step's PR merges into
      main; the last step's PR closes this epic.` It prints the issue URL; the number is its last
      path segment.
-   - One story per step, title `Initiation <NN>: <title>` (`<NN>` is the id's two-digit prefix,
-     `<title>` the step's `title`), e.g. `Initiation 01: Product Concept`. Body: `Run
+   - One story per step, title `INIT-<NN>: <title>` (`<NN>` is the id's two-digit prefix,
+     `<title>` the step's `title`), e.g. `INIT-01: Product Concept`. Body: `Run
      /cuevik-start:<id> in a new session. Writes <primary output>. Closes when the <branch> PR
      merges into main.` Create it the same way, with `--assignee @me`.
    - Assignee: every initiation issue is assigned to the signed-in user who runs bootstrap
@@ -261,6 +261,37 @@ once approved there, in this order:
      `gh project item-edit --id <item id> --project-id <project id> --field-id <field id> --single-select-option-id <option id>`.
      A board without the field, or without that option: skip it and say so in the PR body. Never
      create fields or options.
+   - Efforts: set the `Efforts` number field on each story's item to the step's `storyEfforts`
+     (hours): `gh project item-edit ... --field-id <field id> --number <hours>`. Leave the epic's
+     empty: the board sums its stories. No `Efforts` field: skip, as above.
+   - Sprint: only on a board whose `Sprint` iteration field has **no sprints at all** (current,
+     upcoming or completed). Read them:
+
+     ```sh
+     gh api graphql -f o=<board-owner> -F n=<number> -f query='
+       query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
+         field(name:"Sprint"){... on ProjectV2IterationField{id configuration{duration
+           iterations{id title} completedIterations{id title}}}}}}}}' \
+       --jq '.data.repositoryOwner.projectV2.field'
+     ```
+
+     - Both lists empty: create `Sprint-00`, starting today, for the field's `duration` in days.
+       This call **replaces the field's whole sprint list**, which is why it runs only when the
+       list is empty:
+
+       ```sh
+       gh api graphql -f fid=<field id> -f d=<YYYY-MM-DD> -F len=<duration> -f query='
+         mutation($fid:ID!,$d:Date!,$len:Int!){updateProjectV2Field(input:{fieldId:$fid,
+           iterationConfiguration:{startDate:$d,duration:$len,iterations:[{title:"Sprint-00",
+           startDate:$d,duration:$len}]}}){projectV2Field{... on ProjectV2IterationField{
+           configuration{iterations{id title}}}}}}'
+       ```
+
+       Then put the epic and every story in it:
+       `gh project item-edit ... --field-id <field id> --iteration-id <Sprint-00 id>`.
+     - Any sprint already there: create none and leave the items' Sprint empty. Later sprints
+       follow the same name format: `Sprint-01`, `Sprint-02`, ….
+     - No `Sprint` iteration field: skip and say so in the PR body.
 
    Report the epic and story numbers; §F writes them to `.cuevik/config.json`.
 5. **Board workflows.** The initiation cards move only through the board's own workflows. These
@@ -366,7 +397,7 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
   linked now or already linked.
 - Repo settings changed: auto-delete head branches.
 - Initiation issues: the epic and each story, by number, created now or reused; assignee, and the
-  Priority and Size set (or skipped because the board lacks the field or option).
+  Priority, Size and Efforts set, and Sprint-00 created and used (or each skipped, with why).
 - Board workflows: which of the seven (§E.5) are on, and that `Auto-add to project` filters this
   repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.

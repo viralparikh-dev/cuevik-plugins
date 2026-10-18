@@ -19,6 +19,7 @@
 #   replacesExisting    true when the primary output is expected on main already (runner §1.6)
 #   storyPriority,      Priority and Size option names 00-bootstrap sets on this step's initiation
 #   storySize           story, when the board has those fields and options (bootstrap §E.4)
+#   storyEfforts        hours 00-bootstrap writes to the story's Efforts field, by size and complexity
 #   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
 
 steps:
@@ -51,6 +52,7 @@ steps:
     title: Product Concept
     storyPriority: High
     storySize: SM
+    storyEfforts: 4
     branch: init/01-product-concept
     outputs:
       - docs/PRODUCT.md
@@ -63,6 +65,7 @@ steps:
     title: Product Requirements Document
     storyPriority: High
     storySize: LG
+    storyEfforts: 12
     branch: init/02-product-requirements
     outputs:
       - docs/PRD.md
@@ -75,6 +78,7 @@ steps:
     title: Architecture
     storyPriority: High
     storySize: LG
+    storyEfforts: 12
     branch: init/03-architecture
     outputs:
       - docs/ARCHITECTURE.md
@@ -87,6 +91,7 @@ steps:
     title: Tech Stack
     storyPriority: High
     storySize: MD
+    storyEfforts: 6
     branch: init/04-tech-stack
     outputs:
       - docs/TECH-STACK.md
@@ -102,6 +107,7 @@ steps:
     title: AI Tool Guide
     storyPriority: High
     storySize: MD
+    storyEfforts: 6
     branch: init/05-ai-tool-guide
     outputs:
       - docs/AI-TOOL-GUIDE.md
@@ -123,6 +129,7 @@ steps:
     title: README
     storyPriority: High
     storySize: SM
+    storyEfforts: 3
     branch: init/06-readme
     outputs:
       - README.md
@@ -140,6 +147,7 @@ steps:
     title: Initial Backlog
     storyPriority: High
     storySize: MD
+    storyEfforts: 8
     branch: init/07-backlog
     outputs:
       - docs/BACKLOG.md
@@ -156,6 +164,7 @@ steps:
     title: Finalize Governance
     storyPriority: High
     storySize: XS
+    storyEfforts: 1
     branch: init/08-finalize
     outputs:
       - CONTRIBUTING.md
