@@ -14,7 +14,8 @@
 #   branch              working branch, always init/<id>
 #   outputs             files the step writes; the first is the primary output
 #   conditionalOutputs  true when some outputs are written only if the step's skill says so
-#   template            file under references/templates/ that owns the primary output's structure
+#   template            file in the step's own folder, skills/<id>/, that owns the primary output's
+#                       structure (shared parts: references/_writing-rules.md, _doc-references.md)
 #   replacesExisting    true when the primary output is expected on main already (runner §1.6)
 #   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
 
@@ -34,7 +35,7 @@ steps:
     specialPreconditions:
       - "gh is authenticated with the repo and project scopes, in a local session (cloud sessions cannot reach Projects v2)."
     specialActions:
-      - "Make the current folder a git repo if it is not one, and connect or create the GitHub repo as origin (DECISIONS §3). List and confirm every create first."
+      - "Make the current folder a git repo if it is not one, and connect or create the GitHub repo as origin (skills/00-bootstrap/SKILL.md §B). List and confirm every create first."
       - "Connect or create and link the project board, then read its ids back into .cuevik/config.json."
       - "Write .cuevik/lineage.json with the default lineage."
       - "Write .markdownlint.json at the repo root (default rules, MD013 off, MD024 siblings_only) so _writing-rules' lint rule has a config to run against."

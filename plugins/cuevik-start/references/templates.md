@@ -13,10 +13,10 @@ change the section content model the step skills enforce.
 
 | Layer | Owns | Lives in |
 | --- | --- | --- |
-| Template | Structure — the literal headings and their order | `templates/<DOC>.template.md` |
+| Template | Structure — the literal headings and their order | `skills/<id>/<DOC>.template.md` |
 | Step skill | Meaning — what each section must contain | `skills/<id>/SKILL.md` |
-| Writing rules | The shared writing standard | `templates/_writing-rules.md` |
-| References | The cross-document map | `templates/_doc-references.md` |
+| Writing rules | The shared writing standard | `references/_writing-rules.md` |
+| References | The cross-document map | `references/_doc-references.md` |
 | Lineage | Owner, upstream and downstream of each document | the project's `.cuevik/lineage.json` |
 
 The template and the step skill describe the same sections from two angles. The
@@ -29,7 +29,8 @@ the template heading exactly.
 
 `references/runner.md` §4 drives this. For a document-producing step:
 
-1. Load the template named in the step's `template:` field (`references/steps.yml`).
+1. Load the template named in the step's `template:` field (`references/steps.yml`),
+   from the step's own folder, `skills/<id>/`.
 2. Fill the header block — `Owner`, `Last updated`, `Source of truth for`, and
    `Derived from` / `Downstream`. `Owner`, `Derived from` and `Downstream` come
    from the document's entry in `.cuevik/lineage.json` (downstream is derived by
@@ -51,15 +52,15 @@ references table (see that template).
 
 ## Inventory
 
-| Template | Document | Notes |
-| --- | --- | --- |
-| `PRODUCT.template.md` | PRODUCT.md | Full skeleton |
-| `PRD.template.md` | PRD.md | Full skeleton + TOC |
-| `ARCHITECTURE.template.md` | ARCHITECTURE.md | Full skeleton + TOC |
-| `TECH-STACK.template.md` | TECH-STACK.md | Full skeleton |
-| `README.template.md` | README.md | Header-block exception |
-| `AI-TOOL-GUIDE.template.md` | AI-TOOL-GUIDE.md | Main doc only; adapters excluded |
-| `BACKLOG.template.md` | BACKLOG.md | Manifest skeleton |
+| Template | Step folder | Document | Notes |
+| --- | --- | --- | --- |
+| `PRODUCT.template.md` | `skills/01-product-concept/` | PRODUCT.md | Full skeleton |
+| `PRD.template.md` | `skills/02-product-requirements/` | PRD.md | Full skeleton + TOC |
+| `ARCHITECTURE.template.md` | `skills/03-architecture/` | ARCHITECTURE.md | Full skeleton + TOC |
+| `TECH-STACK.template.md` | `skills/04-tech-stack/` | TECH-STACK.md | Full skeleton |
+| `README.template.md` | `skills/06-readme/` | README.md | Header-block exception |
+| `AI-TOOL-GUIDE.template.md` | `skills/05-ai-tool-guide/` | AI-TOOL-GUIDE.md | Main doc only; adapters excluded |
+| `BACKLOG.template.md` | `skills/07-backlog/` | BACKLOG.md | Manifest skeleton |
 
 `CONTRIBUTING.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` are not
 templated here — they are appended layers or tool config with preserved blocks,

@@ -1,8 +1,7 @@
 # Contract: `.cuevik/lineage.json`
 
 The project's source-of-truth documents: which `cuevik-start` step writes each one, which documents
-it is written from, and who owns and reviews it. Replaces the `upstream` / `owner` / `reviewer`
-fields of kickstart's `_steps.yml` and the hardcoded dependency map in `doc-update.md`.
+it is written from, and who owns and reviews it.
 
 | File | What it is |
 |---|---|
@@ -29,13 +28,12 @@ From the default lineage:
 
 ## Choices in the default
 
-- Upstream links follow `_steps.yml`, which is broader than `doc-update.md`'s map (a PRD or
-  ARCHITECTURE change also flags README).
+- Upstream links are broad on purpose: a PRD or ARCHITECTURE change also flags README.
 - `CONTRIBUTING.md` is written by three steps (`00` governance, `04` tooling layer, `08` finalize).
-  Its upstream is `docs/TECH-STACK.md`, because the tooling layer is written from it.
-  `_steps.yml` gave step 05 (now `04`) the PRD and ARCHITECTURE as upstream; those describe
-  TECH-STACK's inputs. Step 09's (now `08`) BACKLOG upstream was a run gate, not a content source.
-- `docs/BACKLOG.md` is `frozen` (D7): GitHub is the backlog after initiation. Consumers skip it
+  Its upstream is `docs/TECH-STACK.md`, because the tooling layer is written from it. The PRD and
+  ARCHITECTURE are TECH-STACK's inputs, not CONTRIBUTING's, and `08-finalize` needs BACKLOG merged
+  only as a run gate, not as a content source.
+- `docs/BACKLOG.md` is `frozen`: GitHub is the backlog after initiation. Consumers skip it
   when flagging downstream updates.
 - Tool adapters (`CLAUDE.md`, `.github/copilot-instructions.md`) are not listed. They are
   conditional outputs of `05-ai-tool-guide`, not source-of-truth documents.

@@ -61,23 +61,24 @@ Two-digit numbered steps; utilities unnumbered.
   - Repo: if the current folder has no GitHub `origin`, ask for owner, name and visibility. An
     existing repo is connected as `origin`. A missing one is created with
     `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
-  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is copied
-    with `gh project copy` from a template board the skill asks for, default `viralparikh-dev/3`
-    (public; decided 2026-10-17), and linked with `gh project link`. Unreadable answer: fall back
-    to the default; unreadable default: the operator picks an existing board or a blank one
-    (`gh project create`). Its ids are then read back into `.cuevik/config.json` (contract:
-    `contracts/config/`).
+  - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is either
+    copied with `gh project copy` from a template board the operator names as `<owner>/<number>`,
+    or created blank (`gh project create`), and linked with `gh project link`. **No default
+    template** (changed 2026-10-18, §7): the skill never suggests one. An unreadable template means
+    ask again: another template, blank, or an existing board. Its ids are then read back into
+    `.cuevik/config.json` (contract: `contracts/config/`).
   - No plugin `userConfig` for the template: in the Phase 03 sandbox test
     `${user_config.board_template}` reached the skill unsubstituted (cause unknown), so the skill
     asks instead.
-  - Template `viralparikh-dev/3` is a copy of the team's org template: fields, views and all
+  - The team's template is `viralparikh-dev/3` (public), which operators name at the prompt; the
+    plugin does not know it. It is a copy of the team's org template: fields, views and all
     workflows copied identically, except the org's Priority (an org-level field with no options)
     became a Priority field with Urgent/High/Medium/Low. User-owned boards cannot carry GitHub's
     "template" flag; a copy does not need it.
   - Needs the `project` token scope and a local session: cloud sessions cannot reach Projects v2.
   - Unverified: linking a board owned by a user to a repo owned by an organisation (not covered by
     the sandbox or tx-QE4AIApps, both user-owned), and copying the public template as another user.
-    The second is tested in the end-of-plan tx-QE4AIApps run.
+    The second is tested in the end-of-plan tx-QE4AIApps run, naming `viralparikh-dev/3`.
 - Old Step-01 (repo setup / governance / `CONTRIBUTING.md`) is **merged into `00-bootstrap`**;
   steps renumbered 00–08 with no gap.
 - Each step opens a PR to `main`; the next step refuses to run until that PR is merged.
@@ -184,3 +185,33 @@ list below, **this list wins** (D2 and D13 override it).
 `03-create-backlog` covers both epic and stories. Overlaps in wording with
 `/cuevik-start:07-backlog` (which writes `docs/BACKLOG.md`); the descriptions must make clear that
 03 writes GitHub issues. Its exact epic/story logic is settled by the dry run (§5).
+
+## 7. Self-contained plugins — Locked (2026-10-18)
+
+- A plugin depends on nothing outside itself: no other repo, local path, personal account or
+  plugin, except the declared `cuevik-docs` dependency. git, `gh` and GitHub are allowed.
+- Plugin files never name `cs-kickstart`, `proj-init`, `cuevikflow`, a local drive path, a
+  `viralparikh-*` account, or these temporary docs (`DECISIONS.md`, `BUILD-PLAN.md`,
+  `DRYRUN-01-03.md`, deleted in Phase 25). Anything a skill needs lives in the plugin.
+- Account-specific values are asked for at run time (e.g. the template board, §3), never defaulted.
+- `cs-kickstart` is a build-time source only; it is deleted in Phase 25 (BUILD-PLAN).
+- Templates live beside the step skill that owns them (`skills/<id>/<DOC>.template.md`); the shared
+  writing rules and reference map stay in `references/`.
+
+## 8. Team plugin setup — `05-ai-tool-guide` — Locked (2026-10-18)
+
+Built in Phase 09; recorded here so the step is designed with it.
+
+- The step writes the target repo's `.claude/settings.json`: `extraKnownMarketplaces` plus
+  `enabledPlugins`, chosen per project with the operator. Candidates:
+  - `superpowers`, `code-review`, `skill-creator`, `frontend-design` from
+    `anthropics/claude-plugins-official`;
+  - `impeccable` from `pbakaus/impeccable`;
+  - `taste-skill` from `leonxlnx/taste-skill`.
+- `graphify` is not a plugin: listed in the guide as a manual prerequisite only.
+- cuevik-start never needs any of these to run (§7). They are suggestions the operator picks from.
+- Risk for Phase 09: a hardcoded candidate list names outside repos. That is allowed (optional,
+  not a dependency), but offering the cuevik-plugins marketplace itself would hardcode an account,
+  so its source is asked for, not written into the plugin.
+- **Open:** how the claude.ai `anthropic-skills:*` (docx, pdf, xlsx, …) reach teammates who use the
+  Claude Code CLI. Not solved here.

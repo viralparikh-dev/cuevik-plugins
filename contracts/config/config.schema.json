@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/viralparikh-dev/cuevik-plugins/contracts/config/config.schema.json",
   "title": ".cuevik/config.json",
   "description": "Project facts for the cuevik plugins, committed in the project repo. Owner/repo come from the git remote; the worktree root is plugin userConfig. Neither belongs here (DECISIONS D15).",
   "type": "object",

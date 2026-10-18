@@ -1,7 +1,7 @@
 # Contract: `.cuevik/config.json`
 
 Project facts the cuevik plugins need and cannot work out on their own. Committed in the project
-repo, so every clone and every session sees the same values (DECISIONS D15).
+repo, so every clone and every session sees the same values.
 
 | File | What it is |
 |---|---|
@@ -17,7 +17,7 @@ repo, so every clone and every session sees the same values (DECISIONS D15).
 | Worktree root folder | `cuevik-ship` plugin `userConfig` (machine fact, not project fact) |
 
 The board is **required**: `00-bootstrap` asks for one and creates and links it, after
-confirmation, when it does not exist (DECISIONS §3). `project.owner` is stored because a board can
+confirmation, when it does not exist. `project.owner` is stored because a board can
 belong to a different user or organisation than the repo.
 
 `statusField.options` holds every option on the board, by the board's own names. Skills look up an

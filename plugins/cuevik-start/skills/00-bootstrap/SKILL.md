@@ -154,15 +154,14 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
    No output, or a `type` other than `ProjectV2SingleSelectField`: **STOP** — the board needs a
    single-select field named `Status`.
-6. **Template** (new board only). Ask: `Which board should the new board copy? Give
-   <owner>/<number>, or press enter for the default viralparikh-dev/3 (public).` Check the answer
-   can be read: `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
+6. **Template** (new board only). Ask: `Copy a template board? Give <owner>/<number>, or answer
+   blank for a new empty board.` There is no default: never suggest or fill in a template the
+   operator has not named. For a template, check it can be read:
+   `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
    - Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
-   - Non-zero for the operator's template: say so, then try the default `viralparikh-dev/3` the
-     same way and ask the operator to confirm using it.
-   - Non-zero for the default too: tell the operator no template can be read and why. Ask them to
-     pick an existing board, or to create a blank board, warning that a blank board gets only
-     GitHub's default Status options (`Todo`, `In Progress`, `Done`). Never pick for them.
+   - Non-zero: say so and why, then ask again: another template, `blank`, or an existing board.
+   - `blank`: warn that a blank board gets only GitHub's default Status options (`Todo`,
+     `In Progress`, `Done`) and confirm. Never pick for the operator.
 
 ## E. Remote changes
 

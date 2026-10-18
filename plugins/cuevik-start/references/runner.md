@@ -168,19 +168,20 @@ Use these token optimization rules for every step:
 - Stop asking once all required sections are complete and no placeholders remain.
 
 If the step has a `template` field, produce the primary output by filling
-`${CLAUDE_PLUGIN_ROOT}/references/templates/<template>` — do not invent the structure:
+`${CLAUDE_PLUGIN_ROOT}/skills/<id>/<template>` — the template sits beside the step's `SKILL.md`.
+Do not invent the structure:
 
 - The template owns the document's structure (its headings and their order).
 - Fill the header block from Inputs §3: `Owner` (the owner), `Last updated` (today,
   `YYYY-MM-DD`), `Source of truth for` (one line), `Derived from` (the upstream documents, or
   `(none — starting point)`), and `Downstream` (the derived downstream documents, or `(none)`).
 - Replace the `<!-- @inject: _doc-references.md -->` marker with the block between the
-  `BEGIN INJECT` / `END INJECT` markers in `${CLAUDE_PLUGIN_ROOT}/references/templates/_doc-references.md`.
+  `BEGIN INJECT` / `END INJECT` markers in `${CLAUDE_PLUGIN_ROOT}/references/_doc-references.md`.
 - Replace every `[placeholder]` with interview answers. No placeholder may remain in the committed
   document.
 - Preserve the header block, every top-level (`## N.`) heading and its order, the references
   table, and the `---` dividers. Do not add or remove top-level sections.
-- Apply `${CLAUDE_PLUGIN_ROOT}/references/templates/_writing-rules.md` to all prose, requirements,
+- Apply `${CLAUDE_PLUGIN_ROOT}/references/_writing-rules.md` to all prose, requirements,
   and tables of every generated document.
 
 If the step has `specialActions`, perform them in the order listed after the step's interview rules
