@@ -1,6 +1,6 @@
 ---
 name: 01-product-concept
-description: Step 01 of cuevik-start. Run after 00-bootstrap's PR is merged, in a new session in the project folder. Interviews the Product Owner and opens a PR adding docs/PRODUCT.md — what the product is, who it is for and why it exists. No technical choices.
+description: Step 01 of cuevik-start. Run after 00-bootstrap's PR is merged, in a new session in the project folder. Interviews the Product Owner in depth (needs superpowers:brainstorming) and opens a PR adding docs/PRODUCT.md — what the product is, who it is for and why it exists. No technical choices.
 disable-model-invocation: true
 ---
 
@@ -38,11 +38,64 @@ section must contain. Fill every section; add or drop none.
 6. **Anti-Patterns** — approach and behaviour guardrails, each with why. Not feature exclusions;
    those belong in Scope.
 
+## Precondition: superpowers
+
+The interview runs the `superpowers:brainstorming` skill, so the `superpowers` plugin from the
+`claude-plugins-official` marketplace must be installed and enabled. cuevik-start declares it as a
+dependency, so it normally comes with cuevik-start. Check it as runner §1 check 7:
+
+- Run `claude plugin list --json`. It lists `superpowers@claude-plugins-official` with
+  `"enabled": true`: proceed.
+- The `claude` command is not found (an IDE extension may not put it on the path): proceed if
+  `superpowers:brainstorming` is in this session's list of available skills.
+- Otherwise **STOP** and output these lines (the first only if that marketplace is missing, the
+  last instead of the install if the plugin is installed but disabled), then run this step in a
+  new session:
+
+  ```text
+  /plugin marketplace add anthropics/claude-plugins-official
+  /plugin install superpowers@claude-plugins-official
+  /plugin enable superpowers@claude-plugins-official
+  ```
+
 ## Interview
 
-Runner §4 rules apply: one question at a time through `AskUserQuestion` (runner, Asking The
-Operator), never assume an answer. Ask in this order, then
-write the document in template order:
+At runner §4, invoke `superpowers:brainstorming` with the Skill tool and let it lead the
+conversation: it finds out what the operator wants and why. It ranks below the runner,
+`steps.yml` and this file, so the rules below override it where they conflict: the output is
+`docs/PRODUCT.md`, not a design spec.
+
+Keep from brainstorming:
+
+- One open question per message: a single plain sentence, with no list of example answers. Ask
+  it in chat, not with `AskUserQuestion` (runner, Asking The Operator, open interview questions).
+- Questions anchored in specifics: the last time the problem happened, who was there, what it
+  cost.
+- Playback as you go: once a part is understood (the problem and who has it, say), describe it
+  back in about 200–300 words, mark your guesses as guesses, and end by asking what is wrong or
+  missing.
+- Recon (the operator's own files, or the web for prior art): read-only, only after the operator
+  says yes.
+
+Override in brainstorming:
+
+- No offer to skip the questions: every section needs the operator's answers. The first message
+  is one open question about the problem.
+- No sizing, no spike, no "how it gets made": this document holds no technology (below).
+- No visual companion unless the operator asks for one.
+- No unprompted guesses. Only when the operator asks you to guess, propose one concrete answer in
+  chat, labelled `My guess:`, never as an `AskUserQuestion` option. It is their answer only once
+  they confirm or rewrite it.
+- One section per guess, even when asked to guess several or all: guess the next section, get it
+  confirmed or rewritten, then the next.
+- No guessed numbers. Every target, threshold, baseline and time frame in Success Criteria comes
+  from the operator; a guess names the measure and asks for its number.
+- The written design is `docs/PRODUCT.md`, filled from the template (runner §4). Write no file
+  under `docs/superpowers/`, run no builder check, and invoke no other skill, `writing-plans`
+  included. Approve the draft with `AskUserQuestion` (`Yes` / `No`); after `Yes`, go on to runner
+  §5.
+
+Cover these sections, in this order, then write the document in template order:
 
 1. Problem Statement
 2. Target Users

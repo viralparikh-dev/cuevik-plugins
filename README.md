@@ -15,6 +15,7 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 - [GitHub CLI](https://cli.github.com) (`gh`), signed in with the `project` scope: `gh auth refresh -s project`
 - A GitHub account. `/cuevik-start:00-bootstrap` creates the repo and Projects board if they are missing, after you confirm each one
 - A local Claude Code session. Cloud sessions cannot reach GitHub Projects
+- The `superpowers` plugin from the official Claude marketplace (`claude-plugins-official`): `cuevik-start` installs it as a dependency, and `/cuevik-start:01-product-concept` runs its brainstorming skill for the interview
 - Read access to this repository (it is private)
 
 ## Install
