@@ -331,9 +331,20 @@ once approved there, in this order:
    - An existing board: only `Item closed` is required. List the others that are off and offer
      the same steps; the operator may decline, and the PR body says which are off.
 
-   The API shows only whether a workflow is on, not its settings (which Status `Item closed` sets,
-   or the repository in `Auto-add to project`). Ask the operator to confirm the Auto-add
-   repository and filter as set; a copied board's other settings are the template's.
+   The API shows only whether a workflow is on, not its settings, and cannot change them. The
+   runner relies on these Status values (runner §7), so show this table and ask the operator to
+   check each one on the board's Workflows page (click it, **Edit**, set the Status, **Save**):
+
+   | Workflow | Must set Status to |
+   | --- | --- |
+   | `Item added to project` | `Backlog` |
+   | `Pull request linked to issue` | `Reviewing` |
+   | `Item closed` | `Done` |
+   | `Pull request merged` | `Done` |
+
+   Then ask `Are these four set, and Auto-add to project filtered to <repo-name>?` with `Yes` /
+   `No, stop`. A board without one of these Status options: say which, and that its cards will
+   not move to it. Record the answer in the PR body.
 
 Report each result. If one fails, **STOP** and report what was done and what was not. A re-run
 finds the board in the list, sees the link, skips the setting and reuses the `initiation` issues by

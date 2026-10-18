@@ -262,7 +262,6 @@ After approval:
    `Closes #<epic>`. A `bootstrap: true` step has no story and no line. Any other step with no
    story in the config: leave the line out and say so in the PR body. Never write `Closes` for
    any other issue.
-6. Update the board (§7, PR opened).
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
 and merges the PR, and the next step refuses to run until then.
@@ -296,14 +295,18 @@ single-select field (for Status, use `project.statusField` from the config).
    (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
    it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
 
-**PR opened** (after §6, for a step with a story): this step's story `Status` = `Reviewing`. Run
-it after `gh pr create` returns, then read the item's Status back; if the board's own `Pull
-request linked to issue` workflow set something else afterwards, set `Reviewing` again once and
-report it.
+**After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
+line (§6) links the PR to the story, and the board's workflows do the rest:
 
-**Merged:** nothing to do. Merging closes the story (`Closes #<story>`), and the board's `Item
-closed` workflow sets `Done`. Status flow: `Working` (step starts) → `Reviewing` (PR opened) →
-`Done` (PR merged).
+| When | Who | Status |
+| --- | --- | --- |
+| Bootstrap adds the story | board, `Item added to project` | `Backlog` |
+| The step starts | this runner (Step start) | `Working` |
+| The step opens its PR | board, `Pull request linked to issue` | `Reviewing` |
+| The PR merges, closing the story | board, `Item closed` | `Done` |
+
+Two writers at the same moment would race, and the board's workflow runs last, which is why the
+runner does not set `Reviewing` itself. Bootstrap §E.5 has the operator set these workflows.
 
 Report the updates in one line, e.g. `Board: #2 Working, Start date 2026-10-18.`
 

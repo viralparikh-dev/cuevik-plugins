@@ -262,8 +262,10 @@ report (C) was dropped.
   replaces the whole sprint list (verified on the sandbox: completed sprints were dropped).
   Template #3 carried completed `Sprint01`/`Sprint02` from its org original; the user removes
   them so copies start with none.
-- Story Status: `Working` when its step starts, `Reviewing` when the step opens its PR (runner
-  §7), `Done` when the PR merges (the board's `Item closed` workflow).
+- Story Status: `Backlog` (board, item added) → `Working` (runner, step start) → `Reviewing`
+  (board, `Pull request linked to issue`, when the step's PR links via `Closes #n`) → `Done`
+  (board, `Item closed`). Only the board sets Status after step start: the workflow runs after
+  any runner write and overwrote it (template #3's PR-linked workflow set `Testing`).
 - Runner §7 at each step's start: its story gets `Start date` = today and Status `Working`; the
   previous story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
   runs). `cleanup` sets the last story's and the epic's End date. Fields are found by name; a
