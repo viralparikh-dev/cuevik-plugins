@@ -50,7 +50,8 @@ Plan first and wait for my approval before writing files.
 - **Self-contained (DECISIONS §7).** Plugin files never name `cs-kickstart`, `proj-init`,
   `cuevikflow`, a local path, a `viralparikh-*` account (only exception:
   `references/board-template.json`) or these temporary docs, and depend on no
-  other plugin except `cuevik-docs`. Port the content; drop the provenance.
+  other plugin except `cuevik-docs` (and, for `cuevik-start`, `superpowers`, §10). Port the
+  content; drop the provenance.
 - **Templates** live beside their step skill: `skills/<id>/<DOC>.template.md`.
 - **No hardcoded project facts.** Owner/repo from the git remote; board number and field IDs from
   `.cuevik/config.json`; worktree root from plugin `userConfig` (DECISIONS D15).
@@ -73,7 +74,7 @@ Plan first and wait for my approval before writing files.
   /plugin install cuevik-ship@cuevik-plugins
   ```
 
-  `cuevik-docs` is enabled automatically as a dependency. Start a new Claude session after each
+  `cuevik-docs` (and `superpowers`, for `cuevik-start`) is enabled automatically as a dependency. Start a new Claude session after each
   phase so the changed skill is loaded.
 - **Target:** every phase is tested on `viralparikh-dev/cuevik-sandbox` (throwaway) only.
   `tx-QE4AIApps` is tested once, after all phases are merged.
@@ -97,8 +98,8 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 03 | `cuevik-start:00-bootstrap` | `gh` auth check; repo + board: ask, or create and link on confirmation (DECISIONS §3); governance + `CONTRIBUTING.md` PR, auto-delete head branches, writes `.cuevik/config.json` + `.cuevik/lineage.json` | `00-bootstrap.md`, `01-repo-setup.md`, `bootstrap-target-repo.mjs` | ☑ |
 | 04 | `cuevik-start:status` | Step progress from git + PR state | `doc-status.md` | ☑ |
 | 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☑ |
-| 05a | Pre-06 design changes | Templates beside skills; self-contained plugin (one exception: `references/board-template.json`); bootstrap: board choice Cuevik template / your template / blank, initiation epic + `INIT-NN` stories (`initiation` label, assignee, Item Type, Priority, Size, Efforts, `Sprint-00` on an empty Sprint field), 7 workflows with required Status settings, one plan approval, no trailer on the empty commit; config v2 (`initiation`); runner: AskUserQuestion rules, `Closes #n`, board bookkeeping (Working + dates); status progress line + issue cross-check. Tested live: bootstrap on the sandbox (new repo, Cuevik template) and on tx-QE4AIApps (existing repo + board). One PR. | DECISIONS §3, §7–§9 | ◐ (this PR) |
-| 05b | 01 deep interview | `01-product-concept` interview driven by the required `superpowers:brainstorming` (its spec file and `writing-plans` hand-off switched off; PRODUCT.md is the only output); dependency mechanism; then the deferred sandbox 01 test (Working → Reviewing → Done, `Closes #2`, Start/End dates) | DECISIONS §10 | ☐ |
+| 05a | Pre-06 design changes | Templates beside skills; self-contained plugin (one exception: `references/board-template.json`); bootstrap: board choice Cuevik template / your template / blank, initiation epic + `INIT-NN` stories (`initiation` label, assignee, Item Type, Priority, Size, Efforts, `Sprint-00` on an empty Sprint field), 7 workflows with required Status settings, one plan approval, no trailer on the empty commit; config v2 (`initiation`); runner: AskUserQuestion rules, `Closes #n`, board bookkeeping (Working + dates); status progress line + issue cross-check. Tested live: bootstrap on the sandbox (new repo, Cuevik template) and on tx-QE4AIApps (existing repo + board). One PR. | DECISIONS §3, §7–§9 | ☑ |
+| 05b | 01 deep interview | `01-product-concept` interview driven by the required `superpowers:brainstorming` (its spec file and `writing-plans` hand-off switched off; PRODUCT.md is the only output); dependency mechanism; then the deferred sandbox 01 test (Working → Reviewing → Done, `Closes #2`, Start/End dates) | DECISIONS §10 | ◐ (this PR) |
 | 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ☐ |
 | 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ☐ |
 | 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ☐ |

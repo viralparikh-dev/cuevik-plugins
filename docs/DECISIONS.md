@@ -14,7 +14,7 @@ Status key: **Locked** = decided · **Proposed** = recommended, awaiting approva
 | GitHub repo | `viralparikh-dev/cuevik-plugins` (renamed 2026-10-17; local folder stays `vrp-cuevik-plugins`) |
 | Marketplace `name` | `cuevik-plugins` |
 | Plugins | `cuevik-start` (Cuevik Start), `cuevik-ship` (Cuevik Ship), `cuevik-docs` (Cuevik Docs) |
-| Dependencies | `cuevik-start` and `cuevik-ship` both declare `"dependencies": ["cuevik-docs"]` |
+| Dependencies | `cuevik-start` and `cuevik-ship` both declare `"dependencies": ["cuevik-docs"]`; `cuevik-start` also declares `superpowers@claude-plugins-official` (§10) |
 | Out of scope | `cuevikflow` (product-specific, separate repo), `db-migrate` (Supabase-specific), kickstart `audit` (kit self-check) |
 | Component type | `skills/` (preferred over `commands/` for new plugins) |
 
@@ -196,7 +196,8 @@ list below, **this list wins** (D2 and D13 override it).
 ## 7. Self-contained plugins — Locked (2026-10-18)
 
 - A plugin depends on nothing outside itself: no other repo, local path, personal account or
-  plugin, except the declared `cuevik-docs` dependency. git, `gh` and GitHub are allowed.
+  plugin, except two declared dependencies: `cuevik-docs`, and `superpowers@claude-plugins-official`
+  for `cuevik-start` (its `01-product-concept` interview, §10). git, `gh` and GitHub are allowed.
 - Plugin files never name `cs-kickstart`, `proj-init`, `cuevikflow`, a local drive path, a
   `viralparikh-*` account, or these temporary docs (`DECISIONS.md`, `BUILD-PLAN.md`,
   `DRYRUN-01-03.md`, deleted in Phase 25). Anything a skill needs lives in the plugin.
@@ -220,7 +221,9 @@ Built in Phase 09; recorded here so the step is designed with it.
   - `impeccable` from `pbakaus/impeccable`;
   - `taste-skill` from `leonxlnx/taste-skill`.
 - `graphify` is not a plugin: listed in the guide as a manual prerequisite only.
-- cuevik-start never needs any of these to run (§7). They are suggestions the operator picks from.
+- cuevik-start needs only `superpowers` to run (`01`, §10), installed with it as a dependency. The
+  rest are suggestions the operator picks from; listing `superpowers` here too makes the team's
+  repo enable it for everyone who clones it.
 - Risk for Phase 09: a hardcoded candidate list names outside repos. That is allowed (optional,
   not a dependency), but offering the cuevik-plugins marketplace itself would hardcode an account,
   so its source is asked for, not written into the plugin.
@@ -278,7 +281,7 @@ report (C) was dropped.
   never on in a template copy (it names a repo): the operator picks this repo with filter
   `is:issue,pr is:open label:bug`.
 
-## 10. Deep product interview (Phase 05b) — Locked direction (2026-10-18)
+## 10. Deep product interview (Phase 05b) — Locked (2026-10-18)
 
 - `01-product-concept` must dig deeper. Direction chosen: **require `superpowers:brainstorming`**
   (option C of A port / B use-if-installed / C require), and only that skill.
@@ -290,8 +293,28 @@ report (C) was dropped.
   recommended answers, which conflicts with "never invent an answer"; `grill-me` itself is
   user-only (`disable-model-invocation`) and would pull in the whole `mattpocock-skills` bundle.
   Reconsider grilling for steps with a draft to attack (02, 03).
-- To settle in 05b before building: whether `dependencies` can name a plugin from another
-  marketplace (else a start-of-step check that refuses to run); switching off brainstorming's
-  `docs/superpowers/specs` file and `writing-plans` hand-off (PRODUCT.md is the only output) and
-  testing that it obeys; how it fits runner §4 and Asking The Operator; the chicken-and-egg with
-  `05-ai-tool-guide` installing team plugins (01 runs first, so operators install superpowers by hand).
+- Settled in 05b:
+  - **Dependency: both.** `cuevik-start`'s `plugin.json` declares
+    `superpowers@claude-plugins-official`, and `marketplace.json` sets
+    `allowCrossMarketplaceDependenciesOn: ["claude-plugins-official"]` (without it a user with no
+    superpowers gets the install but not the dependency, and all of cuevik-start fails to load). 01
+    also checks it at start (`steps.yml` `specialPreconditions`; `claude plugin list --json`, or the
+    session's skill list when `claude` is not on the path) and stops with the install commands.
+  - Cost, accepted: every cuevik-start user gets superpowers, including its session-start hook that
+    tells Claude to use skills before any creative work, in every session and repo.
+  - No version pin: obra/superpowers tags `vX.Y.Z`, not `superpowers--vX.Y.Z`, so a `version` range
+    finds no tag. An upstream change to brainstorming reaches 01 unannounced (6.4.1 and 7.0.0
+    already differ); 01's overrides are worded to hold for both.
+  - **Overrides.** 01 invokes brainstorming at runner §4 and ranks it below the runner, `steps.yml`
+    and its own `SKILL.md`. Kept: one open question per message, real-moment anchors, 200–300-word
+    playbacks with guesses marked, read-only recon on a yes. Dropped: the skip-the-questions offer,
+    sizing, spikes, "how it gets made", the visual companion (unless asked), the builder check, the
+    `docs/superpowers/specs` file and any hand-off (`writing-plans` included). `PRODUCT.md` is the
+    only output; draft approval goes to runner §5.
+  - **Asking.** Open interview questions are plain chat sentences (a runner exception for steps
+    whose skill says so); `AskUserQuestion` stays for confirmations and choices. A guess only when
+    the operator asks, labelled `My guess:`, never as an option.
+  - Chicken-and-egg with `05-ai-tool-guide`: none left; the dependency installs superpowers before
+    01 runs.
+  - Unverified: the dependency install path itself (the sandbox account already has superpowers
+    enabled, which skips the allowlist check). Tested once in the end-of-plan tx-QE4AIApps run.

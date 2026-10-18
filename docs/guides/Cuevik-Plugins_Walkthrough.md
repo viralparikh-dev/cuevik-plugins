@@ -38,7 +38,7 @@ Install, in Claude Code:
 /plugin install cuevik-ship@cuevik-plugins
 ```
 
-`cuevik-docs` installs automatically: both other plugins depend on it.
+`cuevik-docs` installs automatically: both other plugins depend on it. `cuevik-start` also installs `superpowers` from the official Claude marketplace (`claude-plugins-official`): `01-product-concept` uses its brainstorming skill for the interview, and refuses to run without it.
 
 Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.
 
@@ -264,7 +264,7 @@ Not yet tested: linking a user-owned board to an organisation-owned repo.
 
 <!-- /gen:step-01-product-concept -->
 
-Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner and pushes back: every feature must answer *what user problem does this solve?*, and nothing technical belongs here. The result is `docs/PRODUCT.md` with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.
+Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner with the `superpowers` brainstorming skill: one open question at a time, anchored in real moments, with a short playback of what it heard after each part for you to correct. It pushes back: every feature must answer *what user problem does this solve?*, and nothing technical belongs here. The result is `docs/PRODUCT.md` with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.
 
 ### 02-product-requirements
 

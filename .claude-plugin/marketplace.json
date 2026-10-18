@@ -4,6 +4,7 @@
   "owner": {
     "name": "Viral Parikh"
   },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official"],
   "plugins": [
     {
       "name": "cuevik-start",

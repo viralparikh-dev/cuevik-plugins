@@ -240,7 +240,7 @@ h2.pb{break-before:page;margin-top:0}
 /plugin install cuevik-start@cuevik-plugins
 /plugin install cuevik-ship@cuevik-plugins
 </code></pre>
-<p><code>cuevik-docs</code> installs automatically: both other plugins depend on it.</p>
+<p><code>cuevik-docs</code> installs automatically: both other plugins depend on it. <code>cuevik-start</code> also installs <code>superpowers</code> from the official Claude marketplace (<code>claude-plugins-official</code>): <code>01-product-concept</code> uses its brainstorming skill for the interview, and refuses to run without it.</p>
 <p>Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.</p>
 <hr/>
 <h2 id="3-how-it-works"><span class="num">3</span>How it works</h2>
@@ -613,7 +613,7 @@ h2.pb{break-before:page;margin-top:0}
 <p>Not yet tested: linking a user-owned board to an organisation-owned repo.</p>
 <div class="keep k3"><h3 id="01-product-concept">01-product-concept</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:02-product-requirements</code></p></div>
 
-<p>Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner and pushes back: every feature must answer <em>what user problem does this solve?</em>, and nothing technical belongs here. The result is <code>docs/PRODUCT.md</code> with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.</p>
+<p>Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner with the <code>superpowers</code> brainstorming skill: one open question at a time, anchored in real moments, with a short playback of what it heard after each part for you to correct. It pushes back: every feature must answer <em>what user problem does this solve?</em>, and nothing technical belongs here. The result is <code>docs/PRODUCT.md</code> with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.</p>
 <div class="keep k3"><h3 id="02-product-requirements">02-product-requirements</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>  ·  <strong>Writes:</strong> <code>docs/PRD.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:03-architecture</code></p></div>
 
 <p>Turns the concept into numbered, testable requirements. The result is <code>docs/PRD.md</code> with twelve sections: Overview, Target Users, Problem Statements, Features / Capabilities, User Stories, Functional Requirements, Non-Functional Requirements, Acceptance Criteria, Out of Scope (This Release), Dependencies &amp; Assumptions, Constraints (Non-Architectural), Risks &amp; Edge Cases.</p>
