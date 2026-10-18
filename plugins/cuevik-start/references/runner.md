@@ -262,6 +262,7 @@ After approval:
    `Closes #<epic>`. A `bootstrap: true` step has no story and no line. Any other step with no
    story in the config: leave the line out and say so in the PR body. Never write `Closes` for
    any other issue.
+6. Update the board (§7, PR opened).
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
 and merges the PR, and the next step refuses to run until then.
@@ -294,6 +295,15 @@ single-select field (for Status, use `project.statusField` from the config).
    `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
    (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
    it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
+
+**PR opened** (after §6, for a step with a story): this step's story `Status` = `Reviewing`. Run
+it after `gh pr create` returns, then read the item's Status back; if the board's own `Pull
+request linked to issue` workflow set something else afterwards, set `Reviewing` again once and
+report it.
+
+**Merged:** nothing to do. Merging closes the story (`Closes #<story>`), and the board's `Item
+closed` workflow sets `Done`. Status flow: `Working` (step starts) → `Reviewing` (PR opened) →
+`Done` (PR merged).
 
 Report the updates in one line, e.g. `Board: #2 Working, Start date 2026-10-18.`
 
