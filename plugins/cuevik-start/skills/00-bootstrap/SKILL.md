@@ -35,7 +35,8 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
 3. **Runner §1 checks 1, 2 and 7** — check 7 is the `steps.yml` special precondition plus §C.
 4. **Board** (§D). Questions and reads only.
 5. **Runner §2.** Show the checks table, then the plan: every §E change that applies, with its
-   commands. Ask once: `Make these <N> changes on GitHub?` (`Yes, make all <N>` · `No, stop`).
+   commands. Ask once: `Make these <N> changes on GitHub? For more details, review my Plan that I
+   articulated above.` (`Yes, make all <N>` · `No, stop`).
 6. **Remote changes** (§E), in order, with no further confirmation. §E.5 (board workflows) then
    needs the operator in GitHub, so it guides and asks.
 7. **Runner §3** — branch `init/00-bootstrap`.

@@ -159,8 +159,10 @@ do. Nothing is created, written or pushed before it.
    Any check that fails: **STOP** with what to fix. There is no question to answer.
 2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
    writes, and every change on GitHub (with the exact commands in a fenced `sh` block below it).
-3. **Approve.** Ask once, naming the count, e.g. `Make these 4 changes on GitHub?` or
-   `Start 01 Product Concept on branch init/01-product-concept?`. Options: `Yes` (or `Yes, make
+3. **Approve.** Ask once, naming the count and pointing at the plan, e.g. `Make these 4 changes
+   on GitHub? For more details, review my Plan that I articulated above.` or `Start 01 Product
+   Concept on branch init/01-product-concept? For more details, review my Plan that I articulated
+   above.` Options: `Yes` (or `Yes, make
    all <N>`) and `No, stop` (description: the step cannot finish without them). Every change in
    the plan is required, so there is no per-change choice and no second confirmation.
 
