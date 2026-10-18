@@ -1,10 +1,10 @@
 # AI-TOOL-GUIDE.md — Rules for AI Tools
 
-**Owner:** [owner — from .cuevik/lineage.json]
-**Last updated:** [YYYY-MM-DD]
+**Owner:** [owner — from .cuevik/lineage.json]\
+**Last updated:** [YYYY-MM-DD]\
 **Source of truth for:** [one line — how AI tools must behave on this project]
 
-> Derived from: [upstream documents — from .cuevik/lineage.json]
+> Derived from: [upstream documents — from .cuevik/lineage.json]\
 > Downstream: [downstream documents — derived from .cuevik/lineage.json]
 
 <!-- @inject: _doc-references.md -->

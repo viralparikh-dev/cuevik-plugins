@@ -59,6 +59,9 @@ Every templated document except `README.md` opens with the lean header block:
   `.cuevik/lineage.json`, and the documents that reach it by following
   `upstream` links.
 
+Keep the trailing `\` on the `Owner`, `Last updated` and `Derived from` lines: it is a hard line
+break, without which GitHub renders the block as one run-on line.
+
 There is no `Status` or `Version` field. Merge to `main` is the status; git
 history is the version. A status flag in the file would only rot.
 
