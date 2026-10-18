@@ -48,7 +48,8 @@ Plan first and wait for my approval before writing files.
   stops Claude loading the skill itself; it runs only via `/name`). Not `user-invocable: false`,
   which does the opposite: hides it from the `/` menu but leaves Claude free to invoke it.
 - **Self-contained (DECISIONS §7).** Plugin files never name `cs-kickstart`, `proj-init`,
-  `cuevikflow`, a local path, a `viralparikh-*` account or these temporary docs, and depend on no
+  `cuevikflow`, a local path, a `viralparikh-*` account (only exception:
+  `references/board-template.json`) or these temporary docs, and depend on no
   other plugin except `cuevik-docs`. Port the content; drop the provenance.
 - **Templates** live beside their step skill: `skills/<id>/<DOC>.template.md`.
 - **No hardcoded project facts.** Owner/repo from the git remote; board number and field IDs from

@@ -22,7 +22,8 @@ Owner and reviewers come from the `CONTRIBUTING.md` entry of
 
 GitHub only. Run every `gh` command through the Bash tool. Ask one question at a time and never
 use a value the operator has not given or confirmed. Every question and confirmation goes through
-`AskUserQuestion` (runner, Asking The Operator); `private` is the only `(Recommended)` option here.
+`AskUserQuestion` (runner, Asking The Operator); the `(Recommended)` options here are `private`
+(§B.3) and the Cuevik template (§D.6).
 
 ## Order
 
@@ -158,14 +159,28 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
    No output, or a `type` other than `ProjectV2SingleSelectField`: **STOP** — the board needs a
    single-select field named `Status`.
-6. **Template** (new board only). Ask: `Copy a template board? Give <owner>/<number>, or answer
-   blank for a new empty board.` There is no default: never suggest or fill in a template the
-   operator has not named. For a template, check it can be read:
-   `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
-   - Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
-   - Non-zero: say so and why, then ask again: another template, `blank`, or an existing board.
-   - `blank`: warn that a blank board gets only GitHub's default Status options (`Todo`,
-     `In Progress`, `Done`) and confirm. Never pick for the operator.
+6. **Template** (new board only). Read the Cuevik template's `owner`, `number`, `title` and `url`
+   from `${CLAUDE_PLUGIN_ROOT}/references/board-template.json`; never write them from memory. Ask
+   `How should the new board start?` with these options, in this order:
+
+   | Label | Description |
+   | --- | --- |
+   | `Cuevik template (Recommended)` | `Copies <title>: fields, views and workflows ready to use.` |
+   | `Your template` | `Copies a board you choose; you pick or paste its link next.` |
+   | `Blank board` | `An empty board with only Todo, In Progress and Done.` |
+
+   - **Your template:** list the board owner's boards
+     (`gh project list --owner <board-owner> --format json --jq '.projects[] | {number, title, url}'`)
+     and ask `Which board should be copied?` with up to 3 of them as options (`<title> (#<number>)`,
+     read from GitHub), plus `Other` to paste a board link. Accept
+     `https://github.com/users/<owner>/projects/<number>`, the `orgs/` form, or `<owner>/<number>`.
+     Anything else: say what form is expected and ask again.
+   - **Check** the chosen template can be read:
+     `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
+     Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
+     Non-zero: say so and why, then ask the first question again.
+   - **Blank board:** confirm with `Yes` / `No` that a board with only GitHub's default Status
+     options and no custom fields or views is wanted. Never pick for the operator.
 
 ## E. Remote changes
 

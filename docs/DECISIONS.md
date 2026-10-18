@@ -63,15 +63,17 @@ Two-digit numbered steps; utilities unnumbered.
     `gh repo create <owner>/<name> --<visibility> --source . --push` (after `git init` if needed).
   - Board: ask which board, listing `gh project list --owner <owner>`. A missing one is either
     copied with `gh project copy` from a template board the operator names as `<owner>/<number>`,
-    or created blank (`gh project create`), and linked with `gh project link`. **No default
-    template** (changed 2026-10-18, §7): the skill never suggests one. An unreadable template means
-    ask again: another template, blank, or an existing board. Its ids are then read back into
+    or created blank (`gh project create`), and linked with `gh project link`. The question
+    offers, in order: **Cuevik template** (recommended; location in the plugin's
+    `references/board-template.json`, the one §7 exception), **Your template** (pick one of the
+    owner's boards or paste a board link), **Blank board** (decided 2026-10-18). An unreadable
+    template means ask again. Its ids are then read back into
     `.cuevik/config.json` (contract: `contracts/config/`).
   - No plugin `userConfig` for the template: in the Phase 03 sandbox test
     `${user_config.board_template}` reached the skill unsubstituted (cause unknown), so the skill
     asks instead.
-  - The team's template is `viralparikh-dev/3` (public), which operators name at the prompt; the
-    plugin does not know it. It is a copy of the team's org template: fields, views and all
+  - The Cuevik template is `viralparikh-dev/3` (public), "Cuevik Issue Tracker Template". It is a
+    copy of the team's org template: fields, views and all
     workflows copied identically, except the org's Priority (an org-level field with no options)
     became a Priority field with Urgent/High/Medium/Low. User-owned boards cannot carry GitHub's
     "template" flag; a copy does not need it.
@@ -195,7 +197,11 @@ list below, **this list wins** (D2 and D13 override it).
 - Plugin files never name `cs-kickstart`, `proj-init`, `cuevikflow`, a local drive path, a
   `viralparikh-*` account, or these temporary docs (`DECISIONS.md`, `BUILD-PLAN.md`,
   `DRYRUN-01-03.md`, deleted in Phase 25). Anything a skill needs lives in the plugin.
-- Account-specific values are asked for at run time (e.g. the template board, §3), never defaulted.
+- Account-specific values are asked for at run time, never defaulted. **One exception:**
+  `plugins/cuevik-start/references/board-template.json` names the Cuevik template board (§3). It is
+  the only file in a plugin allowed to name an account; skills read it, never hardcode it.
+  Weakness: the product's template lives on a personal account, so moving that board means editing
+  this file; long term it belongs on an organisation account.
 - `cs-kickstart` is a build-time source only; it is deleted in Phase 25 (BUILD-PLAN).
 - Templates live beside the step skill that owns them (`skills/<id>/<DOC>.template.md`); the shared
   writing rules and reference map stay in `references/`.
