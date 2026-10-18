@@ -277,3 +277,21 @@ report (C) was dropped.
   `enabled` and guides the operator through the UI until they are on. `Auto-add to project` is
   never on in a template copy (it names a repo): the operator picks this repo with filter
   `is:issue,pr is:open label:bug`.
+
+## 10. Deep product interview (Phase 05b) — Locked direction (2026-10-18)
+
+- `01-product-concept` must dig deeper. Direction chosen: **require `superpowers:brainstorming`**
+  (option C of A port / B use-if-installed / C require), and only that skill.
+- This reverses §7 and §8 for `01`: cuevik-start will need superpowers to run that step. 05b
+  rewrites §7/§8 to match.
+- Why brainstorming and not grill-me (`mattpocock/skills`, MIT): brainstorming is built for
+  discovering intent (one open question per message, real-moment anchors, 200–300-word
+  playbacks with guesses marked). grill-me stress-tests a plan in rounds with Claude's
+  recommended answers, which conflicts with "never invent an answer"; `grill-me` itself is
+  user-only (`disable-model-invocation`) and would pull in the whole `mattpocock-skills` bundle.
+  Reconsider grilling for steps with a draft to attack (02, 03).
+- To settle in 05b before building: whether `dependencies` can name a plugin from another
+  marketplace (else a start-of-step check that refuses to run); switching off brainstorming's
+  `docs/superpowers/specs` file and `writing-plans` hand-off (PRODUCT.md is the only output) and
+  testing that it obeys; how it fits runner §4 and Asking The Operator; the chicken-and-egg with
+  `05-ai-tool-guide` installing team plugins (01 runs first, so operators install superpowers by hand).
