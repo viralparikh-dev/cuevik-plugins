@@ -46,7 +46,7 @@ Commands tagged **Planned** are in design and arrive as they are built.
 | Command | What it does | Status |
 |---|---|---|
 | `/cuevik-start:00-bootstrap` | Connects your GitHub repo and sets working rules. | Available |
-| `/cuevik-start:01-product-concept` | Captures what the product is, who it is for and why. | Planned |
+| `/cuevik-start:01-product-concept` | Captures what the product is, who it is for and why. | Available |
 | `/cuevik-start:02-product-requirements` | Turns the concept into testable requirements. | Planned |
 | `/cuevik-start:03-architecture` | Designs how the system fits together, and why. | Planned |
 | `/cuevik-start:04-tech-stack` | Chooses and locks the technologies to be used. | Planned |

@@ -1,10 +1,10 @@
 # PRD.md — Product Requirements Document
 
-**Owner:** [owner — from .cuevik/lineage.json]
-**Last updated:** [YYYY-MM-DD]
+**Owner:** [owner — from .cuevik/lineage.json]\
+**Last updated:** [YYYY-MM-DD]\
 **Source of truth for:** [one line — the testable requirements for this release]
 
-> Derived from: [upstream documents — from .cuevik/lineage.json]
+> Derived from: [upstream documents — from .cuevik/lineage.json]\
 > Downstream: [downstream documents — derived from .cuevik/lineage.json]
 
 <!-- @inject: _doc-references.md -->

@@ -79,7 +79,7 @@ Lanes are the document owners from the project's lineage. Every command is `/cue
 ```mermaid
 flowchart TB
   subgraph PO["Product Owner"]
-    M1["01 · Product Concept<br/>01-product-concept<br/>Planned"]
+    M1["01 · Product Concept<br/>01-product-concept"]
     M2["02 · Requirements<br/>02-product-requirements<br/>Planned"]
     S3_1["Product Owner co-reviews"]
     M7["07 · Initial Backlog<br/>07-backlog<br/>Planned"]
@@ -259,7 +259,7 @@ Not yet tested: linking a user-owned board to an organisation-owned repo.
 
 <!-- gen:step-01-product-concept -->
 
-**Status:** Planned  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** —  ·  **Writes:** `docs/PRODUCT.md`  ·  **Then:** `/cuevik-start:02-product-requirements`
+**Status:** Available  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** —  ·  **Writes:** `docs/PRODUCT.md`  ·  **Then:** `/cuevik-start:02-product-requirements`
 
 <!-- /gen:step-01-product-concept -->
 
@@ -558,7 +558,7 @@ What a change to each document flags, from the default lineage:
 | Command | Title | What it does | Status |
 |---|---|---|---|
 | `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. | Available |
-| `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Planned |
+| `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Available |
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Planned |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Planned |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Planned |
