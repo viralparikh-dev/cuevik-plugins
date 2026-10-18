@@ -54,7 +54,7 @@ Commands tagged **Planned** are in design and arrive as they are built.
 | `/cuevik-start:06-readme` | Writes the project's front page, ready to share. | Planned |
 | `/cuevik-start:07-backlog` | Breaks the requirements into a prioritised backlog. | Planned |
 | `/cuevik-start:08-finalize` | Hands over permanent rules and closes out setup. | Planned |
-| `/cuevik-start:status` | Shows how far project setup has got. | Planned |
+| `/cuevik-start:status` | Shows how far project setup has got. | Available |
 | `/cuevik-start:cleanup` | Tidies up after setup is complete. | Planned |
 
 ### Cuevik Ship

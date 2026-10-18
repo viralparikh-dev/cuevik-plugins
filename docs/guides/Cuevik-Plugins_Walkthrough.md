@@ -358,7 +358,7 @@ Initiation is complete when this PR is merged.
 
 <!-- gen:cmd-cuevik-start-status -->
 
-**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Nothing (report only)  ·  **You:** Read the report
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Nothing (report only)  ·  **You:** Read the report
 
 <!-- /gen:cmd-cuevik-start-status -->
 
@@ -566,7 +566,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Planned |
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Planned |
-| `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Planned |
+| `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Planned |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Planned |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Planned |
