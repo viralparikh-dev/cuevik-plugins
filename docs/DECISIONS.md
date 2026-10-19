@@ -245,7 +245,8 @@ report (C) was dropped.
 - Their numbers are in `.cuevik/config.json` `initiation` (`epic`, `stories` by step id), contract
   `schemaVersion` 2.
 - The runner ends each step's PR body with `Closes #<story>`; the last step's PR also closes the
-  epic. The board's own workflows move the cards; nothing sets Status.
+  epic. The runner sets `Working` at step start (each story, and the epic while it is
+  `Backlog`); the board's workflows do the rest.
 - The merged PR stays the source of truth. `status` prints a `**Check:**` line when an issue
   disagrees (story closed with no merged PR, open after its PR merged, missing) and never changes
   a row or the Next line because of it.
@@ -271,7 +272,8 @@ report (C) was dropped.
   (board, `Item closed`). Only the board sets Status after step start: the workflow runs after
   any runner write and overwrote it (template #3's PR-linked workflow set `Testing`).
 - Runner §7 at each step's start: its story gets `Start date` = today and Status `Working`; the
-  previous story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
+  epic gets `Start date` if empty and Status `Working` while it is still `Backlog`; the previous
+  story gets `End date` = its PR's merge date (the merge happens on GitHub, when no step
   runs). `cleanup` sets the last story's and the epic's End date. Fields are found by name; a
   board without one is skipped, never changed. A failed board update never stops a step.
 - The cards move through the board's workflows. Bootstrap requires seven on for a board it
