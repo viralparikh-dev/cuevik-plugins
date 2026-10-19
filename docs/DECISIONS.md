@@ -21,6 +21,7 @@ Status key: **Locked** = decided · **Proposed** = recommended, awaiting approva
 Install:
 
 ```text
+/plugin marketplace add anthropics/claude-plugins-official   # superpowers, §10
 /plugin marketplace add viralparikh-dev/cuevik-plugins
 /plugin install cuevik-start@cuevik-plugins
 /plugin install cuevik-ship@cuevik-plugins
@@ -285,8 +286,11 @@ report (C) was dropped.
 
 - `01-product-concept` must dig deeper. Direction chosen: **require `superpowers:brainstorming`**
   (option C of A port / B use-if-installed / C require), and only that skill.
-- This reverses §7 and §8 for `01`: cuevik-start will need superpowers to run that step. 05b
-  rewrites §7/§8 to match.
+- **Reversal (2026-10-18).** `superpowers@claude-plugins-official` is a hard dependency of
+  `cuevik-start`. This explicitly reverses the Phase 05a self-contained rule (§7: no dependency on
+  any other plugin apart from `cuevik-docs`), and superpowers is its one exception. Reason: the
+  deep interview in `01` runs `superpowers:brainstorming`. §7, §8 and the BUILD-PLAN Conventions
+  list it as the allowed exception.
 - Why brainstorming and not grill-me (`mattpocock/skills`, MIT): brainstorming is built for
   discovering intent (one open question per message, real-moment anchors, 200–300-word
   playbacks with guesses marked). grill-me stress-tests a plan in rounds with Claude's
@@ -316,7 +320,17 @@ report (C) was dropped.
     the operator asks, labelled `My guess:`, never as an option; one section per guess, and no
     guessed numbers (Success Criteria targets, baselines, time frames come from the operator). Added
     after the sandbox test, where "just rewrite all once" filled five sections and invented targets.
+    Hard rule after the retest, where "just take random number" got invented targets: being told to
+    pick a number is not a number; 01 asks once more, then stops before drafting.
+  - **Skills.** Runner `## Skills`: a step invokes only a skill the runner or its `SKILL.md` names,
+    whatever a plugin injects at session start (superpowers' hook says to invoke skills before any
+    response). Retest: 01 invoked only `superpowers:brainstorming`.
+  - **Marketplace first.** Tested in a fresh `CLAUDE_CONFIG_DIR`: it has only the built-in
+    `anthropic-plugin-directory`, not `claude-plugins-official`. Installing cuevik-start then warns
+    that superpowers was not installed, and cuevik-start does not load. Adding
+    `anthropics/claude-plugins-official` installs the missing dependency on the spot (the allowlist
+    works). So the install steps add that marketplace first.
   - Chicken-and-egg with `05-ai-tool-guide`: none left; the dependency installs superpowers before
-    01 runs.
-  - Unverified: the dependency install path itself (the sandbox account already has superpowers
-    enabled, which skips the allowlist check). Tested once in the end-of-plan tx-QE4AIApps run.
+    01 runs, once the official marketplace is added.
+  - Retested on the sandbox (PR #14): one section per guess held; the number rule failed and was
+    hardened (above). The hardened rule is not retested.

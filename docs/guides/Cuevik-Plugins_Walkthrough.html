@@ -236,11 +236,12 @@ h2.pb{break-before:page;margin-top:0}
 <li>GitHub as your host. It is the only one supported.</li>
 </ul>
 <p>Install, in Claude Code:</p>
-<pre><code class="language-text">/plugin marketplace add viralparikh-dev/cuevik-plugins
+<pre><code class="language-text">/plugin marketplace add anthropics/claude-plugins-official
+/plugin marketplace add viralparikh-dev/cuevik-plugins
 /plugin install cuevik-start@cuevik-plugins
 /plugin install cuevik-ship@cuevik-plugins
 </code></pre>
-<p><code>cuevik-docs</code> installs automatically: both other plugins depend on it. <code>cuevik-start</code> also installs <code>superpowers</code> from the official Claude marketplace (<code>claude-plugins-official</code>): <code>01-product-concept</code> uses its brainstorming skill for the interview, and refuses to run without it.</p>
+<p><code>cuevik-docs</code> installs automatically: both other plugins depend on it. <code>cuevik-start</code> also installs <code>superpowers</code> from the official Claude marketplace (<code>claude-plugins-official</code>): <code>01-product-concept</code> uses its brainstorming skill for the interview, and refuses to run without it. Add the official marketplace first (the first line above): without it <code>superpowers</code> cannot install and <code>cuevik-start</code> does not load. Skip that line if <code>/plugin marketplace list</code> already shows <code>claude-plugins-official</code>.</p>
 <p>Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.</p>
 <hr/>
 <h2 id="3-how-it-works"><span class="num">3</span>How it works</h2>
