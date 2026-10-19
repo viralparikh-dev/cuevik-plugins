@@ -33,12 +33,13 @@ Before you install:
 Install, in Claude Code:
 
 ```text
+/plugin marketplace add anthropics/claude-plugins-official
 /plugin marketplace add viralparikh-dev/cuevik-plugins
 /plugin install cuevik-start@cuevik-plugins
 /plugin install cuevik-ship@cuevik-plugins
 ```
 
-`cuevik-docs` installs automatically: both other plugins depend on it. `cuevik-start` also installs `superpowers` from the official Claude marketplace (`claude-plugins-official`): `01-product-concept` uses its brainstorming skill for the interview, and refuses to run without it.
+`cuevik-docs` installs automatically: both other plugins depend on it. `cuevik-start` also installs `superpowers` from the official Claude marketplace (`claude-plugins-official`): `01-product-concept` uses its brainstorming skill for the interview, and refuses to run without it. Add the official marketplace first (the first line above): without it `superpowers` cannot install and `cuevik-start` does not load. Skip that line if `/plugin marketplace list` already shows `claude-plugins-official`.
 
 Run commands in your project folder (the repo root), in a new Claude Code session. Steps run only when you type them; Claude never starts one on its own.
 

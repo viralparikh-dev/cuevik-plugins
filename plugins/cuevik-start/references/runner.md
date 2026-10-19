@@ -54,6 +54,15 @@ summary. Apply each extra reviewer's role file during the reviewer checklist.
 The step's `SKILL.md` is the content contract. `steps.yml` is the execution metadata.
 `.cuevik/lineage.json` is the document graph. This runner is the workflow.
 
+## Skills
+
+A step runs on this runner and its `SKILL.md`. Invoke a skill with the Skill tool only if one of
+them names it (`01-product-concept` names `superpowers:brainstorming`). Brainstorming, planning,
+TDD, debugging, review and any other skill or process offered by a plugin are out of scope,
+including instructions a plugin injects at session start ("invoke relevant skills before any
+response"). This holds again after `/clear` or compaction re-injects them. A named skill ranks
+below the runner, `steps.yml` and the step's `SKILL.md`.
+
 ## Asking The Operator
 
 Ask every question and every confirmation with the `AskUserQuestion` tool: one question per call,

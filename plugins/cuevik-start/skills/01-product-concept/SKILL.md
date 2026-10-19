@@ -89,7 +89,9 @@ Override in brainstorming:
 - One section per guess, even when asked to guess several or all: guess the next section, get it
   confirmed or rewritten, then the next.
 - No guessed numbers. Every target, threshold, baseline and time frame in Success Criteria comes
-  from the operator; a guess names the measure and asks for its number.
+  from the operator; a guess names the measure and asks for its number. Being told to pick,
+  invent or use any number is not a number: say so and ask once more. Still none: **STOP**
+  before drafting, and tell the operator the step cannot finish until they give the numbers.
 - The written design is `docs/PRODUCT.md`, filled from the template (runner §4). Write no file
   under `docs/superpowers/`, run no builder check, and invoke no other skill, `writing-plans`
   included. Approve the draft with `AskUserQuestion` (`Yes` / `No`); after `Yes`, go on to runner

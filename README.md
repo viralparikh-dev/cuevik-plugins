@@ -23,6 +23,7 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 In Claude Code:
 
 ```text
+/plugin marketplace add anthropics/claude-plugins-official
 /plugin marketplace add viralparikh-dev/cuevik-plugins
 /plugin install cuevik-start@cuevik-plugins
 /plugin install cuevik-ship@cuevik-plugins
