@@ -302,7 +302,9 @@ single-select field (for Status, use `project.statusField` from the config).
 **Step start** (after §3, for a step with a story; a `bootstrap: true` step has none):
 
 1. This step's story: `Start date` = today, and `Status` = `Working`.
-2. The first step with a story also sets the epic's `Start date` = today, if it is empty.
+2. The epic: `Start date` = today if it is empty, and `Status` = `Working` if it is still
+   `Backlog`. Read its current Status from the item lookup's `.status`. Checking `Backlog`, not
+   "first step", also repairs a board where an earlier step ran before this rule.
 3. The previous step's story, if it has one: `End date` = the date its PR merged, from
    `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
    (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
@@ -317,6 +319,15 @@ line (§6) links the PR to the story, and the board's workflows do the rest:
 | The step starts | this runner (Step start) | `Working` |
 | The step opens its PR | board, `Pull request linked to issue` | `Reviewing` |
 | The PR merges, closing the story | board, `Item closed` | `Done` |
+
+The epic follows the same path over the whole initiation:
+
+| When | Who | Status |
+| --- | --- | --- |
+| Bootstrap adds the epic | board, `Item added to project` | `Backlog` |
+| A step starts and finds it in `Backlog` | this runner (Step start) | `Working` |
+| The last step's PR links it via `Closes #<epic>` | board, `Pull request linked to issue` | `Reviewing` |
+| That PR merges, closing the epic | board, `Item closed` | `Done` |
 
 Two writers at the same moment would race, and the board's workflow runs last, which is why the
 runner does not set `Reviewing` itself. Bootstrap §E.5 has the operator set these workflows.
