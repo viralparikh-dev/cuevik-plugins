@@ -81,7 +81,7 @@ Lanes are the document owners from the project's lineage. Every command is `/cue
 flowchart TB
   subgraph PO["Product Owner"]
     M1["01 · Product Concept<br/>01-product-concept"]
-    M2["02 · Requirements<br/>02-product-requirements<br/>Planned"]
+    M2["02 · Requirements<br/>02-product-requirements"]
     S3_1["Product Owner co-reviews"]
     M7["07 · Initial Backlog<br/>07-backlog<br/>Planned"]
   end
@@ -271,11 +271,11 @@ Defines what the product is, who it is for and why it exists. Claude interviews 
 
 <!-- gen:step-02-product-requirements -->
 
-**Status:** Planned  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`  ·  **Writes:** `docs/PRD.md`  ·  **Then:** `/cuevik-start:03-architecture`
+**Status:** Available  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`  ·  **Writes:** `docs/PRD.md`  ·  **Then:** `/cuevik-start:03-architecture`
 
 <!-- /gen:step-02-product-requirements -->
 
-Turns the concept into numbered, testable requirements. The result is `docs/PRD.md` with twelve sections: Overview, Target Users, Problem Statements, Features / Capabilities, User Stories, Functional Requirements, Non-Functional Requirements, Acceptance Criteria, Out of Scope (This Release), Dependencies & Assumptions, Constraints (Non-Architectural), Risks & Edge Cases.
+Turns the concept into numbered, testable requirements. Claude brainstorms each section with you as the Product Owner, one at a time: it drafts Overview to Features from `docs/PRODUCT.md`, then asks what is missing; for each capability it asks first, may offer labelled possible behaviours to pick from, attacks the drafted requirements (failures, limits, invalid input), and only then asks you to approve. Every number comes from you. The result is `docs/PRD.md` with twelve sections: Overview, Target Users, Problem Statements, Features / Capabilities, User Stories, Functional Requirements, Non-Functional Requirements, Acceptance Criteria, Out of Scope (This Release), Dependencies & Assumptions, Constraints (Non-Architectural), Risks & Edge Cases.
 
 The Product Owner blocks the PR if:
 
@@ -563,7 +563,7 @@ What a change to each document flags, from the default lineage:
 |---|---|---|---|
 | `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. | Available |
 | `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Available |
-| `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Planned |
+| `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Planned |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Planned |
 | `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Planned |
