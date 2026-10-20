@@ -1,7 +1,7 @@
 {
   "name": "cuevik-start",
   "displayName": "Cuevik Start",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Start a project the governed way: nine steps (00–08) from an empty repo to reviewed CONTRIBUTING, PRODUCT, PRD, ARCHITECTURE, TECH-STACK, AI tool guide, README and BACKLOG, each landed by a PR.",
   "author": {
     "name": "Viral Parikh"
