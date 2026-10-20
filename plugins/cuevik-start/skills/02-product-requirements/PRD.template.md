@@ -80,7 +80,7 @@ Every requirement has a unique ID; state what the system MUST / SHOULD do, never
 availability, compliance. State numbers, not adjectives. These are
 requirements, not solutions.]
 
-- [Attribute] — [measurable target, e.g. "p95 response < 200 ms"]
+- **[PRD-NNN]** — ***[attribute]*** — [measurable target, e.g. "p95 response < 200 ms"]
 
 ## 8. Acceptance Criteria
 

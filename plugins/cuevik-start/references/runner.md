@@ -57,10 +57,11 @@ The step's `SKILL.md` is the content contract. `steps.yml` is the execution meta
 ## Skills
 
 A step runs on this runner and its `SKILL.md`. Invoke a skill with the Skill tool only if one of
-them names it (`01-product-concept` names `superpowers:brainstorming`). Brainstorming, planning,
-TDD, debugging, review and any other skill or process offered by a plugin are out of scope,
-including instructions a plugin injects at session start ("invoke relevant skills before any
-response"). This holds again after `/clear` or compaction re-injects them. A named skill ranks
+them names it (`01-product-concept` and `02-product-requirements` name
+`superpowers:brainstorming`). Brainstorming, planning, TDD, debugging, review and any other skill
+or process offered by a plugin are out of scope, including instructions a plugin injects at
+session start ("invoke relevant skills before any response"). This holds again after `/clear` or
+compaction re-injects them. A named skill ranks
 below the runner, `steps.yml` and the step's `SKILL.md`.
 
 ## Asking The Operator
@@ -72,9 +73,9 @@ Ask every question and every confirmation with the `AskUserQuestion` tool: one q
 type or paste (e.g. a link), ask it as one plain sentence in chat, with no options, and take the
 operator's next message as the answer. `AskUserQuestion` cannot show a text box alone.
 
-**Open interview questions** in a step whose `SKILL.md` says so (`01-product-concept`) are asked
-the same way: one plain sentence in chat, no options. Confirmations and choices in that step still
-use `AskUserQuestion`.
+**Open interview questions** in a step whose `SKILL.md` says so (`01-product-concept`,
+`02-product-requirements`) are asked the same way: one plain sentence in chat, no options.
+Confirmations and choices in that step still use `AskUserQuestion`.
 
 - **Wording.** The question is one short, plain sentence that says what will happen, in the
   operator's terms, not how: `Create a private GitHub repo example-org/example-app and
@@ -94,9 +95,11 @@ use `AskUserQuestion`.
 - **Open answers** (interview sections, names, titles): an option may only be a draft taken from
   an upstream document, an answer given earlier in this session, or a value read from git or
   GitHub. Prefix each with its source, e.g. `From PRODUCT.md §2: …` or `Your GitHub login: …`.
-  Never invent a candidate answer and never mark a draft `(Recommended)`. With fewer than two
-  sourced drafts, fill the options with `Help me think it through` (ask narrower questions next)
-  and `Skip for now` (come back to it before drafting); the operator types the answer in `Other`.
+  Never invent a candidate answer and never mark a draft `(Recommended)`. One exception: labelled
+  `Possibility:` behaviours where the step's `SKILL.md` allows them (`02-product-requirements`).
+  With fewer than two sourced drafts, fill the options with `Help me think it through` (ask
+  narrower questions next) and `Skip for now` (come back to it before drafting); the operator
+  types the answer in `Other`.
 - A picked draft is the operator's answer only for what it says. Challenge it exactly as the step
   challenges a typed answer.
 
