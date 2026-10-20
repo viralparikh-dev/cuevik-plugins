@@ -62,6 +62,9 @@ Plan first and wait for my approval before writing files.
   a missing, drifted or undeclared copy (needs `pip install -r scripts/requirements.txt`; same pattern as `vrp-cuevikflow-plugin/contracts/` + `scripts/test_contract.py`).
 - **Wording:** "story", never "PBI" (D5). `gh` via the Bash tool, not PowerShell.
 - **Gate:** every step checks the previous step's PR is `MERGED` before doing anything.
+- **Skills guard (02–08):** each step's `SKILL.md` says, right after its load block, which skill it
+  invokes (or none) and that a session-start instruction to use skills first does not apply
+  (runner, Skills). The skill body loads before the runner, so the guard must be in it.
 
 ## Testing
 
@@ -100,7 +103,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☑ |
 | 05a | Pre-06 design changes | Templates beside skills; self-contained plugin (one exception: `references/board-template.json`); bootstrap: board choice Cuevik template / your template / blank, initiation epic + `INIT-NN` stories (`initiation` label, assignee, Item Type, Priority, Size, Efforts, `Sprint-00` on an empty Sprint field), 7 workflows with required Status settings, one plan approval, no trailer on the empty commit; config v2 (`initiation`); runner: AskUserQuestion rules, `Closes #n`, board bookkeeping (Working + dates); status progress line + issue cross-check. Tested live: bootstrap on the sandbox (new repo, Cuevik template) and on tx-QE4AIApps (existing repo + board). One PR. | DECISIONS §3, §7–§9 | ☑ |
 | 05b | 01 deep interview | `01-product-concept` interview driven by the required `superpowers:brainstorming` (its spec file and `writing-plans` hand-off switched off; PRODUCT.md is the only output); dependency mechanism; then the deferred sandbox 01 test (Working → Reviewing → Done, `Closes #2`, Start/End dates) | DECISIONS §10 | ☑ |
-| 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ☐ |
+| 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ◐ |
 | 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ☐ |
 | 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ☐ |
 | 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ☐ |

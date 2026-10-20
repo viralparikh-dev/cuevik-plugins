@@ -336,3 +336,11 @@ report (C) was dropped.
     01 runs, once the official marketplace is added.
   - Retested on the sandbox (PR #14): one section per guess held; the number rule failed and was
     hardened (above). The hardened rule is not retested.
+- **02 too (Phase 06, 2026-10-19).** `02-product-requirements` also runs
+  `superpowers:brainstorming`, with 01's overrides, one section at a time: §1–§4 drafted from
+  `PRODUCT.md` first, then questioned; each capability's stories, requirements and acceptance
+  criteria asked first, then drafted. Grilling is ported in as an attack round (2–3 questions per
+  capability block, each naming a `PRD-NNN`), not as a dependency. Labelled `Possibility:`
+  behaviours may be offered as choices (a runner exception for 02). Numbers: an NFR without one
+  after a retry is left out and listed in the PR body; the step stops only if no NFR has one. NFRs
+  share the `PRD-NNN` sequence; their target is their acceptance criterion (no §8 row).
