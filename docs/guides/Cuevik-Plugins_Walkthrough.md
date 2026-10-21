@@ -150,7 +150,7 @@ flowchart TB
     M2["03 · Create Backlog<br/>03-create-backlog"]
     M3["04 · Plan Intent<br/>04-plan-intent"]
     M4["05 · Design Spec<br/>05-design-spec"]
-    M5["06 · Build Plan<br/>06-build-plan<br/>Planned"]
+    M5["06 · Build Plan<br/>06-build-plan"]
     M6["07 · Execute Plan<br/>07-execute-plan<br/>Planned"]
     M7["Clean up<br/>cleanup<br/>Planned"]
   end
@@ -468,7 +468,7 @@ Writes `spec.md` in the work folder: behaviour, data, rules and tests. If a late
 
 <!-- gen:cmd-cuevik-ship-06-build-plan -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/06-build-plan`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `plan.md` in the work folder  ·  **You:** Review and merge
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/06-build-plan`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `plan.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-06-build-plan -->
 
@@ -583,7 +583,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Available |
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Available |
-| `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |
+| `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Available |
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
 | `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Available |

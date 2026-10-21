@@ -559,3 +559,30 @@ Untested — a live sandbox run must verify:
 - A corrected `intent.md` in the 05 PR re-points the References `Intent:` line after merge.
 - The step reads code on a sandbox that has some (docs-first repos have none: §2–§4 then come
   from the documents only).
+
+## Phase 22 — `cuevik-ship:06-build-plan`
+
+Built: `plugins/cuevik-ship/skills/06-build-plan/SKILL.md`; `references/gate.md` 06 row allows
+sign-off in 06; cuevik-ship 0.1.6 → 0.1.7; guides tag 06-build-plan Available. Branch
+`build/phase-22-build-plan`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Unticked §8 | 06 asks per box; `Yes` ticks it in `spec.md` on the 06 branch (lands with the plan); any left → STOP with `decision-needed` | The source stopped and asked; with spec.md on the issue branch, 06's PR is the natural place for the tick |
+| Task fields | depends-on, files, do, proof (one command, fails first; the test is part of its task) | Source; TDD as a property of the plan, no skill needed |
+| Waves | Dependency waves, no file collisions within a wave | Source |
+| Commands | From the `CONTRIBUTING.md` `TOOLING-LAYER` block (04-tech-stack); `Not set yet` named as a risk | The source hardcoded npm scripts; this suite keeps commands in CONTRIBUTING |
+| Code branch | `**Code branch:** ship/<n>-<slug>/07-execute-plan` in the plan header | DECISIONS §4 fixes 07's branch name (the source's `feat/<slug>` does not apply) |
+| Execution contract | Proof = done; contradiction → Deviations + draft PR; scope = task list; ship gate from CONTRIBUTING; never push main/force/merge; `Closes #<n>` moves the card | Source contract, generalised; board moves via workflows (no `gh project` in the executing session) |
+| Board | On approval, local: card → `Ready`, remove `shaping` and `decision-needed` | Foundation board model |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- A plan with real proofs on a repo with code; proofs genuinely fail first.
+- `Ready` exists on the board (else skipped and reported).
+- Ticking a §8 box in 06's PR and the References `Spec:` line re-pointing.
