@@ -586,3 +586,37 @@ Untested — a live sandbox run must verify:
 - A plan with real proofs on a repo with code; proofs genuinely fail first.
 - `Ready` exists on the board (else skipped and reported).
 - Ticking a §8 box in 06's PR and the References `Spec:` line re-pointing.
+
+## Phase 23 — `cuevik-ship:07-execute-plan`
+
+Built: `plugins/cuevik-ship/skills/07-execute-plan/SKILL.md`; cuevik-ship 0.1.7 → 0.1.8; guides
+tag 07-execute-plan Available. Branch `build/phase-23-execute-plan`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Where it runs | In this (fresh) session, in the issue worktree; a cloud session runs the same steps with no questions and no board calls | The source's local-gate-then-`claude --cloud` handover needs a pinned remote environment and an interactive terminal; that is product plumbing outside the design and unverifiable here |
+| Gates | Plan `Approved` on the issue branch; no open or merged PR from the code branch (branch with no PR → reuse/delete); card `Ready` (else ask) | Source gates, mapped to the branch model |
+| Code branch | `ship/<n>-<slug>/07-execute-plan` from `origin/main`; plan read via `git show` | DECISIONS §4: no `docs/ship/` can leak |
+| One approval | The plan approval covers the card move, push and PR | Same pattern as runner §2; the run should not stall on a push question |
+| Execution | Wave by wave; proof fails first, then passes; one commit per task; subagents for a wave only when tasks share no file | Source contract; TDD as a property, no skill |
+| Contradictions | Stop, push what passed, draft PR `Blocked: <what>`; no mid-run plan changes | Source |
+| Deviations | PR body + one issue comment (not appended to `plan.md`) | `plan.md` lives on the issue branch, which a `main`-bound branch must not touch |
+| Ship gate | The plan's commands; failure → draft PR `Failing: <check>`; never weaken a check | Source |
+| Leak check | `git diff --name-only origin/main...HEAD` has nothing under `docs/ship/` before the push | DECISIONS §4 one rule, enforced |
+| Board | Local: `Working` at start; `Reviewing`/`Done` left to board workflows via `Closes #<n>` | Runner rule: the board owns Status after start |
+| Follow-up docs | `spec.md` §7 listed for `/cuevik-docs:update` | Documents change through their own PRs |
+| References | Final refresh: `Code PR:` and all file links re-pointed | DECISIONS §4 / BUILD-PLAN 23 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- A full run on a small plan: proofs fail then pass, commits per task, a regular PR with
+  `Closes #<n>`, card Working → Reviewing (board) → Done on merge.
+- The draft path (a forced contradiction) and the deviation comment.
+- Subagent parallelism does not collide on files.
+- Whether running 07 in a cloud session is wanted at all (the source's main reason for it was an
+  unattended build).
