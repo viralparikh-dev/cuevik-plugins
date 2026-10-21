@@ -145,7 +145,7 @@ flowchart TB
     S7_0["Confirm the list"]
   end
   subgraph CL["Claude"]
-    M0["01 · Brainstorm<br/>01-brainstorm<br/>Planned"]
+    M0["01 · Brainstorm<br/>01-brainstorm"]
     M1["02 · Audit PRD<br/>02-audit-prd<br/>Planned"]
     M2["03 · Create Backlog<br/>03-create-backlog<br/>Planned"]
     M3["04 · Plan Intent<br/>04-plan-intent<br/>Planned"]
@@ -400,7 +400,7 @@ Takes one idea, or one existing issue, from brainstorm to a merged code PR: seve
 
 <!-- gen:cmd-cuevik-ship-01-brainstorm -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/01-brainstorm`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** GitHub issue and brainstorming folder  ·  **You:** Approve or reject, then merge
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/01-brainstorm`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** GitHub issue and brainstorming folder  ·  **You:** Approve or reject, then merge
 
 <!-- /gen:cmd-cuevik-ship-01-brainstorm -->
 
@@ -578,7 +578,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
-| `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Planned |
+| `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Planned |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Planned |
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Planned |
