@@ -1,10 +1,10 @@
 # Build log — phases 07–24 (temporary)
 
 > **Temporary.** Record of the unattended build of BUILD-PLAN phases 07–24, one stacked branch
-> and PR per phase (`build/phase-NN-<slug>`, each based on the previous phase's branch). Nobody approved a plan or ran a sandbox test during this run: every
-> decision below was taken by the building session and every phase is built but untested (◐).
-> Use this file to drive the live test pass, then delete it with the other design docs
-> (Phase 25).
+> and PR per phase (`build/phase-NN-<slug>`, each based on the previous phase's branch). Nobody
+> approved a plan or ran a sandbox test during this run: every decision below was taken by the
+> building session and every phase is built but untested (◐). Use this file to drive the live
+> test pass, then delete it with the other design docs (Phase 25).
 
 ## Summary: riskiest untested assumption per phase
 
