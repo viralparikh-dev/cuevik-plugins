@@ -149,7 +149,7 @@ flowchart TB
     M1["02 · Audit PRD<br/>02-audit-prd"]
     M2["03 · Create Backlog<br/>03-create-backlog"]
     M3["04 · Plan Intent<br/>04-plan-intent"]
-    M4["05 · Design Spec<br/>05-design-spec<br/>Planned"]
+    M4["05 · Design Spec<br/>05-design-spec"]
     M5["06 · Build Plan<br/>06-build-plan<br/>Planned"]
     M6["07 · Execute Plan<br/>07-execute-plan<br/>Planned"]
     M7["Clean up<br/>cleanup<br/>Planned"]
@@ -458,7 +458,7 @@ States the problem and scope before any solution is proposed, in `intent.md` in 
 
 <!-- gen:cmd-cuevik-ship-05-design-spec -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/05-design-spec`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `spec.md` in the work folder  ·  **You:** Review and merge
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/05-design-spec`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `spec.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-05-design-spec -->
 
@@ -582,7 +582,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Available |
-| `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Planned |
+| `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Available |
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
