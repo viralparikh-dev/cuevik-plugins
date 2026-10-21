@@ -354,3 +354,48 @@ Untested — a live sandbox run must verify:
 - `git ls-remote --heads origin 'refs/heads/ship/*'` + `gh issue view` correctly flags issue
   branches of closed issues.
 - `fix` opens a PR with only Safe-tier edits.
+
+## Phase 16 — cuevik-ship foundation
+
+Built: `plugins/cuevik-ship/references/` — `process.md` (steps, the one rule, session boundary,
+artifacts, asking, skills, nevers), `branches.md` (names, worktree, PR bases), `references-block.md`
+(format, permalinks, refresh), `gate.md` (common preconditions, per-step gate table, plan
+approval), `config.md` (project facts, local vs cloud, board Status and labels); config and lineage
+contracts copied in and declared; `userConfig.worktree_root` in `plugin.json`; cuevik-ship 0.1.0 →
+0.1.1. No command yet, so the guides are unchanged. Branch `build/phase-16-ship-foundation`.
+
+Phase 15 needed a second commit (a BUILD-LOG header line over 100 characters, flagged by the
+lint run after the first commit). The commit flow now refuses to commit while lint grows.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Reference split | Five files, one per BUILD-PLAN item (process, branch/worktree, References block, gate, config read) | Maps 1:1 to the row; steps load what they need |
+| Where steps run | One worktree per issue, created by 01 (or 04); every later step switches branches inside it (`origin/.../issue` for 04–06, `origin/main` for 02 and 07) after the previous PR merged | DECISIONS §4: one worktree per issue; branching 02/07 from `main` keeps `docs/ship/` out of their PRs |
+| Worktree path | `<root>/<repo>/<n>-<slug>` | Several repos can share one root |
+| Worktree root | `userConfig.worktree_root` shown in each SKILL; fallback `git config --global cuevik-ship.worktreeRoot`; else ask and offer to save | D15 says userConfig, but Phase 03 saw `${user_config.*}` arrive unsubstituted, and substitution only happens in skill text, not in files read later; git config is a reliable machine-local store |
+| Issue branch start | `main`'s commit, pushed at once, no extra commit | A PR base must exist on GitHub; no empty commit needed |
+| Artifact status | `**Status:** Draft` → `Approved` only on an explicit yes, plus the merged PR | Source rule; the gate checks both |
+| Folder README rollup | Dropped; the issue's References block is the progress record | One record per issue, already refreshed by every step; avoids a second status file that can drift |
+| Asking style | cuevik-start's: one question per message, AskUserQuestion for choices, `Possibility:` for genuinely open designs | The source batched questions per its own repo rules; one suite, one style |
+| superpowers skills | Not invoked by any cuevik-ship step; the disciplines (interrogation, TDD-shaped proofs) are written into the steps | cuevik-ship declares only `cuevik-docs` (DECISIONS §7); superpowers is cuevik-start's one exception (§10). Trade-off: less depth than brainstorming in 01/04 |
+| Board model | 06 → `Ready`, 07 → `Working`; Reviewing/Done by board workflows via `Closes #<n>` on the code PR only; labels `idea`, `shaping`, `decision-needed` | Source board model, fitted to the runner's rule that board workflows own Status after start; `Refs` (not `Closes`) on every other PR keeps cards still |
+| Missing Status option (`Ready`) | Skip and report | The Cuevik template's option list is not known to this build; never create options |
+| Cloud | `CLAUDE_CODE_REMOTE=true` → skip `gh project` calls and report | Projects v2 unreachable from cloud sessions |
+| Permalinks | Latest commit on `.../issue` touching the file; PR head commit while unmerged | DECISIONS §4 + DRYRUN §1 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass
+(5 plugin copies) · markdownlint: grew by 29, all in the two new contract READMEs under
+`plugins/cuevik-ship/references/contracts/` (byte-identical copies; same exception as Phase 14,
+added to the baseline); no other file grew · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- `${user_config.worktree_root}` substitution in a cuevik-ship SKILL (it failed for cuevik-start
+  in Phase 03); the git config fallback works on Windows.
+- `git worktree add` + `git switch -c ... origin/main` inside a worktree, and that the tree is
+  clean after each merged PR.
+- `gh issue edit --body-file` keeps the issue body byte-identical outside the markers.
+- The board has a `Ready` option; `Pull request linked to issue` fires only for `Closes`, not
+  `Refs`.

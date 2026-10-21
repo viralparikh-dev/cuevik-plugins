@@ -1,11 +1,18 @@
 {
   "name": "cuevik-ship",
   "displayName": "Cuevik Ship",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The daily delivery loop for repos set up with cuevik-start: idea, requirements, backlog, intent, spec, plan, executed PR. One issue per worktree, one step per session, one approval per step.",
   "author": {
     "name": "Viral Parikh"
   },
   "keywords": ["workflow", "requirements", "spec", "planning", "cuevik"],
-  "dependencies": ["cuevik-docs"]
+  "dependencies": ["cuevik-docs"],
+  "userConfig": {
+    "worktree_root": {
+      "type": "string",
+      "title": "Worktree root folder",
+      "description": "Absolute folder on this machine where cuevik-ship creates one git worktree per issue, as <folder>/<repo>/<issue>-<slug>. Empty: each step asks, and can save the answer in git config."
+    }
+  }
 }
