@@ -63,7 +63,7 @@ Commands tagged **Planned** are in design and arrive as they are built.
 |---|---|---|
 | `/cuevik-ship:01-brainstorm` | Explores a new idea and decides if it goes ahead. | Available |
 | `/cuevik-ship:02-audit-prd` | Checks the idea against the requirements. | Available |
-| `/cuevik-ship:03-create-backlog` | Turns approved requirements into tracked work. | Planned |
+| `/cuevik-ship:03-create-backlog` | Turns approved requirements into tracked work. | Available |
 | `/cuevik-ship:04-plan-intent` | States the problem and scope before any solution. | Planned |
 | `/cuevik-ship:05-design-spec` | Writes the design: behaviour, data and tests. | Planned |
 | `/cuevik-ship:06-build-plan` | Turns the design into an ordered list of tasks. | Planned |
