@@ -565,8 +565,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="108">Audit</text>
 <text class="mono" x="294" y="123">audit</text>
 <text class="note" x="294" y="137">A findings report</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="70"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="81">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="70"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="81">Available</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="97"></rect>
 <text class="note" x="40" y="115">Read the report</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
@@ -726,7 +726,7 @@ h2.pb{break-before:page;margin-top:0}
 <hr/>
 <div class="keep k2"><h2 id="7-cuevik-docs-keep-the-documents-true"><span class="num">7</span>cuevik-docs: keep the documents true</h2><p>Two commands for the source-of-truth documents named in <code>.cuevik/lineage.json</code>. <code>cuevik-start</code> and <code>cuevik-ship</code> both depend on this plugin, so it installs with them. Every command is <code>/cuevik-docs:&lt;name&gt;</code>.</p></div>
 
-<div class="keep k3"><h3 id="audit">audit</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> A findings report  ·  <strong>You:</strong> Read the report</p></div>
+<div class="keep k3"><h3 id="audit">audit</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> A findings report  ·  <strong>You:</strong> Read the report</p></div>
 
 <p>Reads the project's documents once and runs three lenses over them:</p>
 <ul>
@@ -734,7 +734,10 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>Drift.</strong> Documents that contradict each other, the files on disk, or a decision already taken.</li>
 <li><strong>Absorb.</strong> Two files that say the same thing twice, and which copy is better.</li>
 </ul>
-<p>The lineage decides which documents are audited. <code>/cuevik-ship:02-audit-prd</code> calls it.</p>
+<p>The lineage decides which documents are audited, and its upstream links decide which document wins a
+disagreement. Each finding comes with where both sides say it, which one is right, the impact and
+the exact fix. It changes nothing unless you add <code>fix</code>, which offers only the safe fixes (broken
+links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit-prd</code> calls it.</p>
 <div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Revises one source-of-truth document after its step has merged. Use it any time reality diverges from a document, instead of re-running the step.</p>
@@ -920,7 +923,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-docs:audit</code></td>
 <td class="nw">Audit</td>
 <td>Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb).</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-docs:update</code></td>
