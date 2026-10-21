@@ -144,3 +144,36 @@ Untested — a live sandbox run must verify:
 - `multiSelect` AskUserQuestion behaves as expected with `Other`.
 - Runner §5 commits only the conditional outputs actually written (`git add` of a missing
   `.github/copilot-instructions.md` would fail).
+
+## Phase 10 — `cuevik-start:06-readme`
+
+Built: `skills/06-readme/SKILL.md`; `steps.yml` 06 special action split by mode; cuevik-start
+0.1.13 → 0.1.14; guides tag 06 Available and describe the two modes.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Interview driver | No skill; whole draft from upstream with sources marked, then ask only for gaps (env vars, accounts) | README summarizes; little to interview |
+| Scaffold detection | Files on `main` minus what initiation wrote → propose a mode, operator confirms | The source checked `package.json`, which is JavaScript-only; a stack-neutral check plus confirmation avoids a wrong guess |
+| Docs-first marker | Source's fixed opener `> **Pending scaffold — unverified.**` on the four setup sections | Ported as is; deterministic for review |
+| "Test every command" special action | Rewritten: scaffolded mode tests; docs-first marks pending | Resolves the conflict noted in Phase 08 (no code at initiation) |
+| Long-running commands | Start, confirm it comes up, stop | A dev server never exits; running it blocking would hang the step |
+| `Not set yet` commands | Written as prose, never in a code block | Never present an unknown command as runnable |
+| Badges | Static shields.io, `<Name>-<version>-blue`, `-`→`--`, space→`_` | Source required shields.io; a fixed colour avoids inventing per-brand styling |
+| Old README | Replaced whole; anything worth keeping is offered section by section first | `replacesExisting`; no silent carry-over |
+| Planned folders (docs-first) | Existing folders plus `ARCHITECTURE.md` §5 planned ones marked `(planned)` | Structure section must not claim folders exist |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The mode detection excludes exactly what 00–05 wrote on the sandbox (a missed file would
+  propose Scaffolded wrongly; the confirmation is the safety net).
+- The shields.io badge format renders (escaping of versions like `20.11.1`).
+- Scaffolded mode on a repo with code: commands run, a dev server is stopped cleanly.
+- The pending marker passes the target repo's markdownlint (blockquote spanning two lines).
+- `README.md` on `main` (from repo creation, or none) is handled: no README at all is not covered
+  by `replacesExisting` wording but should just write the file.
