@@ -533,8 +533,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="710">Clean up</text>
 <text class="mono" x="294" y="725">cleanup</text>
 <text class="note" x="294" y="739">Worktree, local branches, archive tag</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="672"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="683">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="672"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="683">Available</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="699"></rect>
 <text class="note" x="40" y="717">Confirm the list</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
@@ -713,7 +713,7 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
 
 <p>Builds the plan on a code branch cut from <code>main</code>, reading <code>plan.md</code> from the issue branch, and opens the code PR to <code>main</code>. That PR carries only the code, so no <code>docs/ship/</code> file reaches <code>main</code>. Its <code>Closes #n</code> is what closes the issue, and the final References refresh happens here.</p>
-<div class="keep k3"><h3 id="cleanup_1">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
+<div class="keep k3"><h3 id="cleanup_1">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
 
 <p><code>/cuevik-ship:cleanup &lt;issue#&gt;</code> removes everything local for an issue and keeps what the links need.</p>
 <ul>
@@ -917,7 +917,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>/cuevik-ship:cleanup</code></td>
 <td class="nw">Clean up</td>
 <td>Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-docs:audit</code></td>
