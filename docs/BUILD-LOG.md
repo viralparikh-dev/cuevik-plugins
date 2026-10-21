@@ -433,3 +433,35 @@ Untested — a live sandbox run must verify:
 - The duplicate check is useful at sandbox scale and does not over-match.
 - `$ARGUMENTS` with a quoted idea vs a number vs empty.
 - A rejected idea's PR into `.../issue` merges cleanly and `cleanup` then accepts the closed issue.
+
+## Phase 18 — `cuevik-ship:02-audit-prd`
+
+Built: `plugins/cuevik-ship/skills/02-audit-prd/SKILL.md`; cuevik-ship 0.1.2 → 0.1.3; guides tag
+02-audit-prd Available. Branch `build/phase-18-audit-prd`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Branch | `.../02-audit-prd` from `origin/main`, switched to inside the issue worktree; brainstorm read with `git show origin/.../issue:...` | DECISIONS §4: 02 goes to `main`; no `docs/ship/` can leak |
+| Gate | 01 PR merged into `.../issue` and `brainstorm.md` `Approved` | gate.md 02 row |
+| Retired IDs | Stay in place as `~~PRD-NNN~~ (retired: <why>)` (not moved to §9 as `(was PRD-NNN)`) | One convention across docs:update, audit and 03 |
+| PRD line format | This suite's PRD template form (`***Title***`, `*(Must)*`) | The project's PRD comes from 02-product-requirements' template |
+| New NFRs | Continue the shared `PRD-NNN` sequence | Same rule as 02-product-requirements |
+| One commit per document | PRODUCT first, then PRD, each a diff + downstream named + yes | Source rule; keeps review clean |
+| Audit | `cuevik-docs:audit` via the Skill tool, read-only; caused-by fixed here, pre-existing listed; audit unavailable → no PR | Source rule; requires audit to be model-invocable (Phase 15) |
+| Ratification record | Fenced YAML between `<!-- cuevik-ship:ratified -->` markers in the PR body: `issue`, `new`, `changed`, `retired`, `covered`, `prerequisites` (pairs), `product`, `later_release` | D4: machine-readable for 03 |
+| Covered-only / rejected at 02 | No PR; comment + close not planned on a yes; then cleanup | D12, DRYRUN scenario 6b |
+| `Refs #<n>`, never `Closes` | PR body last line | Steps 04–07 need the issue open |
+| References | `Docs PR: #<q>` after the PR opens | D4 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The Skill tool can invoke `cuevik-docs:audit` from a cuevik-ship step.
+- The YAML ratification block survives `gh pr create --body` and 03 can parse it from
+  `gh pr view --json body`.
+- Switching the worktree from the `.../issue` line to an `origin/main` branch and back is clean.
+- An ID numbered from "highest + 1" is right when retired (struck-through) IDs are the highest.

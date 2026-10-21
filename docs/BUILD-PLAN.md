@@ -115,7 +115,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ◐ |
 | 16 | cuevik-ship foundation | `references/`: process overview, branch/worktree model, References-block format, gate check, config read | `cs-cueviksync/docs/work/README.md`, DECISIONS §4 | ◐ |
 | 17 | `cuevik-ship:01-brainstorm` | D1, D2, D8, D12, D13 | `work/1-brainstorm.md`, DRYRUN §2 | ◐ |
-| 18 | `cuevik-ship:02-audit-prd` | Branch from `main`, `Refs #n`, ratified block (D4), calls `cuevik-docs:audit` | `work/2-audit-prd.md` | ☐ |
+| 18 | `cuevik-ship:02-audit-prd` | Branch from `main`, `Refs #n`, ratified block (D4), calls `cuevik-docs:audit` | `work/2-audit-prd.md` | ◐ |
 | 19 | `cuevik-ship:03-create-backlog` | Epic resolution (D6), convert/split (D9, D11), board add local only | `work/3-epic.md`, DRYRUN §3 | ☐ |
 | 20 | `cuevik-ship:04-plan-intent` | Creates `.../issue` + worktree when missing; D10 gate | `work/4-intent.md` | ☐ |
 | 21 | `cuevik-ship:05-design-spec` | `spec.md` | `work/5-spec.md` | ☐ |
