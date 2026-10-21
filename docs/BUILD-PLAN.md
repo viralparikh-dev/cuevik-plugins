@@ -110,7 +110,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ◐ |
 | 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ◐ |
 | 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ◐ |
-| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ☐ |
+| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ◐ |
 | 14 | `cuevik-docs:update` | Update any source-of-truth doc via PR, driven by `.cuevik/lineage.json` | `doc-update.md` | ☐ |
 | 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ☐ |
 | 16 | cuevik-ship foundation | `references/`: process overview, branch/worktree model, References-block format, gate check, config read | `cs-cueviksync/docs/work/README.md`, DECISIONS §4 | ☐ |

@@ -242,3 +242,33 @@ Untested — a live sandbox run must verify:
 - Two `Closes` lines: GitHub links the PR to both issues and the board moves the epic to
   Reviewing then Done.
 - The stub passes the target repo's markdownlint (italic paragraph spanning lines).
+
+## Phase 13 — `cuevik-start:cleanup`
+
+Built: `skills/cleanup/SKILL.md`; cuevik-start 0.1.16 → 0.1.17; guides tag cleanup Available and
+mention the End dates.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Runner | Not used (utility, like `status`); reads `steps.yml` and runner §7 for the board commands | No branch, PR or story |
+| Merged test | `gh pr list --head <branch> --state merged`, then local tip must equal the PR's `headRefOid` | Squash merges make `git branch -d` refuse; the oid check makes `-D` safe and protects unpushed commits |
+| Current branch | `git checkout main` in the plan when the tree is clean; else skip | Git cannot delete the checked-out branch; never stash |
+| Remote leftovers | Reported, never deleted | DECISIONS §3: local branches only |
+| End dates | Only when the last step's PR merged; last story + epic = the date part of its `mergedAt`; skip if already set | Runner §7 / DECISIONS §9 |
+| Earlier stories missing End dates | Not repaired | Out of the phase's scope; each step start sets them |
+| Confirmation | One plan, one `Yes` | Same pattern as runner §2 |
+| Not complete yet | Branch deletes still allowed; End dates skipped | DECISIONS §3: "run any time" |
+| Cloud session | Board updates fail and are reported, never fatal | Projects v2 is unreachable from cloud sessions |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- `headRefOid` equals the local tip after a normal step (the runner pushes the branch and opens
+  the PR from it, so it should).
+- `git ls-remote --heads origin 'refs/heads/init/*'` pattern matching on Windows Git Bash.
+- End date updates land on the right items; the epic and last story show the 08 merge date.
