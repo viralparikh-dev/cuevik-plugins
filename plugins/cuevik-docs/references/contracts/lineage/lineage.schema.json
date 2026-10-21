@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": ".cuevik/lineage.json",
+  "description": "The project's source-of-truth documents and how they depend on each other. Only direct upstream links are stored; a document's downstream set is every document that reaches it through upstream links.",
+  "type": "object",
+  "required": ["schemaVersion", "documents"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": {
+      "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
+      "const": 1
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "steps", "upstream", "owner", "reviewers"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "description": "Repo-relative path, forward slashes. Unique across documents.",
+            "type": "string",
+            "pattern": "^[^/\\\\].*\\.md$"
+          },
+          "steps": {
+            "description": "cuevik-start steps that write this document, in order.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^[0-9]{2}-[a-z0-9-]+$" }
+          },
+          "upstream": {
+            "description": "Paths of the documents this one is written from. Each must be a path in this file; no cycles.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string" }
+          },
+          "owner": {
+            "description": "Role that owns the document.",
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewers": {
+            "description": "Roles that must approve a change to the document.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "frozen": {
+            "description": "true = no longer updated after initiation (docs/BACKLOG.md: GitHub is the backlog after initiation). Absent = false.",
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

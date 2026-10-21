@@ -205,7 +205,7 @@ flowchart TB
   end
   subgraph CL["Claude"]
     M0["Audit<br/>audit<br/>Planned"]
-    M1["Update<br/>update<br/>Planned"]
+    M1["Update<br/>update"]
   end
   subgraph GH["GitHub"]
     S0_1["No PR"]
@@ -526,7 +526,7 @@ The lineage decides which documents are audited. `/cuevik-ship:02-audit-prd` cal
 
 <!-- gen:cmd-cuevik-docs-update -->
 
-**Status:** Planned  ·  **Branch:** `docs/update/<doc>`  ·  **PR to:** `main`  ·  **Writes:** The document, via PR  ·  **You:** Review and merge
+**Status:** Available  ·  **Branch:** `docs/update/<doc>`  ·  **PR to:** `main`  ·  **Writes:** The document, via PR  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-docs-update -->
 
@@ -534,7 +534,10 @@ Revises one source-of-truth document after its step has merged. Use it any time 
 
 - The document's owner role drafts the change, and its reviewers (from the lineage) approve the PR.
 - It then builds a downstream checklist: every document built from the one you changed. Review each flagged document, and do not mark the checklist complete until all of them are reviewed.
-- Frozen documents, such as `docs/BACKLOG.md`, are skipped.
+- Frozen documents, such as `docs/BACKLOG.md`, are skipped, and cannot be updated: GitHub
+  issues are the backlog after initiation.
+- The checklist lives in the PR body: each downstream document is marked as needing an update
+  or only a review, with the reason.
 
 What a change to each document flags, from the default lineage:
 
@@ -581,7 +584,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
 | `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Planned |
-| `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Planned |
+| `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Available |
 
 ### Branches and files (ship, docs and utility commands)
 

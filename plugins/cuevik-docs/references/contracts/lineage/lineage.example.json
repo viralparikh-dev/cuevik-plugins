@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "documents": [
+    {
+      "path": "CONTRIBUTING.md",
+      "steps": ["00-bootstrap", "04-tech-stack", "08-finalize"],
+      "upstream": ["docs/TECH-STACK.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect"]
+    },
+    {
+      "path": "docs/PRODUCT.md",
+      "steps": ["01-product-concept"],
+      "upstream": [],
+      "owner": "Product Owner",
+      "reviewers": ["Product Owner"]
+    },
+    {
+      "path": "docs/PRD.md",
+      "steps": ["02-product-requirements"],
+      "upstream": ["docs/PRODUCT.md"],
+      "owner": "Product Owner",
+      "reviewers": ["Product Owner"]
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "steps": ["03-architecture"],
+      "upstream": ["docs/PRD.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect", "Product Owner"]
+    },
+    {
+      "path": "docs/TECH-STACK.md",
+      "steps": ["04-tech-stack"],
+      "upstream": ["docs/PRD.md", "docs/ARCHITECTURE.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect"]
+    },
+    {
+      "path": "docs/AI-TOOL-GUIDE.md",
+      "steps": ["05-ai-tool-guide"],
+      "upstream": ["docs/ARCHITECTURE.md", "docs/TECH-STACK.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect"]
+    },
+    {
+      "path": "README.md",
+      "steps": ["06-readme"],
+      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/AI-TOOL-GUIDE.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect"]
+    },
+    {
+      "path": "docs/BACKLOG.md",
+      "steps": ["07-backlog"],
+      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/AI-TOOL-GUIDE.md", "README.md"],
+      "owner": "Product Owner",
+      "reviewers": ["Product Owner"],
+      "frozen": true
+    }
+  ]
+}
