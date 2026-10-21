@@ -88,7 +88,7 @@ flowchart TB
   subgraph AR["Architect"]
     M0["00 · Bootstrap<br/>00-bootstrap"]
     M3["03 · Architecture<br/>03-architecture"]
-    M4["04 · Tech Stack<br/>04-tech-stack<br/>Planned"]
+    M4["04 · Tech Stack<br/>04-tech-stack"]
     M5["05 · AI Tool Guide<br/>05-ai-tool-guide<br/>Planned"]
     M6["06 · README<br/>06-readme<br/>Planned"]
     M8["08 · Finalize Governance<br/>08-finalize<br/>Planned"]
@@ -302,13 +302,13 @@ Every significant decision is written as **Context, Decision, Alternatives rejec
 
 <!-- gen:step-04-tech-stack -->
 
-**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-ai-tool-guide`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-ai-tool-guide`
 
 <!-- /gen:step-04-tech-stack -->
 
-Locks the approved technologies and the trade-offs behind them. The result is `docs/TECH-STACK.md` with six sections: Languages & Frameworks, Datastores, Cloud & Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions & Constraints.
+Locks the approved technologies and the trade-offs behind them. Claude starts from the products named during the architecture step, offers labelled candidates with their trade-offs for each open choice, and takes every version from you or from the technology's own release page, never from memory. The result is `docs/TECH-STACK.md` with six sections: Languages & Frameworks, Datastores, Cloud & Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions & Constraints.
 
-It then appends a tooling layer (build, test and lint commands) to `CONTRIBUTING.md`, using only technologies approved in `TECH-STACK.md` and leaving the governance layer from `00-bootstrap` untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.
+It then appends a tooling layer (versions; install, run, test, lint and build commands; hooks) to the end of `CONTRIBUTING.md` between `TOOLING-LAYER` markers, writing `Not set yet` for any command not known before the code exists, using only technologies approved in `TECH-STACK.md` and leaving the governance layer from `00-bootstrap` untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.
 
 ### 05-ai-tool-guide
 
@@ -565,7 +565,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Available |
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
-| `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Planned |
+| `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Available |
 | `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Planned |
 | `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Planned |

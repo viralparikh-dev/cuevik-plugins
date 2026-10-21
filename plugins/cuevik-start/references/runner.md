@@ -74,8 +74,8 @@ type or paste (e.g. a link), ask it as one plain sentence in chat, with no optio
 operator's next message as the answer. `AskUserQuestion` cannot show a text box alone.
 
 **Open interview questions** in a step whose `SKILL.md` says so (`01-product-concept`,
-`02-product-requirements`, `03-architecture`) are asked the same way: one plain sentence in chat,
-no options.
+`02-product-requirements`, `03-architecture`, `04-tech-stack`) are asked the same way: one plain
+sentence in chat, no options.
 Confirmations and choices in that step still use `AskUserQuestion`.
 
 - **Wording.** The question is one short, plain sentence that says what will happen, in the
@@ -98,7 +98,7 @@ Confirmations and choices in that step still use `AskUserQuestion`.
   GitHub. Prefix each with its source, e.g. `From PRODUCT.md §2: …` or `Your GitHub login: …`.
   Never invent a candidate answer and never mark a draft `(Recommended)`. One exception: labelled
   `Possibility:` behaviours or designs where the step's `SKILL.md` allows them
-  (`02-product-requirements`, `03-architecture`).
+  (`02-product-requirements`, `03-architecture`, `04-tech-stack`).
   With fewer than two sourced drafts, fill the options with `Help me think it through` (ask
   narrower questions next) and `Skip for now` (come back to it before drafting); the operator
   types the answer in `Other`.

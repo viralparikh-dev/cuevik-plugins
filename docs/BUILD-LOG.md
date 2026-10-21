@@ -70,3 +70,37 @@ Untested — a live sandbox run must verify:
 - No superpowers skill is invoked despite its session-start hook.
 - A `mermaid` diagram passes the target repo's `.markdownlint.json`.
 - Board: `#<INIT-03>` goes Working with a Start date, and INIT-02's End date is 02's merge date.
+
+## Phase 08 — `cuevik-start:04-tech-stack`
+
+Built: `skills/04-tech-stack/SKILL.md`; runner names 04 in the open-question and Possibility
+rules; `steps.yml` 04 special action names the `TOOLING-LAYER` markers; cuevik-start 0.1.11 →
+0.1.12; guides tag 04 Available.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Interview driver | No skill; runner interview, template order, one approval per section | Choices against alternatives, not intent discovery |
+| Open choices | `Possibility:` candidates with trade-offs (runner exception extended to 04); unpicked ones fill §5 | §5 needs alternatives rejected; the operator still decides |
+| Starting input | 03's merged PR body, **Deferred to Tech Stack** list | 03 parks product names there |
+| Versions | From the operator or the release page / registry read after a yes; never from memory | Model memory of versions is stale |
+| Usage rules | No template change; each Reason / Used-for cell is written as a scope rule, cross-cutting rules in §6 | Source checklist wants per-technology usage rules; the template has no column for it |
+| Tooling layer location | Appended at the end of `CONTRIBUTING.md` between `<!-- BEGIN TOOLING-LAYER -->` / `<!-- END TOOLING-LAYER -->` | 08-finalize must keep it verbatim and docs:update must find it; markers make that deterministic |
+| Tooling layer content | `## Tooling`: link to TECH-STACK, Versions, Commands (install/run/test/lint/build in one `sh` fence), Hooks | The source's three parts (run commands, hooks, versions) |
+| Unknown commands | `Not set yet: <what is missing>`, listed in the PR body; commands are not run | At initiation there is no code to run them against |
+| Re-run guard | STOP when the `TOOLING-LAYER` marker is already on `main` | Prevents a second append |
+| Upstream conflicts | Listed under "Upstream changes needed"; never edit PRD/ARCHITECTURE | Same rule as 03 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The appended layer keeps the `INITIATION-ONLY` block byte-identical (08 depends on it) and the
+  nested ```` fence example renders as intended for Claude.
+- Claude does not write versions from memory; the web read happens only after a yes.
+- `Not set yet` commands are acceptable to 06-readme, whose special action says to test every
+  README command (likely conflict at initiation; see Phase 10).
+- Board: INIT-04 Working + Start date, INIT-03 End date from 03's `mergedAt`.
