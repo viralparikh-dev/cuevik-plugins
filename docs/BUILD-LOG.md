@@ -177,3 +177,40 @@ Untested — a live sandbox run must verify:
 - The pending marker passes the target repo's markdownlint (blockquote spanning two lines).
 - `README.md` on `main` (from repo creation, or none) is handled: no README at all is not covered
   by `replacesExisting` wording but should just write the file.
+
+## Phase 11 — `cuevik-start:07-backlog`
+
+Built: `skills/07-backlog/SKILL.md`; `BACKLOG.template.md` gains the frozen note (D7) after the
+references marker; cuevik-start 0.1.14 → 0.1.15; guides tag 07 Available.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Epic granularity | One epic per `PRD.md` §6 capability subsection, `Epic: <subsection>`, body cites `Source: docs/PRD.md §6 "<subsection>"` | cuevik-ship's D6 lookup searches epics by that citation; PRD §6 is already grouped by capability |
+| NFRs | Filed as stories under one `Epic: Non-Functional Requirements` (`Source: docs/PRD.md §7`) | Source rule "one story per requirement item"; NFRs share the `PRD-NNN` sequence |
+| NFR priority | Asked from the Product Owner (or `Won't` → §4) | PRD §7 bullets carry no MoSCoW; the PO owns backlog priority; never invented |
+| Story title / labels | `PRD-NNN: <Title> (<Priority>)`; `story` + `priority:must/should/could`; epics `epic` | D5, shared with cuevik-ship 03 |
+| Story body | Requirement text + `**Acceptance criterion:**` (copied) + `Source:` line | Copy, never rewrite (source rule); the Source line feeds cuevik-ship |
+| Parent link | REST `sub_issues`, same call bootstrap uses | D6 step 1 finds epics via parents |
+| `initiation` issues | Excluded from the existing-issue scan; never labelled | DECISIONS §9 |
+| Re-run | Reuse open issues by exact title; closed match → operator decides | Mirrors bootstrap's reuse; safe after a partial failure |
+| Approval | One table, one `Yes`, before any GitHub write; runner §2 plan only names label creates | Special action "wait for approval before any writes"; issues are unknown at §2 |
+| Board | `item-add` + `Item Type` only; no Status/Priority/Size/Sprint/assignee; failures reported, never fatal | DECISIONS §9 says 07 should set Item Type; Priority field options (Urgent/High/…) do not map to MoSCoW, so no mapping invented; sprint planning owns the rest |
+| `PENDING` IDs | Dropped: a non-board `gh` failure stops the step instead | `gh` is required anyway; a manifest with pending rows would freeze wrong |
+| Label colours | Fixed hex per label | Need some value; cosmetic |
+| Gaps | **Proposed PRD.md changes** in the PR body; PRD never edited | Source rule |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- `gh issue create` with multi-line bodies via the Bash tool (quoting), and capturing numbers.
+- Sub-issue linking for dozens of stories (rate limits; the REST id vs number).
+- `gh issue list --limit 500` is enough and the `initiation` exclusion works.
+- Board `item-add` for many items, and the `Item Type` option lookup.
+- PO answers NFR priorities in one round without the step inventing defaults.
+- Whether every story being created during the session conflicts with the runner's "one question
+  at a time" token rules on a large PRD.

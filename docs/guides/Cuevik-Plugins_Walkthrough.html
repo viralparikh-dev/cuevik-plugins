@@ -383,8 +383,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="40" y="710">Initial Backlog</text>
 <text class="mono" x="40" y="725">07-backlog</text>
 <text class="note" x="40" y="739">docs/BACKLOG.md</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="184" y="672"></rect>
-<text class="tg-t p" text-anchor="middle" x="207.0" y="683">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="173" y="672"></rect>
+<text class="tg-t a" text-anchor="middle" x="201.5" y="683">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
 <text class="ttl" x="548" y="709">PR → main</text>
 <text class="note" x="548" y="726">Approved by Product Owner</text>
@@ -642,9 +642,9 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
 
 <p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), the setup sections are written as the intended setup and each is marked as pending and unverified until the app is scaffolded. You confirm which mode applies.</p>
-<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
+<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
 
-<p>Derives epics and stories from the product concept and the PRD, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
+<p>Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled <code>PRD-NNN: &lt;Title&gt; (&lt;Priority&gt;)</code>), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, links each story to its epic as a sub-issue, adds them to the board, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
 <p>After setup, GitHub is the backlog. <code>docs/BACKLOG.md</code> is a snapshot and stays frozen.</p>
 <div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
 
@@ -845,7 +845,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:07-backlog</code></td>
 <td>Initial Backlog</td>
 <td>Derives epics and stories from the product docs and files them as GitHub issues.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:08-finalize</code></td>
