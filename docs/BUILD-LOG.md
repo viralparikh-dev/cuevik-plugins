@@ -214,3 +214,31 @@ Untested — a live sandbox run must verify:
 - PO answers NFR priorities in one round without the step inventing defaults.
 - Whether every story being created during the session conflicts with the runner's "one question
   at a time" token rules on a large PRD.
+
+## Phase 12 — `cuevik-start:08-finalize`
+
+Built: `skills/08-finalize/SKILL.md`; cuevik-start 0.1.15 → 0.1.16; guides tag 08 Available.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Interview | None; a fixed transformation | Source: deterministic removal, no judgement |
+| Fence check | Exactly one BEGIN and one END marker in order, else STOP; stub already present → STOP | `steps.yml` special action; also catches a hand-edited or duplicated fence |
+| Stub text | Source stub ported, command renamed to `/cuevik-docs:update CONTRIBUTING.md` | Same hand-off; no provenance |
+| Verification | `git diff main -- CONTRIBUTING.md` must show only the removed block and the stub | Byte-for-byte preservation is the whole point of the step |
+| Missing `TOOLING-LAYER` markers | Proceed and report | The 04 markers are new in this build; an older 04 run would lack them; 08's job is only the INITIATION-ONLY block |
+| Epic closing | Body ends `Closes #<story>` and `Closes #<epic>` (runner §6.5 already says so) | DECISIONS §9 |
+| After-merge | `finalReminder` points at `/cuevik-start:cleanup` for End dates | Runner §7 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- Claude's Edit leaves every other line byte-identical (trailing spaces, final newline) and the
+  diff check catches it if not.
+- Two `Closes` lines: GitHub links the PR to both issues and the board moves the epic to
+  Reviewing then Done.
+- The stub passes the target repo's markdownlint (italic paragraph spanning lines).

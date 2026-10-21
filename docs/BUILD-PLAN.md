@@ -109,7 +109,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ◐ |
 | 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ◐ |
 | 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ◐ |
-| 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ☐ |
+| 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ◐ |
 | 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ☐ |
 | 14 | `cuevik-docs:update` | Update any source-of-truth doc via PR, driven by `.cuevik/lineage.json` | `doc-update.md` | ☐ |
 | 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ☐ |
