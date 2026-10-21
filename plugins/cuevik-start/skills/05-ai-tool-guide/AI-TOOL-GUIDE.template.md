@@ -84,3 +84,4 @@ touching CI/CD or deployment config.]
 - **Commit messages** — follow the project convention (default: Conventional Commits)
 - **PRs** — not opened, closed, or commented on without instruction
 - **Pushing to remote** — never without explicit human approval
+- **Team plugins** — [plugins enabled in .claude/settings.json, and manual prerequisites; or None]

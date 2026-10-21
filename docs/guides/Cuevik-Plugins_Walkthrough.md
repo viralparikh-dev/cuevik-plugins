@@ -89,7 +89,7 @@ flowchart TB
     M0["00 · Bootstrap<br/>00-bootstrap"]
     M3["03 · Architecture<br/>03-architecture"]
     M4["04 · Tech Stack<br/>04-tech-stack"]
-    M5["05 · AI Tool Guide<br/>05-ai-tool-guide<br/>Planned"]
+    M5["05 · AI Tool Guide<br/>05-ai-tool-guide"]
     M6["06 · README<br/>06-readme<br/>Planned"]
     M8["08 · Finalize Governance<br/>08-finalize<br/>Planned"]
   end
@@ -314,11 +314,11 @@ It then appends a tooling layer (versions; install, run, test, lint and build co
 
 <!-- gen:step-05-ai-tool-guide -->
 
-**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`  ·  **Then:** `/cuevik-start:06-readme`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `.claude/settings.json`  ·  **Then:** `/cuevik-start:06-readme`
 
 <!-- /gen:step-05-ai-tool-guide -->
 
-Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes `docs/AI-TOOL-GUIDE.md` and only the adapter files for those tools (`CLAUDE.md`, `.github/copilot-instructions.md`). The shared rules live in the guide; each adapter holds only tool-specific settings.
+Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes `docs/AI-TOOL-GUIDE.md` and only the adapter files for those tools (`CLAUDE.md`, `.github/copilot-instructions.md`). The shared rules live in the guide; each adapter points to it and holds only tool-specific settings. If the team uses Claude Code, it also writes `.claude/settings.json` with the plugins you pick for the team (for example `superpowers` and `code-review`), so everyone who opens the repo is offered the same ones. Tools that are not plugins, such as graphify, are listed in the guide as a manual prerequisite.
 
 The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.
 
@@ -566,7 +566,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Available |
-| `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Planned |
+| `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Available |
 | `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Planned |
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Planned |

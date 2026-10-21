@@ -50,7 +50,7 @@ Commands tagged **Planned** are in design and arrive as they are built.
 | `/cuevik-start:02-product-requirements` | Turns the concept into testable requirements. | Available |
 | `/cuevik-start:03-architecture` | Designs how the system fits together, and why. | Available |
 | `/cuevik-start:04-tech-stack` | Chooses and locks the technologies to be used. | Available |
-| `/cuevik-start:05-ai-tool-guide` | Sets the rules AI coding assistants must follow. | Planned |
+| `/cuevik-start:05-ai-tool-guide` | Sets the rules AI coding assistants must follow. | Available |
 | `/cuevik-start:06-readme` | Writes the project's front page, ready to share. | Planned |
 | `/cuevik-start:07-backlog` | Breaks the requirements into a prioritised backlog. | Planned |
 | `/cuevik-start:08-finalize` | Hands over permanent rules and closes out setup. | Planned |
