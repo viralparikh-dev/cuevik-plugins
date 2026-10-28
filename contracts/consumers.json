@@ -1,5 +1,5 @@
 {
   "$comment": "Which plugins keep a copy of which contract, at plugins/<plugin>/references/contracts/<contract>/. Add a plugin here in the same PR that adds its copy. scripts/check-contracts.py enforces it.",
   "config": ["cuevik-start"],
-  "lineage": ["cuevik-start"]
+  "lineage": ["cuevik-start", "cuevik-docs"]
 }

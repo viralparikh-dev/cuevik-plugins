@@ -578,8 +578,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="194">Update</text>
 <text class="mono" x="294" y="209">update</text>
 <text class="note" x="294" y="223">The document, via PR</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="156"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="167">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="156"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="167">Available</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="183"></rect>
 <text class="note" x="40" y="201">Review and merge</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="172"></rect>
@@ -735,13 +735,16 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>Absorb.</strong> Two files that say the same thing twice, and which copy is better.</li>
 </ul>
 <p>The lineage decides which documents are audited. <code>/cuevik-ship:02-audit-prd</code> calls it.</p>
-<div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
+<div class="keep k3"><h3 id="update">update</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>docs/update/&lt;doc&gt;</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The document, via PR  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Revises one source-of-truth document after its step has merged. Use it any time reality diverges from a document, instead of re-running the step.</p>
 <ul>
 <li>The document's owner role drafts the change, and its reviewers (from the lineage) approve the PR.</li>
 <li>It then builds a downstream checklist: every document built from the one you changed. Review each flagged document, and do not mark the checklist complete until all of them are reviewed.</li>
-<li>Frozen documents, such as <code>docs/BACKLOG.md</code>, are skipped.</li>
+<li>Frozen documents, such as <code>docs/BACKLOG.md</code>, are skipped, and cannot be updated: GitHub
+  issues are the backlog after initiation.</li>
+<li>The checklist lives in the PR body: each downstream document is marked as needing an update
+  or only a review, with the reason.</li>
 </ul>
 <p>What a change to each document flags, from the default lineage:</p>
 <div class="tbl short"><table>
@@ -923,7 +926,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-docs:update</code></td>
 <td class="nw">Update</td>
 <td>Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 </tbody>
 </table></div>

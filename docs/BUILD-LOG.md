@@ -272,3 +272,42 @@ Untested — a live sandbox run must verify:
   the PR from it, so it should).
 - `git ls-remote --heads origin 'refs/heads/init/*'` pattern matching on Windows Git Bash.
 - End date updates land on the right items; the epic and last story show the 08 merge date.
+
+## Phase 14 — `cuevik-docs:update`
+
+Built: `plugins/cuevik-docs/skills/update/SKILL.md`; the lineage contract copied to
+`plugins/cuevik-docs/references/contracts/lineage/` and declared in `contracts/consumers.json`
+(its README already names cuevik-docs as a consumer); cuevik-docs 0.1.0 → 0.1.1; guides tag
+update Available.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Document list | Read from `.cuevik/lineage.json`, matched by path or file name | Source hardcoded seven docs; the lineage is the contract (DECISIONS D15, §7) |
+| Contract copy | Lineage contract copied into cuevik-docs | BUILD-PLAN convention: each consumer keeps a declared copy |
+| Frozen docs | Refused (`docs/BACKLOG.md`) and skipped downstream | D7 |
+| `CONTRIBUTING.md` | Supported (it is a lineage document); markers kept byte for byte | 08-finalize's stub says to fill it via this command |
+| Branch | `docs/update/<file name, lower case, no .md>` (`prd`, `ai-tool-guide`) | Source + Walkthrough |
+| Role files | Not copied; a two-row role lens table in the skill | cuevik-docs cannot read cuevik-start files (§7); the full role files reference runner/steps.yml that cuevik-docs does not have |
+| Writing rules / step checklists | Compact editing rules + a generic reviewer checklist in the skill, not the per-document checklists | Same self-containment reason; trade-off: a reviewer does not get the step's full checklist |
+| Downstream checklist | In the PR body (required / review-only / not impacted, each with a reason), not a committed `.claude/reconciliation/` file | Keeps tool scratch off `main`; the PR is where reviewers look. Trade-off: no file to tick after merge other than the merged PR |
+| `PRD-NNN` | Never reused or renumbered; new ones continue the sequence; retired ones struck through with a reason | 02 rule; cuevik-ship relies on stable IDs |
+| AI-TOOL-GUIDE adapters | May change (or a new one be added) in the same PR | Source: adding a tool goes through doc-update |
+| Arguments | `$ARGUMENTS` and `argument-hint: "[document]"` frontmatter | Standard skill argument mechanism |
+| Cross-document changes | Stop and point to the right document's update first | Each document at its own level |
+
+Checks: validate `.` pass · validate `plugins/cuevik-docs` pass (icon warning, same as the other
+plugins) · contracts pass (3 plugin copies) · markdownlint: **grew by 14**, all
+`MD060/table-column-style` in the new `plugins/cuevik-docs/references/contracts/lineage/README.md`.
+That file must stay byte-identical to `contracts/lineage/README.md` (check-contracts enforces it),
+whose two existing copies carry the same 14 findings; fixing it means changing the shared contract
+and every copy, which is outside this phase. Accepted as the one exception and added to the
+comparison baseline; no other file grew · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- `$ARGUMENTS` substitution in a plugin skill (and the no-argument path).
+- Claude keeps every unchanged byte (header, markers) when editing a section.
+- The derived downstream list matches the Walkthrough table for each document.
+- The PR body's multi-line `--body` survives the Bash tool quoting.

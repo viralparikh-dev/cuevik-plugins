@@ -75,4 +75,4 @@ Commands tagged **Planned** are in design and arrive as they are built.
 | Command | What it does | Status |
 |---|---|---|
 | `/cuevik-docs:audit` | Reviews documents for gaps, contradictions and repeats. | Planned |
-| `/cuevik-docs:update` | Changes a core document through the same review. | Planned |
+| `/cuevik-docs:update` | Changes a core document through the same review. | Available |
