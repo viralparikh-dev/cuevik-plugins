@@ -9,6 +9,9 @@
 
 <!-- @inject: _doc-references.md -->
 
+> **Frozen after initiation.** This is the backlog `07-backlog` filed. GitHub issues are the
+> backlog from now on; this file is not updated when epics or stories are added.
+
 ---
 
 ## 1. Summary
