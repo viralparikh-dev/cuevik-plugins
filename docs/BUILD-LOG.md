@@ -530,3 +530,32 @@ Untested — a live sandbox run must verify:
 - Path C: the issue is not filed before the interview ends, and the slug fits the filed title.
 - A bug filed with `bug` matches the board's `Auto-add to project` filter (`label:bug`) and also
   gets added explicitly without a duplicate card.
+
+## Phase 21 — `cuevik-ship:05-design-spec`
+
+Built: `plugins/cuevik-ship/skills/05-design-spec/SKILL.md`; cuevik-ship 0.1.5 → 0.1.6; guides tag
+05-design-spec Available. Branch `build/phase-21-design-spec`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Rules loaded | PRD (cited IDs + NFRs), ARCHITECTURE, TECH-STACK, AI-TOOL-GUIDE, README Project Structure, then the code touched | Source's policy load, mapped onto this suite's documents (the source's structure/design-system/engineering-rules files do not exist here) |
+| Spec sections | Behaviour · Data · Interfaces · User interface · Rejected alternatives · Tests · Downstream document changes · Sign-off (§8) · Out of scope | Source's nine sections, generalised ("Server surface" → Interfaces; no product-specific database or UI library terms) |
+| §8 triggers | From AI-TOOL-GUIDE Decision Escalation and Off-Limits (written by 05-ai-tool-guide) | That is where this suite keeps escalation rules |
+| Sign-off | Asked per §8 item after approval; `Yes` ticks; any open box → `decision-needed` label | Source label semantics; lets the common case finish in one session |
+| UI shaping skill | None | No skill invocations in cuevik-ship (foundation decision) |
+| Wrong intent | Corrected on this branch only on a yes, re-approved, References re-pointed | DECISIONS §4 names "intent.md edited during spec" as a References refresh case |
+| Open designs | `Possibility:` options; the unpicked one goes to §5 | Same rule as 03-architecture |
+| Board Status | Unchanged | `Ready` is 06's |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- §8 triggers are found from the project's real AI-TOOL-GUIDE, and sign-off ticking edits only
+  the right box.
+- A corrected `intent.md` in the 05 PR re-points the References `Intent:` line after merge.
+- The step reads code on a sandbox that has some (docs-first repos have none: §2–§4 then come
+  from the documents only).
