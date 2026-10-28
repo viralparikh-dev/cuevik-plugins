@@ -31,7 +31,15 @@ In Claude Code:
 
 ## Status
 
-Version 0.2.0. `cuevik-start` `00`–`02` and `status` have been run end to end on a real repo; every other command is built but not yet run live (see [#38](https://github.com/viralparikh-dev/cuevik-plugins/issues/38)).
+Version 0.2.1. `cuevik-start` `00`–`02` and `status` have been run end to end on a real repo; every other command is built but not yet run live (see [#38](https://github.com/viralparikh-dev/cuevik-plugins/issues/38)).
+
+## Versioning
+
+Each plugin is versioned independently. A plugin's `version` in its `plugin.json` follows [semver](https://semver.org) and is bumped only when that plugin's own installable behaviour changes — documentation-only edits (READMEs, guides) do not bump it. As a result the three plugins can sit at different versions at the same time; that is expected, not drift. The authoritative version for any plugin is the `version` field in its `plugin.json`.
+
+The repository git tag (`vX.Y.Z`) marks a repo-wide release milestone — the state of the whole marketplace at a point in time — not an assertion that every plugin is at that number. The `Version` line above tracks the latest tag.
+
+Cutting a release: bump only the plugins whose behaviour changed, update the `Version` line to the new tag, then tag the repo.
 
 ## License
 
