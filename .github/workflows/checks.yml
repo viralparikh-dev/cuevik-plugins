@@ -1,0 +1,52 @@
+name: Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    # Windows too: its checkout is CRLF, and `claude plugin validate` only rejects some
+    # broken SKILL.md frontmatter there.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Not docs/guides/requirements.txt: it adds Playwright, which only the full build needs.
+      - run: python -m pip install -r scripts/requirements.txt markdown==3.11.1 PyYAML==6.0.3 beautifulsoup4==4.15.0
+
+      - name: Contracts match across plugins
+        run: python scripts/check-contracts.py
+
+      - name: SKILL.md frontmatter parses
+        run: python scripts/check-frontmatter.py
+
+      # The local .private-terms scan is skipped here: that file is gitignored.
+      - name: Guides match the plugins
+        run: python docs/guides/build_docs.py --check
+
+      - name: Claude Code validates the marketplace and plugins
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .
+          for p in plugins/*/; do claude plugin validate "$p"; done
