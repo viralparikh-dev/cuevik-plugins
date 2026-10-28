@@ -152,7 +152,7 @@ flowchart TB
     M4["05 · Design Spec<br/>05-design-spec"]
     M5["06 · Build Plan<br/>06-build-plan"]
     M6["07 · Execute Plan<br/>07-execute-plan"]
-    M7["Clean up<br/>cleanup<br/>Planned"]
+    M7["Clean up<br/>cleanup"]
   end
   subgraph GH["GitHub"]
     S0_1["PR → …/issue"]
@@ -488,7 +488,7 @@ Builds the plan on a code branch cut from `main`, reading `plan.md` from the iss
 
 <!-- gen:cmd-cuevik-ship-cleanup -->
 
-**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Worktree, local branches, archive tag  ·  **You:** Confirm the list
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Worktree, local branches, archive tag  ·  **You:** Confirm the list
 
 <!-- /gen:cmd-cuevik-ship-cleanup -->
 
@@ -585,7 +585,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Available |
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Available |
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Available |
-| `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
+| `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Available |
 | `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Available |
 | `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Available |
 

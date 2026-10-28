@@ -8,7 +8,43 @@
 
 ## Summary: riskiest untested assumption per phase
 
-Filled in when the run ends.
+All of 07–24 are built and committed, one stacked PR per phase (#17 → #34, merge in order; #17's
+base is `main`). Nothing was plan-reviewed or tested live. Phase 25 was not started.
+
+| Phase | Skill | Riskiest untested assumption |
+| --- | --- | --- |
+| 07 | `cuevik-start:03-architecture` | `Possibility:` design options stay the operator's decisions and never drift into Claude choosing the architecture |
+| 08 | `cuevik-start:04-tech-stack` | Appending the `TOOLING-LAYER` block leaves the `INITIATION-ONLY` block byte-identical, so 08-finalize still finds it |
+| 09 | `cuevik-start:05-ai-tool-guide` | The `.claude/settings.json` shape (`extraKnownMarketplaces` + `enabledPlugins`) really makes teammates' Claude Code offer and enable the plugins; and the two third-party repos have a readable `.claude-plugin/marketplace.json` |
+| 10 | `cuevik-start:06-readme` | Mode detection (files on `main` minus initiation's) proposes the right mode on a real repo |
+| 11 | `cuevik-start:07-backlog` | Filing dozens of issues with sub-issue links via `gh` in one session works without quoting or rate-limit failures |
+| 12 | `cuevik-start:08-finalize` | Claude's edit changes only the fenced block (the diff check catches anything else) |
+| 13 | `cuevik-start:cleanup` | Local tip equals the merged PR's `headRefOid` for normal step branches, so merged branches are deleted and not skipped |
+| 14 | `cuevik-docs:update` | `$ARGUMENTS` substitution and byte-exact preservation of the header block and markers when editing one section |
+| 15 | `cuevik-docs:audit` | Leaving out `disable-model-invocation` lets 02-audit-prd invoke it, without Claude running it unasked in unrelated sessions |
+| 16 | cuevik-ship foundation | `${user_config.worktree_root}` substitution in skill text (it failed for cuevik-start in Phase 03); the git config fallback is the safety net |
+| 17 | `cuevik-ship:01-brainstorm` | Working in a worktree created mid-session (absolute paths) without touching the main checkout |
+| 18 | `cuevik-ship:02-audit-prd` | The Skill tool can invoke a skill from another plugin (`cuevik-docs:audit`) mid-step |
+| 19 | `cuevik-ship:03-create-backlog` | The sub-issue `parent` and `dependencies/blocked_by` REST endpoints work on a user-owned repo (DECISIONS §5 flagged them unverified) |
+| 20 | `cuevik-ship:04-plan-intent` | Path B (an issue with no branch) creates `.../issue` and the worktree cleanly for a split story |
+| 21 | `cuevik-ship:05-design-spec` | §8 sign-off triggers can be read from the project's AI-TOOL-GUIDE and ticking edits only the right box |
+| 22 | `cuevik-ship:06-build-plan` | The board has a `Ready` Status option (otherwise the card never shows the plan is done) |
+| 23 | `cuevik-ship:07-execute-plan` | A full local run: proofs fail then pass, one commit per task, and `Closes #<n>` moves the card through the board workflows |
+| 24 | `cuevik-ship:cleanup` | The unpushed-work test treats squash-merged step branches as safe and still refuses real local-only commits |
+
+Cross-cutting, for the test pass:
+
+- **Order:** test 07 → 13 on the sandbox in sequence (each step's gate needs the previous PR),
+  then `cuevik-docs` (14, 15), then one cuevik-ship issue end to end (16 → 24).
+- **Biggest design calls made without the user:** cuevik-ship invokes no superpowers skill
+  (Phase 16); audit is model-invocable (15); the downstream checklist lives in the PR body, not a
+  file (14); 07-execute-plan runs in the session, not through a `claude --cloud` handover (23);
+  NFRs become stories under one non-functional epic (11).
+- **Lint exception:** the three contract READMEs copied into cuevik-docs and cuevik-ship carry the
+  same 43 findings as the existing copies (byte-identity is enforced by check-contracts). Fixing
+  the shared contract README tables would clear all copies at once.
+- **Guide PDFs** were rebuilt with Playwright's Chromium (symlinked as Chrome); rebuild on the
+  usual machine before release.
 
 ## Setup
 
@@ -620,3 +656,33 @@ Untested — a live sandbox run must verify:
 - Subagent parallelism does not collide on files.
 - Whether running 07 in a cloud session is wanted at all (the source's main reason for it was an
   unattended build).
+
+## Phase 24 — `cuevik-ship:cleanup`
+
+Built: `plugins/cuevik-ship/skills/cleanup/SKILL.md`; cuevik-ship 0.1.8 → 0.1.9; guides tag
+cleanup Available. Branch `build/phase-24-ship-cleanup`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Gate | Code PR merged into `main`, or the issue `CLOSED` / `NOT_PLANNED`; and no open PR from any `ship/<n>-` branch; no override flag | DECISIONS §4 cleanup, D12 |
+| Where | Main checkout only (`--git-dir` equals `--git-common-dir`) | Never from inside the worktree it removes |
+| Unpushed work | A local branch is safe only if its tip is on a remote ref or equals a merged/closed PR's `headRefOid`; otherwise refuse the whole cleanup | Squash merges leave merged commits unreachable from remotes; the PR head check covers them |
+| Worktree | `git worktree remove` without `--force`; refuse on uncommitted changes | DECISIONS §4 |
+| Archive | Tag `ship-archive/<n>-<slug>` at `origin/.../issue`, pushed **before** the branch is deleted; existing tag at another commit → STOP | Keeps every References permalink reachable |
+| Leftover remote step branches | Deleted when no open PR (closed, unmerged PR leftovers, e.g. 02 after a rejection) | DRYRUN scenario 6b; merged ones are already auto-deleted |
+| Issue | Never closed or edited | DECISIONS §4: the code PR closes it |
+| Confirmation | One plan, one `Yes` | DECISIONS §4: lists everything and confirms first |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368; one inline-HTML finding in the new file fixed before commit) ·
+build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The unpushed-work test on a squash-merged step branch (should be safe) and on a local-only
+  commit (should refuse).
+- Pushing a tag and deleting the issue branch from the main checkout; permalinks still resolve
+  through the tag.
+- `gh issue view --json stateReason` returns `NOT_PLANNED` for an issue closed as not planned.
