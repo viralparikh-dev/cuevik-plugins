@@ -91,7 +91,7 @@ Plan first and wait for my approval before writing files.
 
 ## Phases
 
-Status: ☐ not started · ◐ in progress · ☑ merged
+Status: ☐ not started · ◐ in progress · ☑ merged. Phases 07–24 were built unattended by a cloud session and merged untested (PRs #17–#34); sandbox testing is still owed.
 
 | # | Phase | Builds | Main sources | Status |
 |---|---|---|---|---|
@@ -103,25 +103,25 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 05 | `cuevik-start:01-product-concept` | `docs/PRODUCT.md` | `02-prod-concept.md` | ☑ |
 | 05a | Pre-06 design changes | Templates beside skills; self-contained plugin (one exception: `references/board-template.json`); bootstrap: board choice Cuevik template / your template / blank, initiation epic + `INIT-NN` stories (`initiation` label, assignee, Item Type, Priority, Size, Efforts, `Sprint-00` on an empty Sprint field), 7 workflows with required Status settings, one plan approval, no trailer on the empty commit; config v2 (`initiation`); runner: AskUserQuestion rules, `Closes #n`, board bookkeeping (Working + dates); status progress line + issue cross-check. Tested live: bootstrap on the sandbox (new repo, Cuevik template) and on tx-QE4AIApps (existing repo + board). One PR. | DECISIONS §3, §7–§9 | ☑ |
 | 05b | 01 deep interview | `01-product-concept` interview driven by the required `superpowers:brainstorming` (its spec file and `writing-plans` hand-off switched off; PRODUCT.md is the only output); dependency mechanism; then the deferred sandbox 01 test (Working → Reviewing → Done, `Closes #2`, Start/End dates) | DECISIONS §10 | ☑ |
-| 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ◐ |
-| 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ◐ |
-| 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ◐ |
-| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ◐ |
-| 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ◐ |
-| 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ◐ |
-| 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ◐ |
-| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ◐ |
-| 14 | `cuevik-docs:update` | Update any source-of-truth doc via PR, driven by `.cuevik/lineage.json` | `doc-update.md` | ◐ |
-| 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ◐ |
-| 16 | cuevik-ship foundation | `references/`: process overview, branch/worktree model, References-block format, gate check, config read | `cs-cueviksync/docs/work/README.md`, DECISIONS §4 | ◐ |
-| 17 | `cuevik-ship:01-brainstorm` | D1, D2, D8, D12, D13 | `work/1-brainstorm.md`, DRYRUN §2 | ◐ |
-| 18 | `cuevik-ship:02-audit-prd` | Branch from `main`, `Refs #n`, ratified block (D4), calls `cuevik-docs:audit` | `work/2-audit-prd.md` | ◐ |
-| 19 | `cuevik-ship:03-create-backlog` | Epic resolution (D6), convert/split (D9, D11), board add local only | `work/3-epic.md`, DRYRUN §3 | ◐ |
-| 20 | `cuevik-ship:04-plan-intent` | Creates `.../issue` + worktree when missing; D10 gate | `work/4-intent.md` | ◐ |
-| 21 | `cuevik-ship:05-design-spec` | `spec.md` | `work/5-spec.md` | ◐ |
-| 22 | `cuevik-ship:06-build-plan` | `plan.md` | `work/6-plan.md` | ◐ |
-| 23 | `cuevik-ship:07-execute-plan` | Code branch from `main`, code PR to `main`, final References refresh | `work/7-execute.md` | ◐ |
-| 24 | `cuevik-ship:cleanup` | Gate, worktree + local branches, `ship-archive/<n>-<slug>` tag | DECISIONS §4 cleanup | ◐ |
+| 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ☑ |
+| 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ☑ |
+| 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ☑ |
+| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ☑ |
+| 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ☑ |
+| 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ☑ |
+| 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ☑ |
+| 13 | `cuevik-start:cleanup` | Delete merged local `init/*` branches; set the last initiation story's and the epic's `End date` from the 08 PR's merge date (runner §7) | `cleanup.md`, DECISIONS §3 | ☑ |
+| 14 | `cuevik-docs:update` | Update any source-of-truth doc via PR, driven by `.cuevik/lineage.json` | `doc-update.md` | ☑ |
+| 15 | `cuevik-docs:audit` | Align / Drift / Absorb audit, generalised (no CuevikSync specifics) | `cs-cueviksync/.claude/commands/doc-audit.md` | ☑ |
+| 16 | cuevik-ship foundation | `references/`: process overview, branch/worktree model, References-block format, gate check, config read | `cs-cueviksync/docs/work/README.md`, DECISIONS §4 | ☑ |
+| 17 | `cuevik-ship:01-brainstorm` | D1, D2, D8, D12, D13 | `work/1-brainstorm.md`, DRYRUN §2 | ☑ |
+| 18 | `cuevik-ship:02-audit-prd` | Branch from `main`, `Refs #n`, ratified block (D4), calls `cuevik-docs:audit` | `work/2-audit-prd.md` | ☑ |
+| 19 | `cuevik-ship:03-create-backlog` | Epic resolution (D6), convert/split (D9, D11), board add local only | `work/3-epic.md`, DRYRUN §3 | ☑ |
+| 20 | `cuevik-ship:04-plan-intent` | Creates `.../issue` + worktree when missing; D10 gate | `work/4-intent.md` | ☑ |
+| 21 | `cuevik-ship:05-design-spec` | `spec.md` | `work/5-spec.md` | ☑ |
+| 22 | `cuevik-ship:06-build-plan` | `plan.md` | `work/6-plan.md` | ☑ |
+| 23 | `cuevik-ship:07-execute-plan` | Code branch from `main`, code PR to `main`, final References refresh | `work/7-execute.md` | ☑ |
+| 24 | `cuevik-ship:cleanup` | Gate, worktree + local branches, `ship-archive/<n>-<slug>` tag | DECISIONS §4 cleanup | ☑ |
 | 25 | Tidy and release | Plugin READMEs; delete `DECISIONS.md`, `DRYRUN-01-03.md`, this file; delete `D:\vrp-repos\cs-kickstart` (Phase 14 is the last phase that reads it); tag `v0.1.0` | — | ☐ |
 
 Source paths without a repo prefix are under `D:\vrp-repos\cs-kickstart\docs\guides\proj-init\`
