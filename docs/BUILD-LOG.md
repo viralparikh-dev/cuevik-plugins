@@ -399,3 +399,37 @@ Untested — a live sandbox run must verify:
 - `gh issue edit --body-file` keeps the issue body byte-identical outside the markers.
 - The board has a `Ready` option; `Pull request linked to issue` fires only for `Closes`, not
   `Refs`.
+
+## Phase 17 — `cuevik-ship:01-brainstorm`
+
+Built: `plugins/cuevik-ship/skills/01-brainstorm/SKILL.md`; cuevik-ship 0.1.1 → 0.1.2; guides tag
+01-brainstorm Available. Branch `build/phase-17-brainstorm`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Order | Describe → duplicate check → plan approval → create issue, `.../issue`, worktree, folder → read docs → interview → gate → decide | D2: duplicates first (cheap), issue at the very start so findings are saved from the first minute |
+| Duplicate check | Titles (and close-match bodies) of `idea` and `story` issues in any state; a likely duplicate needs a yes to continue | D2; a duplicate never gets a number |
+| Issue | Plain issue, label `idea`, body = the operator's sentences + empty References block | D1, D3 |
+| Board | The new idea is added to the board (local sessions); Status left to the board | D14: ideas may land on the board at 01 and the card carries through |
+| Existing issue | Refuse closed, `epic`; send `bug` to 04; allow a story (never labelled `idea`, never closed here) | D8 |
+| Interview driver | No superpowers skill; one question per message, anchors, playback, read-only recon on a yes | Foundation decision (cuevik-ship declares no superpowers dependency) |
+| Where the session works | Starts in the main checkout, creates the worktree, then works in it by absolute path; later runs must open in the worktree | Worktree is created mid-session; a resume needs the worktree's files |
+| File template | Source's sections with §9 "Decision" instead of "Ratified as" | D4: the ratification record lives in 02's PR body |
+| Attachments | Saved beside `brainstorm.md` in `brainstorming/` | D13 |
+| Not yet | Commit and push, no PR | Resume needs the branch on GitHub |
+| Rejected / abandoned | PR into `.../issue` as the record (rejected), close not planned on a yes; pre-existing story never closed | D12, D2, D8 |
+| References at 01 | `Brainstorm:` line with the PR head permalink | DRYRUN §1: the file is not on `.../issue` until the PR merges |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- Working in a worktree created mid-session (absolute paths, `git -C`) without touching the
+  main checkout.
+- `gh issue create --body-file` and capturing the number from the printed URL.
+- The duplicate check is useful at sandbox scale and does not over-match.
+- `$ARGUMENTS` with a quoted idea vs a number vs empty.
+- A rejected idea's PR into `.../issue` merges cleanly and `cleanup` then accepts the closed issue.
