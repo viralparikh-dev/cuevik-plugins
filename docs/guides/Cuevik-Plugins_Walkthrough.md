@@ -147,7 +147,7 @@ flowchart TB
   subgraph CL["Claude"]
     M0["01 · Brainstorm<br/>01-brainstorm"]
     M1["02 · Audit PRD<br/>02-audit-prd"]
-    M2["03 · Create Backlog<br/>03-create-backlog<br/>Planned"]
+    M2["03 · Create Backlog<br/>03-create-backlog"]
     M3["04 · Plan Intent<br/>04-plan-intent<br/>Planned"]
     M4["05 · Design Spec<br/>05-design-spec<br/>Planned"]
     M5["06 · Build Plan<br/>06-build-plan<br/>Planned"]
@@ -432,7 +432,7 @@ Checks the approved idea against `docs/PRODUCT.md` and `docs/PRD.md`, and ratifi
 
 <!-- gen:cmd-cuevik-ship-03-create-backlog -->
 
-**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** GitHub issues: epic and stories  ·  **You:** Approve the list
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** GitHub issues: epic and stories  ·  **You:** Approve the list
 
 <!-- /gen:cmd-cuevik-ship-03-create-backlog -->
 
@@ -580,7 +580,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
-| `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Planned |
+| `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Planned |
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Planned |
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |

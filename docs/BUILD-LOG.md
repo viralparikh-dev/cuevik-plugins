@@ -465,3 +465,39 @@ Untested — a live sandbox run must verify:
   `gh pr view --json body`.
 - Switching the worktree from the `.../issue` line to an `origin/main` branch and back is clean.
 - An ID numbered from "highest + 1" is right when retired (struck-through) IDs are the highest.
+
+## Phase 19 — `cuevik-ship:03-create-backlog`
+
+Built: `plugins/cuevik-ship/skills/03-create-backlog/SKILL.md`; cuevik-ship 0.1.3 → 0.1.4; guides
+tag 03-create-backlog Available. Branch `build/phase-19-create-backlog`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Gate | References `Docs PR:` merged into `main`; ratification YAML parsed from its body; every ID in `origin/main:docs/PRD.md` | D4, DRYRUN §3 step 1 |
+| IDs filed | `new`, `changed`, `retired` from the record; `covered`-only → stop | Covered needs no issue |
+| Story / epic format | Same titles, labels and bodies as `/cuevik-start:07-backlog` (copied in, not referenced) | D5 shared convention; plugins are self-contained (§7) |
+| Epic lookup | D6 chain: parent of same-section stories → `epic` with `Source: docs/PRD.md §6 "<section>"` → `docs/BACKLOG.md` → new; several → ask | D6; the Source line is what 07-backlog writes |
+| Parent move | Ask; `replace_parent=true` only on a yes | D6 |
+| Split | Issue keeps the first ID in prerequisite order (overridable); extras under their own section's epic, with their own References (`Split from`, Brainstorm, Docs PR, Epic); no branches for extras | D9, D11, DRYRUN scenario 5 |
+| Only changed IDs, idea not a story | Close the idea as not planned with links to the changed stories; 04 runs on those stories | Not covered by DECISIONS/DRYRUN; avoids two issues for one requirement |
+| NFR priority | Asked, as in 07-backlog | NFRs carry no MoSCoW |
+| Blocked-by | `POST issues/<n>/dependencies/blocked_by -F issue_id=<id>` | Source call, carried over |
+| Board | Local only: `item-add` + `Item Type`; never Status; cloud lists URLs | "board add local only" (BUILD-PLAN 19) |
+| Approval | One table, partial yes allowed; nothing written before | Source |
+| Failure | Stop and report; re-run classifies written rows as Already filed | Source |
+| 04 signal | References `Epic:` line + `idea` label removed | D10 |
+| `docs/BACKLOG.md` | Never edited | D7 |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368; two findings in the new file fixed before commit) ·
+build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The sub-issue `parent` and `dependencies/blocked_by` REST endpoints on a user-owned repo, and
+  from a cloud session (DECISIONS §5: unverified).
+- `gh issue list --search "PRD-NNN in:title"` finds the story; the exact-prefix filter holds.
+- Parsing the YAML block from `gh pr view --json body`.
+- Converting the idea keeps its References block intact; the board card carries through (D14).
