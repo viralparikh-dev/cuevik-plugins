@@ -654,9 +654,9 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.</p>
 <p>It starts with a progress line, one cell per step, such as <code>██░░░░░░░ 2/9 · next: 02-product-requirements</code>, then a row per step. The merged PR decides each row. If an initiation issue on the board disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row.</p>
-<div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
+<div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
 
-<p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</p>
+<p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once <code>08-finalize</code> is merged it also records the End date of the last story and of the initiation epic on the board. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</p>
 <p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
 <div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads the board's ids from <code>.cuevik/config.json</code>. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 8.</p></div>
@@ -863,7 +863,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:cleanup</code></td>
 <td class="nw">Clean up</td>
 <td>Deletes local <code>init/*</code> branches whose PR is merged, after listing them for your confirmation.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:01-brainstorm</code></td>

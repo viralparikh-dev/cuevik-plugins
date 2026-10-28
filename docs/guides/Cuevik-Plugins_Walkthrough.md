@@ -372,11 +372,11 @@ It starts with a progress line, one cell per step, such as `██░░░░�
 
 <!-- gen:cmd-cuevik-start-cleanup -->
 
-**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Deletes merged local `init/*` branches  ·  **You:** Confirm the list
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** Deletes merged local `init/*` branches  ·  **You:** Confirm the list
 
 <!-- /gen:cmd-cuevik-start-cleanup -->
 
-Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, and lists what it will delete and asks first. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
+Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once `08-finalize` is merged it also records the End date of the last story and of the initiation epic on the board. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
 
 To revise a document after its step is merged, use `/cuevik-docs:update <document>` instead of re-running the step.
 
@@ -571,7 +571,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Available |
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
-| `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Planned |
+| `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Planned |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Planned |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Planned |
