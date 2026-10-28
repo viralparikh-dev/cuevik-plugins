@@ -104,3 +104,43 @@ Untested — a live sandbox run must verify:
 - `Not set yet` commands are acceptable to 06-readme, whose special action says to test every
   README command (likely conflict at initiation; see Phase 10).
 - Board: INIT-04 Working + Start date, INIT-03 End date from 03's `mergedAt`.
+
+## Phase 09 — `cuevik-start:05-ai-tool-guide`
+
+Built: `skills/05-ai-tool-guide/SKILL.md`; template §10 gains a **Team plugins** bullet;
+`steps.yml` 05 adds `.claude/settings.json` to `outputs` (conditional) and a special action;
+cuevik-start 0.1.12 → 0.1.13; guides tag 05 Available and mention the settings file.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Interview driver | No skill; guide drafted per section from ARCHITECTURE/TECH-STACK with sources marked, then questioned | Most content derives from upstream; nothing to brainstorm |
+| Tool question | One `multiSelect` AskUserQuestion (Claude Code / Copilot / Another tool); other tools' name + path typed | First `steps.yml` special action; never assume a config path |
+| Template defaults §8–§10 | Kept as defaults, made concrete (lock files from TECH-STACK's package manager) | The template pre-fills them; generic lock-file list would be wrong for non-JS stacks |
+| `CLAUDE.md` pointer | `@docs/AI-TOOL-GUIDE.md` import line | Claude Code loads imports with CLAUDE.md, so the rules actually reach the model; a link alone is not followed |
+| Other adapters' pointer | One sentence + repo-root link, no copied rules | Source rule: never duplicate shared rules |
+| Existing adapter on `main` | Keep lines verbatim, add pointer on top, show diff | No silent overwrite |
+| Where Team plugins are listed | New **Team plugins** bullet in template §10 | BUILD-PLAN: graphify "listed in the guide"; §10 is the workflow section; no new top-level section |
+| Candidate list | DECISIONS §8's six plugins, shown in a table, none Recommended | Locked list; operator picks |
+| Marketplace / plugin names | Read from each repo's `.claude-plugin/marketplace.json` via `gh api` at run time | Names for `pbakaus/impeccable` and `leonxlnx/taste-skill` are not known to this build; never hardcode a guess |
+| Cuevik marketplace | Asked as a typed `owner/repo`, never written in the plugin | DECISIONS §7/§8: no account in plugin files |
+| Settings content | Only `extraKnownMarketplaces` (`source: {source: github, repo}`) + `enabledPlugins` (`plugin@marketplace: true`); merge into an existing file | Phase scope; permissions/hooks are the team's |
+| graphify | Yes/No question; install link typed by the operator; listed in §10 | Not a plugin (DECISIONS §8); no install source from memory |
+| claude.ai skills for CLI users | Stated as unsolved if asked | DECISIONS §8 Open item |
+
+Checks: validate `.` pass · validate `plugins/cuevik-start` pass (pre-existing icon warning) ·
+contracts pass · markdownlint no growth (325 → 325) · build_docs `--check` pass · forbidden
+terms clean.
+
+Untested — a live sandbox run must verify:
+
+- The `.claude/settings.json` shape (from Claude Code's documented settings keys, not checked
+  against the current docs in this run): a teammate opening the repo is prompted to install the
+  marketplaces and the plugins are enabled.
+- `gh api .../contents/.claude-plugin/marketplace.json` works for all three candidate repos
+  (the two third-party repos may keep the file elsewhere or not have one).
+- Claude Code actually expands `@docs/AI-TOOL-GUIDE.md` in the committed `CLAUDE.md`.
+- `multiSelect` AskUserQuestion behaves as expected with `Other`.
+- Runner §5 commits only the conditional outputs actually written (`git add` of a missing
+  `.github/copilot-instructions.md` would fail).

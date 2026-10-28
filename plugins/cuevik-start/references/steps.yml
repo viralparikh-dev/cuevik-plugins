@@ -117,6 +117,7 @@ steps:
       - docs/AI-TOOL-GUIDE.md
       - CLAUDE.md
       - .github/copilot-instructions.md
+      - .claude/settings.json
     conditionalOutputs: true
     template: AI-TOOL-GUIDE.template.md
     commitMessage: "docs: add AI-TOOL-GUIDE.md and tool adapters (05-ai-tool-guide)"
@@ -128,6 +129,7 @@ steps:
       - "Generate only the adapter files required for the selected tools."
       - "Keep shared rules in AI-TOOL-GUIDE.md; adapters contain only tool-specific config."
       - "Generate .github/copilot-instructions.md as the project's own Copilot rules only. The cuevik-start runner stays in the plugin and is never copied into the repo."
+      - "When Claude Code is selected, write the team's plugins to .claude/settings.json (extraKnownMarketplaces + enabledPlugins), chosen with the operator; list manual prerequisites such as graphify in the guide."
 
   - id: 06-readme
     title: README

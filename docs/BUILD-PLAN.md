@@ -106,7 +106,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 06 | `cuevik-start:02-product-requirements` | `docs/PRD.md` | `03-prod-requirements.md` | ◐ |
 | 07 | `cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` | `04-architecture.md` | ◐ |
 | 08 | `cuevik-start:04-tech-stack` | `docs/TECH-STACK.md`, CONTRIBUTING tooling layer | `05-tech-stack.md` | ◐ |
-| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ☐ |
+| 09 | `cuevik-start:05-ai-tool-guide` | AI tool guide + adapters; team plugin setup: the target repo's `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`, per project), graphify as a manual prerequisite (DECISIONS §8) | `06-ai-tool-guide.md` | ◐ |
 | 10 | `cuevik-start:06-readme` | `README.md` | `07-readme.md` | ☐ |
 | 11 | `cuevik-start:07-backlog` | `docs/BACKLOG.md` (frozen-after-initiation header, D7), epics + stories with `epic`/`story`/`priority:*` labels (D5); ignores `initiation` issues (DECISIONS §9) | `08-backlog.md` | ☐ |
 | 12 | `cuevik-start:08-finalize` | Strip INITIATION-ONLY fence from `CONTRIBUTING.md` | `09-finalize.md` | ☐ |
