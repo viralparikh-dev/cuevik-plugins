@@ -337,8 +337,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="366">Architecture</text>
 <text class="mono" x="294" y="381">03-architecture</text>
 <text class="note" x="294" y="395">docs/ARCHITECTURE.md</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="328"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="339">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="328"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="339">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="344"></rect>
 <text class="ttl" x="548" y="365">PR → main</text>
 <text class="note" x="548" y="382">Approved by Architect + Product Owner</text>
@@ -627,9 +627,9 @@ h2.pb{break-before:page;margin-top:0}
 <li>out-of-scope items are implied instead of listed</li>
 <li>requirements lack unique IDs</li>
 </ul>
-<div class="keep k3"><h3 id="03-architecture">03-architecture</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>  ·  <strong>Writes:</strong> <code>docs/ARCHITECTURE.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:04-tech-stack</code></p></div>
+<div class="keep k3"><h3 id="03-architecture">03-architecture</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>  ·  <strong>Writes:</strong> <code>docs/ARCHITECTURE.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:04-tech-stack</code></p></div>
 
-<p>Designs the system from the requirements. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
+<p>Designs the system from the requirements. Claude works through it with you as the Architect, one section at a time: it asks first, may offer two or three labelled possible designs with their trade-offs to pick from, attacks each draft (a failing component, load at the PRD's targets, a breach), and only then asks you to approve. Every number comes from the PRD or from you, and product names go to the next step. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
 <p>Every significant decision is written as <strong>Context, Decision, Alternatives rejected, Trade-offs</strong>. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.</p>
 <div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
 
@@ -821,7 +821,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:03-architecture</code></td>
 <td class="nw">Architecture</td>
 <td>Designs the system: components, data, integrations and the decisions behind them.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:04-tech-stack</code></td>

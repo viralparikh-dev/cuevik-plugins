@@ -87,7 +87,7 @@ flowchart TB
   end
   subgraph AR["Architect"]
     M0["00 · Bootstrap<br/>00-bootstrap"]
-    M3["03 · Architecture<br/>03-architecture<br/>Planned"]
+    M3["03 · Architecture<br/>03-architecture"]
     M4["04 · Tech Stack<br/>04-tech-stack<br/>Planned"]
     M5["05 · AI Tool Guide<br/>05-ai-tool-guide<br/>Planned"]
     M6["06 · README<br/>06-readme<br/>Planned"]
@@ -290,11 +290,11 @@ The Product Owner blocks the PR if:
 
 <!-- gen:step-03-architecture -->
 
-**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect, Product Owner  ·  **Reads:** `docs/PRD.md`  ·  **Writes:** `docs/ARCHITECTURE.md`  ·  **Then:** `/cuevik-start:04-tech-stack`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect, Product Owner  ·  **Reads:** `docs/PRD.md`  ·  **Writes:** `docs/ARCHITECTURE.md`  ·  **Then:** `/cuevik-start:04-tech-stack`
 
 <!-- /gen:step-03-architecture -->
 
-Designs the system from the requirements. The result is `docs/ARCHITECTURE.md` with eight sections: System Architecture, Data Design, Data Flow & Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture & Data Classification, Non-Functional Approach.
+Designs the system from the requirements. Claude works through it with you as the Architect, one section at a time: it asks first, may offer two or three labelled possible designs with their trade-offs to pick from, attacks each draft (a failing component, load at the PRD's targets, a breach), and only then asks you to approve. Every number comes from the PRD or from you, and product names go to the next step. The result is `docs/ARCHITECTURE.md` with eight sections: System Architecture, Data Design, Data Flow & Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture & Data Classification, Non-Functional Approach.
 
 Every significant decision is written as **Context, Decision, Alternatives rejected, Trade-offs**. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.
 
@@ -564,7 +564,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. | Available |
 | `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Available |
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
-| `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Planned |
+| `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Planned |
 | `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Planned |
 | `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
