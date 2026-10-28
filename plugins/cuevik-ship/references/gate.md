@@ -35,7 +35,7 @@ read the previous artifact's `**Status:**` from the issue branch:
 | 03 | `.../02-audit-prd` PR merged into `main` (the issue's References `Docs PR:` line names it); its ratified block in the PR body |
 | 04 | After 03: References has an `Epic:` line and the issue has no `idea` label (no PR to check: 03 has none). Bug fix, refactor or split story with no `.../issue`: nothing; 04 creates it |
 | 05 | `.../04-plan-intent` PR merged into `.../issue`; `intent.md` reads `Approved` |
-| 06 | `.../05-design-spec` PR merged into `.../issue`; `spec.md` reads `Approved` and every §8 box is ticked |
+| 06 | `.../05-design-spec` PR merged into `.../issue`; `spec.md` reads `Approved`; every §8 box ticked, or signed off in 06 itself |
 | 07 | `.../06-build-plan` PR merged into `.../issue`; `plan.md` reads `Approved` |
 | cleanup | `.../07-execute-plan` PR merged into `main`, or the issue closed as *not planned*; and no open PR whose head starts with `ship/<n>-` |
 

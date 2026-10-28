@@ -119,7 +119,7 @@ Status: ☐ not started · ◐ in progress · ☑ merged
 | 19 | `cuevik-ship:03-create-backlog` | Epic resolution (D6), convert/split (D9, D11), board add local only | `work/3-epic.md`, DRYRUN §3 | ◐ |
 | 20 | `cuevik-ship:04-plan-intent` | Creates `.../issue` + worktree when missing; D10 gate | `work/4-intent.md` | ◐ |
 | 21 | `cuevik-ship:05-design-spec` | `spec.md` | `work/5-spec.md` | ◐ |
-| 22 | `cuevik-ship:06-build-plan` | `plan.md` | `work/6-plan.md` | ☐ |
+| 22 | `cuevik-ship:06-build-plan` | `plan.md` | `work/6-plan.md` | ◐ |
 | 23 | `cuevik-ship:07-execute-plan` | Code branch from `main`, code PR to `main`, final References refresh | `work/7-execute.md` | ☐ |
 | 24 | `cuevik-ship:cleanup` | Gate, worktree + local branches, `ship-archive/<n>-<slug>` tag | DECISIONS §4 cleanup | ☐ |
 | 25 | Tidy and release | Plugin READMEs; delete `DECISIONS.md`, `DRYRUN-01-03.md`, this file; delete `D:\vrp-repos\cs-kickstart` (Phase 14 is the last phase that reads it); tag `v0.1.0` | — | ☐ |

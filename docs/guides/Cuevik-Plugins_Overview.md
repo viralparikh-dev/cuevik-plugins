@@ -66,7 +66,7 @@ Commands tagged **Planned** are in design and arrive as they are built.
 | `/cuevik-ship:03-create-backlog` | Turns approved requirements into tracked work. | Available |
 | `/cuevik-ship:04-plan-intent` | States the problem and scope before any solution. | Available |
 | `/cuevik-ship:05-design-spec` | Writes the design: behaviour, data and tests. | Available |
-| `/cuevik-ship:06-build-plan` | Turns the design into an ordered list of tasks. | Planned |
+| `/cuevik-ship:06-build-plan` | Turns the design into an ordered list of tasks. | Available |
 | `/cuevik-ship:07-execute-plan` | Builds the plan and delivers it for review. | Planned |
 | `/cuevik-ship:cleanup` | Tidies up once the work is delivered. | Planned |
 
