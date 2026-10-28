@@ -146,7 +146,7 @@ flowchart TB
   end
   subgraph CL["Claude"]
     M0["01 · Brainstorm<br/>01-brainstorm"]
-    M1["02 · Audit PRD<br/>02-audit-prd<br/>Planned"]
+    M1["02 · Audit PRD<br/>02-audit-prd"]
     M2["03 · Create Backlog<br/>03-create-backlog<br/>Planned"]
     M3["04 · Plan Intent<br/>04-plan-intent<br/>Planned"]
     M4["05 · Design Spec<br/>05-design-spec<br/>Planned"]
@@ -417,7 +417,7 @@ Takes an idea or an existing issue number.
 
 <!-- gen:cmd-cuevik-ship-02-audit-prd -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/02-audit-prd` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** `PRODUCT.md` and `PRD.md` changes  ·  **You:** Review and merge
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/02-audit-prd` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** `PRODUCT.md` and `PRD.md` changes  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-02-audit-prd -->
 
@@ -579,7 +579,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
-| `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Planned |
+| `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Planned |
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Planned |
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Planned |

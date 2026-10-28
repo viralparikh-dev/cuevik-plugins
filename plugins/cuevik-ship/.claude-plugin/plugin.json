@@ -1,7 +1,7 @@
 {
   "name": "cuevik-ship",
   "displayName": "Cuevik Ship",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The daily delivery loop for repos set up with cuevik-start: idea, requirements, backlog, intent, spec, plan, executed PR. One issue per worktree, one step per session, one approval per step.",
   "author": {
     "name": "Viral Parikh"
