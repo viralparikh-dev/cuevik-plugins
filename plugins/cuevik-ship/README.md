@@ -17,6 +17,15 @@ The daily delivery loop for repos set up with `cuevik-start`: idea, requirements
 
 Files under `docs/ship/<n>-<slug>/` live on the issue's own branch and never reach `main`.
 
+## Install
+
+```text
+/plugin marketplace add viralparikh-dev/cuevik-plugins
+/plugin install cuevik-ship@cuevik-plugins
+```
+
+The repository is private: you need read access and git credentials on your machine (`gh auth login`, then `gh auth setup-git`).
+
 ## Requirements
 
 A repo bootstrapped with `/cuevik-start:00-bootstrap` (it reads `.cuevik/config.json`), `gh` with the `project` scope, a local Claude Code session. Depends on `cuevik-docs`. Optional plugin setting `worktree_root`: the folder where each issue's worktree is created.

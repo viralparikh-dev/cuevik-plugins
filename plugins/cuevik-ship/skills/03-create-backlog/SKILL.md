@@ -1,6 +1,6 @@
 ---
 name: 03-create-backlog
-description: Step 03 of cuevik-ship. Run after 02-audit-prd's docs PR is merged. Files the ratified requirements as GitHub issues — turns the idea issue into its story (PRD-NNN title, story and priority labels), finds or creates each story's epic, splits the idea into several stories when it covers several requirements, links sub-issues and blocked-by — after you approve one table. Writes to GitHub only (not docs/BACKLOG.md): no branch, no PR.
+description: Step 03 of cuevik-ship. Run after 02-audit-prd's docs PR is merged. Files the ratified requirements as GitHub issues — turns the idea issue into its story (PRD-NNN title, story and priority labels), finds or creates each story's epic, splits the idea into several stories when it covers several requirements, links sub-issues and blocked-by — after you approve one table. Writes to GitHub only (not docs/BACKLOG.md), with no branch and no PR.
 disable-model-invocation: true
 argument-hint: "<issue#> | PRD-NNN [PRD-NNN ...]"
 ---

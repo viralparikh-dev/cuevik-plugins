@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.2.0, cuevik-ship 0.2.0, cuevik-docs 0.2.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.2.0, cuevik-ship 0.2.1, cuevik-docs 0.2.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all three plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -678,4 +678,5 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 | Version | Date | Change |
 |---|---|---|
+| 0.2.1 | 2026-10-28 | `cuevik-ship` 0.2.1: fixes `03-create-backlog` frontmatter that did not parse |
 | 0.2.0 | 2026-10-28 | First release, covering `cuevik-start` 0.2.0, `cuevik-ship` 0.2.0 and `cuevik-docs` 0.2.0 |
