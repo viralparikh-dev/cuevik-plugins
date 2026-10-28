@@ -664,6 +664,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 - **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
 - **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
+- **Built, not yet run live:** `cuevik-start` steps `03` to `08` and `cleanup`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
 - **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying another user's template board.
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.

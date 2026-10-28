@@ -39,7 +39,7 @@ Owns how it gets built: the architecture, the technology choices, the AI coding 
 
 ## Every command
 
-Commands tagged **Planned** are in design and arrive as they are built.
+Every command below is available. A command not yet built would be tagged **Planned**.
 
 ### Cuevik Start
 
