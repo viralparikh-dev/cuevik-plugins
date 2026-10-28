@@ -90,7 +90,7 @@ flowchart TB
     M3["03 · Architecture<br/>03-architecture"]
     M4["04 · Tech Stack<br/>04-tech-stack"]
     M5["05 · AI Tool Guide<br/>05-ai-tool-guide"]
-    M6["06 · README<br/>06-readme<br/>Planned"]
+    M6["06 · README<br/>06-readme"]
     M8["08 · Finalize Governance<br/>08-finalize<br/>Planned"]
   end
   subgraph GH["GitHub"]
@@ -326,11 +326,11 @@ The guide has ten sections: Project Context, Coding Conventions, Scope Boundarie
 
 <!-- gen:step-06-readme -->
 
-**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:07-backlog`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:07-backlog`
 
 <!-- /gen:step-06-readme -->
 
-Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install & Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed, and every command in the README is run before it is committed.
+Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install & Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), the setup sections are written as the intended setup and each is marked as pending and unverified until the app is scaffolded. You confirm which mode applies.
 
 ### 07-backlog
 
@@ -567,7 +567,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Available |
 | `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Available |
-| `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Planned |
+| `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Available |
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Planned |
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Planned |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |

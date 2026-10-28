@@ -372,8 +372,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="624">README</text>
 <text class="mono" x="294" y="639">06-readme</text>
 <text class="note" x="294" y="653">README.md</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="586"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="597">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="586"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="597">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
 <text class="ttl" x="548" y="623">PR → main</text>
 <text class="note" x="548" y="640">Approved by Architect</text>
@@ -639,9 +639,9 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes <code>docs/AI-TOOL-GUIDE.md</code> and only the adapter files for those tools (<code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>). The shared rules live in the guide; each adapter points to it and holds only tool-specific settings. If the team uses Claude Code, it also writes <code>.claude/settings.json</code> with the plugins you pick for the team (for example <code>superpowers</code> and <code>code-review</code>), so everyone who opens the repo is offered the same ones. Tools that are not plugins, such as graphify, are listed in the guide as a manual prerequisite.</p>
 <p>The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.</p>
-<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
+<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
 
-<p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed, and every command in the README is run before it is committed.</p>
+<p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), the setup sections are written as the intended setup and each is marked as pending and unverified until the app is scaffolded. You confirm which mode applies.</p>
 <div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
 
 <p>Derives epics and stories from the product concept and the PRD, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
@@ -839,7 +839,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:06-readme</code></td>
 <td class="nw">README</td>
 <td>Replaces the boilerplate README with the project's real entry point.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:07-backlog</code></td>
