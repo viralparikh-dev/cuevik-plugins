@@ -1,0 +1,61 @@
+# The References block
+
+The issue description carries a `## References` section: links to the issue's files and PRs,
+**never file content**. It is the issue's progress record. Every command refreshes it after its
+gate check and again when it opens its PR; operators do not edit between the markers.
+
+## Format
+
+```markdown
+## References
+
+<!-- cuevik-ship:references -->
+- Brainstorm: [brainstorm.md](<permalink>) · PR #<p>
+- Docs PR: #<q>
+- Epic: #<e>
+- Intent: [intent.md](<permalink>) · PR #<p>
+- Spec: [spec.md](<permalink>) · PR #<p>
+- Plan: [plan.md](<permalink>) · PR #<p>
+- Code PR: #<c>
+- Split from: #<m>
+- Split into: #<a>, #<b>
+<!-- /cuevik-ship:references -->
+```
+
+- One line per thing that exists, in this order; a line appears once its file or PR exists and
+  is never removed.
+- `Epic:` is written by `03-create-backlog` and is the signal `04-plan-intent` gates on.
+- `Docs PR:` is written by `02-audit-prd` when it opens the PR to `main`.
+- `Split from:` / `Split into:` are written by `03-create-backlog` on a split.
+
+## Permalinks
+
+A file link points at a commit, never a branch name, so it keeps working after cleanup (the
+archive tag keeps the commits reachable):
+
+```text
+https://github.com/<owner>/<repo>/blob/<sha>/docs/ship/<n>-<slug>/<file>
+```
+
+- File merged into `.../issue`: `<sha>` = `git log -1 --format=%H origin/ship/<n>-<slug>/issue --
+  docs/ship/<n>-<slug>/<file>`, the latest commit on the issue branch that touched it.
+- File only in an open PR: the PR's head commit (`gh pr view <p> --json headRefOid --jq
+  .headRefOid`), re-pointed at the issue branch by the next refresh after the merge.
+- When a later step changes an earlier file (e.g. `intent.md` edited during the spec), the
+  refresh re-points that line too.
+
+## Refresh
+
+```sh
+gh issue view <n> --json body --jq .body > <tmp>/body.md
+# replace the text between the two markers, or append the whole section if they are missing
+gh issue edit <n> --body-file <tmp>/body.md
+```
+
+- Write `<tmp>` outside the repo (a temporary folder), never in the worktree.
+- Change nothing outside the markers. Markers missing: append `## References`, a blank line and
+  the marked block at the end of the body.
+- Two marker pairs, or an end marker before the start marker: **STOP** and report; never guess
+  which block is current.
+- A refresh needs no confirmation of its own: it changes only the block, which belongs to
+  cuevik-ship. Say in one line what it changed.
