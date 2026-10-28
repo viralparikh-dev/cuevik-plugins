@@ -151,7 +151,7 @@ flowchart TB
     M3["04 · Plan Intent<br/>04-plan-intent"]
     M4["05 · Design Spec<br/>05-design-spec"]
     M5["06 · Build Plan<br/>06-build-plan"]
-    M6["07 · Execute Plan<br/>07-execute-plan<br/>Planned"]
+    M6["07 · Execute Plan<br/>07-execute-plan"]
     M7["Clean up<br/>cleanup<br/>Planned"]
   end
   subgraph GH["GitHub"]
@@ -478,7 +478,7 @@ Turns the spec into `plan.md`: a dependency-ordered task list that a fresh sessi
 
 <!-- gen:cmd-cuevik-ship-07-execute-plan -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/07-execute-plan` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** The code  ·  **You:** Review and merge the code PR
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/07-execute-plan` (cut from `main`)  ·  **PR to:** `main`  ·  **Writes:** The code  ·  **You:** Review and merge the code PR
 
 <!-- /gen:cmd-cuevik-ship-07-execute-plan -->
 
@@ -584,7 +584,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Available |
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Available |
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Available |
-| `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
+| `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Available |
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
 | `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Available |
 | `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Available |

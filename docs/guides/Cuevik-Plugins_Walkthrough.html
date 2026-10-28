@@ -520,8 +520,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="624">Execute Plan</text>
 <text class="mono" x="294" y="639">07-execute-plan</text>
 <text class="note" x="294" y="653">The code</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="586"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="597">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="586"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="597">Available</text>
 <rect class="dash" height="28" rx="14" width="216" x="26" y="613"></rect>
 <text class="note" x="40" y="631">Review and merge the code PR</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
@@ -710,7 +710,7 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k3"><h3 id="06-build-plan">06-build-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/06-build-plan</code>  ·  <strong>PR to:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>  ·  <strong>Writes:</strong> <code>plan.md</code> in the work folder  ·  <strong>You:</strong> Review and merge</p></div>
 
 <p>Turns the spec into <code>plan.md</code>: a dependency-ordered task list that a fresh session can execute.</p>
-<div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
+<div class="keep k3"><h3 id="07-execute-plan">07-execute-plan</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>ship/&lt;n&gt;-&lt;slug&gt;/07-execute-plan</code> (cut from <code>main</code>)  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The code  ·  <strong>You:</strong> Review and merge the code PR</p></div>
 
 <p>Builds the plan on a code branch cut from <code>main</code>, reading <code>plan.md</code> from the issue branch, and opens the code PR to <code>main</code>. That PR carries only the code, so no <code>docs/ship/</code> file reaches <code>main</code>. Its <code>Closes #n</code> is what closes the issue, and the final References refresh happens here.</p>
 <div class="keep k3"><h3 id="cleanup_1">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Worktree, local branches, archive tag  ·  <strong>You:</strong> Confirm the list</p></div>
@@ -911,7 +911,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>/cuevik-ship:07-execute-plan</code></td>
 <td class="nw">Execute Plan</td>
 <td>Builds the plan on a code branch and opens the code PR to <code>main</code>.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-ship:cleanup</code></td>
