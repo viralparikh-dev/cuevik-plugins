@@ -350,8 +350,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="452">Tech Stack</text>
 <text class="mono" x="294" y="467">04-tech-stack</text>
 <text class="note" x="294" y="481">docs/TECH-STACK.md + 1 more</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="414"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="425">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="414"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="425">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="430"></rect>
 <text class="ttl" x="548" y="451">PR → main</text>
 <text class="note" x="548" y="468">Approved by Architect</text>
@@ -631,10 +631,10 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>Designs the system from the requirements. Claude works through it with you as the Architect, one section at a time: it asks first, may offer two or three labelled possible designs with their trade-offs to pick from, attacks each draft (a failing component, load at the PRD's targets, a breach), and only then asks you to approve. Every number comes from the PRD or from you, and product names go to the next step. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
 <p>Every significant decision is written as <strong>Context, Decision, Alternatives rejected, Trade-offs</strong>. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.</p>
-<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
+<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
 
-<p>Locks the approved technologies and the trade-offs behind them. The result is <code>docs/TECH-STACK.md</code> with six sections: Languages &amp; Frameworks, Datastores, Cloud &amp; Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions &amp; Constraints.</p>
-<p>It then appends a tooling layer (build, test and lint commands) to <code>CONTRIBUTING.md</code>, using only technologies approved in <code>TECH-STACK.md</code> and leaving the governance layer from <code>00-bootstrap</code> untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.</p>
+<p>Locks the approved technologies and the trade-offs behind them. Claude starts from the products named during the architecture step, offers labelled candidates with their trade-offs for each open choice, and takes every version from you or from the technology's own release page, never from memory. The result is <code>docs/TECH-STACK.md</code> with six sections: Languages &amp; Frameworks, Datastores, Cloud &amp; Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions &amp; Constraints.</p>
+<p>It then appends a tooling layer (versions; install, run, test, lint and build commands; hooks) to the end of <code>CONTRIBUTING.md</code> between <code>TOOLING-LAYER</code> markers, writing <code>Not set yet</code> for any command not known before the code exists, using only technologies approved in <code>TECH-STACK.md</code> and leaving the governance layer from <code>00-bootstrap</code> untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.</p>
 <div class="keep k3"><h3 id="05-ai-tool-guide">05-ai-tool-guide</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-readme</code></p></div>
 
 <p>Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes <code>docs/AI-TOOL-GUIDE.md</code> and only the adapter files for those tools (<code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>). The shared rules live in the guide; each adapter holds only tool-specific settings.</p>
@@ -827,7 +827,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:04-tech-stack</code></td>
 <td class="nw">Tech Stack</td>
 <td>Locks the approved technologies and the build, test and lint commands.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:05-ai-tool-guide</code></td>

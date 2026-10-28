@@ -105,7 +105,7 @@ steps:
     prSummary: "Summarize the stack choices, the tooling commands added, and include the 04-tech-stack reviewer checklist."
     finalReminder: "TECH-STACK.md and the CONTRIBUTING.md tooling layer become final only when the Architect approves and merges the PR."
     specialActions:
-      - "Append the tooling layer to CONTRIBUTING.md using only technologies approved in TECH-STACK.md. Preserve the 00-bootstrap governance layer."
+      - "Append the tooling layer to CONTRIBUTING.md, between TOOLING-LAYER markers, using only technologies approved in TECH-STACK.md. Preserve the 00-bootstrap governance layer."
 
   - id: 05-ai-tool-guide
     title: AI Tool Guide
