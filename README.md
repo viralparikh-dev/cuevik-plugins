@@ -29,6 +29,10 @@ In Claude Code:
 /plugin install cuevik-ship@cuevik-plugins
 ```
 
+## Status
+
+Version 0.2.0. `cuevik-start` `00`–`02` and `status` have been run end to end on a real repo; every other command is built but not yet run live (see [#38](https://github.com/viralparikh-dev/cuevik-plugins/issues/38)).
+
 ## License
 
 © 2026 Viral Parikh. All rights reserved. See [LICENSE](LICENSE).
