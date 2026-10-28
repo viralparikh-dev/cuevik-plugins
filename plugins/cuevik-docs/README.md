@@ -11,6 +11,15 @@ Keep a project's source-of-truth documents aligned: audit them for drift and red
 
 Documents come from `.cuevik/lineage.json`, written by `/cuevik-start:00-bootstrap`. `docs/BACKLOG.md` is frozen and cannot be updated.
 
+## Install
+
+```text
+/plugin marketplace add viralparikh-dev/cuevik-plugins
+/plugin install cuevik-docs@cuevik-plugins
+```
+
+The repository is private: you need read access and git credentials on your machine (`gh auth login`, then `gh auth setup-git`).
+
 ## Requirements
 
 `gh` signed in and a repo with `.cuevik/lineage.json` on `main`. `cuevik-start` and `cuevik-ship` both depend on this plugin.

@@ -20,6 +20,15 @@ Start a project the governed way: nine steps (`00`–`08`) from an empty repo to
 
 Run one step per session, in order. Each step needs the previous step's PR merged.
 
+## Install
+
+```text
+/plugin marketplace add viralparikh-dev/cuevik-plugins
+/plugin install cuevik-start@cuevik-plugins
+```
+
+The repository is private: you need read access and git credentials on your machine (`gh auth login`, then `gh auth setup-git`).
+
 ## Requirements
 
 `gh` signed in with the `project` scope, a local Claude Code session, and admin rights on the repo. Depends on `cuevik-docs` and `superpowers@claude-plugins-official`.
