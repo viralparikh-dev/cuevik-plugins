@@ -1,10 +1,10 @@
 # Build log — phases 07–24 (temporary)
 
-> **Temporary.** Record of the unattended build of BUILD-PLAN phases 07–24 on branch
-> `build/phases-07-24`. Nobody approved a plan or ran a sandbox test during this run: every
-> decision below was taken by the building session and every phase is built but untested (◐).
-> Use this file to drive the live test pass, then delete it with the other design docs
-> (Phase 25).
+> **Temporary.** Record of the unattended build of BUILD-PLAN phases 07–24, one stacked branch
+> and PR per phase (`build/phase-NN-<slug>`, each based on the previous phase's branch). Nobody
+> approved a plan or ran a sandbox test during this run: every decision below was taken by the
+> building session and every phase is built but untested (◐). Use this file to drive the live
+> test pass, then delete it with the other design docs (Phase 25).
 
 ## Summary: riskiest untested assumption per phase
 
@@ -15,6 +15,11 @@ Filled in when the run ends.
 - Branch `build/phases-07-24` from `main` at `ce6e3c1`, pushed. The session was also told to use
   a harness branch (`claude/modest-mccarthy-i2ztyl`); the task named `build/phases-07-24`
   explicitly, so that is the branch used.
+- PR plan changed by the user after Phase 07's commit: one PR per phase, stacked. Phases 07–14
+  were already committed in a line on `build/phases-07-24`, so each got a branch on its own
+  commit and a PR based on the previous one (#17 for 07 against `main`, then #18–#24). Draft PR
+  #16 was closed with links to them; `build/phases-07-24` gets no further pushes. From Phase 15
+  each phase branches off the previous phase's branch.
 - Sources cloned outside the repo (`/home/user/sources/`), default branches. Nothing copied in.
 - Checks, run per phase from the repo root:
   - `claude plugin validate .` and `claude plugin validate plugins/<plugin>` (Claude Code
@@ -311,3 +316,41 @@ Untested — a live sandbox run must verify:
 - Claude keeps every unchanged byte (header, markers) when editing a section.
 - The derived downstream list matches the Walkthrough table for each document.
 - The PR body's multi-line `--body` survives the Bash tool quoting.
+
+## Phase 15 — `cuevik-docs:audit`
+
+Built: `plugins/cuevik-docs/skills/audit/SKILL.md`; cuevik-docs 0.1.1 → 0.1.2; guides tag audit
+Available and describe the report and `fix`. Branch `build/phase-15-docs-audit`, stacked on
+Phase 14.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Corpus | Every `.cuevik/lineage.json` document + AI tool adapters + `.claude/settings.json` | The source hardcoded one product's file list; the lineage is the project's own list |
+| Authority ladder | Files on disk/git → `CONTRIBUTING.md` (governance) → lineage graph (upstream wins) → `AI-TOOL-GUIDE.md` over adapters → `README.md` owns nothing | Source ladder, rebuilt on the lineage and on this suite's guide/adapter split (05) |
+| Product specifics | Removed: domain terms, numbers, database/hosting vendor, tracker link, the dated "known-open findings" section | BUILD-PLAN Phase 15: generalised, no product specifics |
+| Requirement IDs | `PRD-NNN` only (NFRs share the sequence), retired IDs struck through count as resolving | Matches 02 and docs:update |
+| References tables | All injected copies must be identical | Here the tables are injected from one source; the source's "copies are a regression" rule was product-specific and inverted |
+| Lineage headers | Each document's Owner / Derived from / Downstream must match the lineage | The lineage is the stored truth; headers are copies of it |
+| Labelled pending | `Pending scaffold — unverified` (06) and `Not set yet` (04) are honest, not drift | Same exception as the source, extended to 04's marker |
+| Frozen docs | Only their citations are checked; never drift against the current state | D7 |
+| Work folders | `docs/ship/` in an issue worktree is transient; remote `ship/*/issue` branches of closed issues reported (cleanup not run) | Replaces the source's "closed work folder still present" check for the ship model |
+| Model invocation | **No** `disable-model-invocation`, unlike every other skill | `cuevik-ship:02-audit-prd` must run it with the Skill tool, which `disable-model-invocation: true` blocks. Read-only by default, and the description limits it to an explicit ask or a cuevik-ship step |
+| `fix` | Safe tier only (broken link, stale stamp, README transcription), on a `docs/audit-fixes-<date>` branch, as one PR after a `Yes` | The source edited files in place; here every change reaches `main` through a PR |
+| Approval tier | Never applied; the report names `/cuevik-docs:update <document>` for each | One document per PR, with its downstream checklist |
+| Report | In chat only, no file; source finding format and two axes kept | Walkthrough: "a findings report"; nothing to commit |
+
+Checks: validate `.` pass · validate `plugins/cuevik-docs` pass (icon warning) · contracts pass ·
+markdownlint no growth (339 → 339, baseline incl. the Phase 14 contract-copy exception) ·
+build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- `cuevik-ship:02-audit-prd` can invoke `cuevik-docs:audit` with the Skill tool (cross-plugin,
+  no `disable-model-invocation`), and Claude does not run it unasked in unrelated sessions.
+- The report is usable on a real initiation corpus without timing out on the read-everything
+  pass.
+- `git ls-remote --heads origin 'refs/heads/ship/*'` + `gh issue view` correctly flags issue
+  branches of closed issues.
+- `fix` opens a PR with only Safe-tier edits.

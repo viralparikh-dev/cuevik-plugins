@@ -204,7 +204,7 @@ flowchart TB
     S1_0["Review and merge"]
   end
   subgraph CL["Claude"]
-    M0["Audit<br/>audit<br/>Planned"]
+    M0["Audit<br/>audit"]
     M1["Update<br/>update"]
   end
   subgraph GH["GitHub"]
@@ -510,7 +510,7 @@ Two commands for the source-of-truth documents named in `.cuevik/lineage.json`. 
 
 <!-- gen:cmd-cuevik-docs-audit -->
 
-**Status:** Planned  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** A findings report  ·  **You:** Read the report
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** A findings report  ·  **You:** Read the report
 
 <!-- /gen:cmd-cuevik-docs-audit -->
 
@@ -520,7 +520,10 @@ Reads the project's documents once and runs three lenses over them:
 - **Drift.** Documents that contradict each other, the files on disk, or a decision already taken.
 - **Absorb.** Two files that say the same thing twice, and which copy is better.
 
-The lineage decides which documents are audited. `/cuevik-ship:02-audit-prd` calls it.
+The lineage decides which documents are audited, and its upstream links decide which document wins a
+disagreement. Each finding comes with where both sides say it, which one is right, the impact and
+the exact fix. It changes nothing unless you add `fix`, which offers only the safe fixes (broken
+links, stale dates, README transcription) as one PR. `/cuevik-ship:02-audit-prd` calls it.
 
 ### update
 
@@ -583,7 +586,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Planned |
-| `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Planned |
+| `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Available |
 | `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Available |
 
 ### Branches and files (ship, docs and utility commands)
