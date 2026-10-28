@@ -501,3 +501,32 @@ Untested — a live sandbox run must verify:
 - `gh issue list --search "PRD-NNN in:title"` finds the story; the exact-prefix filter holds.
 - Parsing the YAML block from `gh pr view --json body`.
 - Converting the idea keeps its References block intact; the board card carries through (D14).
+
+## Phase 20 — `cuevik-ship:04-plan-intent`
+
+Built: `plugins/cuevik-ship/skills/04-plan-intent/SKILL.md`; cuevik-ship 0.1.4 → 0.1.5; guides tag
+04-plan-intent Available. Branch `build/phase-20-plan-intent`.
+
+Decisions:
+
+| Decision | Chosen | Why |
+| --- | --- | --- |
+| Three paths | A: after 03 (D10 gate, in the worktree) · B: an open issue with no `ship/<n>-*` branch (bug, refactor, split story, initiation-filed story) — 04 creates `.../issue` + worktree · C: free description — interview first, file the issue after | DECISIONS §4: 04 creates `.../issue` for any issue without one; source: "grill first, file second" |
+| Refusals | `idea` without `Epic:` (skipped 02/03), `epic`, closed issue | An idea must be ratified first; an epic is not one slice |
+| Mode | Slice contract when the issue cites a `PRD-NNN`; problem statement otherwise | Source |
+| Interview fields | Why now, outcome, the cut (≥1 out), affected users/components/data/integrations from ARCHITECTURE, constraints cited by document and §, open questions | Source, generalised (no product-specific service paths) |
+| Solutions offered | Parked in §7 as deferred to 05, never written as the intent | The step exists to stop reaching for a solution |
+| `shaping` label | Added in the plan (created if missing) | Source board model; foundation config.md |
+| Board Status | Unchanged | `Ready` belongs to 06 |
+| Draft | Pushed, no PR; resumed later | Same pattern as 01 |
+| Issue labels on path C | `bug` for a bug, none for a refactor | Labels only (D3); `bug` is GitHub's default label |
+
+Checks: validate `.` pass · validate `plugins/cuevik-ship` pass (icon warning) · contracts pass ·
+markdownlint no growth (368 → 368) · build_docs `--check` pass · forbidden terms clean.
+
+Untested — a live sandbox run must verify:
+
+- Path B on a split story from 03 (no branches yet) and on a bug filed by hand.
+- Path C: the issue is not filed before the interview ends, and the slug fits the filed title.
+- A bug filed with `bug` matches the board's `Auto-add to project` filter (`label:bug`) and also
+  gets added explicitly without a duplicate card.

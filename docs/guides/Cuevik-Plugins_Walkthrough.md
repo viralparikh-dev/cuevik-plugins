@@ -148,7 +148,7 @@ flowchart TB
     M0["01 · Brainstorm<br/>01-brainstorm"]
     M1["02 · Audit PRD<br/>02-audit-prd"]
     M2["03 · Create Backlog<br/>03-create-backlog"]
-    M3["04 · Plan Intent<br/>04-plan-intent<br/>Planned"]
+    M3["04 · Plan Intent<br/>04-plan-intent"]
     M4["05 · Design Spec<br/>05-design-spec<br/>Planned"]
     M5["06 · Build Plan<br/>06-build-plan<br/>Planned"]
     M6["07 · Execute Plan<br/>07-execute-plan<br/>Planned"]
@@ -448,7 +448,7 @@ Turns the ratified requirements into GitHub issues. It writes to GitHub only; it
 
 <!-- gen:cmd-cuevik-ship-04-plan-intent -->
 
-**Status:** Planned  ·  **Branch:** `ship/<n>-<slug>/04-plan-intent`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `intent.md` in the work folder  ·  **You:** Review and merge
+**Status:** Available  ·  **Branch:** `ship/<n>-<slug>/04-plan-intent`  ·  **PR to:** `ship/<n>-<slug>/issue`  ·  **Writes:** `intent.md` in the work folder  ·  **You:** Review and merge
 
 <!-- /gen:cmd-cuevik-ship-04-plan-intent -->
 
@@ -581,7 +581,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
-| `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Planned |
+| `/cuevik-ship:04-plan-intent` | Plan Intent | States the problem and scope, before any solution, in the issue's own work folder. | Available |
 | `/cuevik-ship:05-design-spec` | Design Spec | Writes the spec: behaviour, data, rules and tests. | Planned |
 | `/cuevik-ship:06-build-plan` | Build Plan | Turns the spec into a dependency-ordered task list that a fresh session can execute. | Planned |
 | `/cuevik-ship:07-execute-plan` | Execute Plan | Builds the plan on a code branch and opens the code PR to `main`. | Planned |
