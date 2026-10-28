@@ -91,7 +91,7 @@ flowchart TB
     M4["04 · Tech Stack<br/>04-tech-stack"]
     M5["05 · AI Tool Guide<br/>05-ai-tool-guide"]
     M6["06 · README<br/>06-readme"]
-    M8["08 · Finalize Governance<br/>08-finalize<br/>Planned"]
+    M8["08 · Finalize Governance<br/>08-finalize"]
   end
   subgraph GH["GitHub"]
     S0_0["PR → main"]
@@ -348,11 +348,11 @@ After setup, GitHub is the backlog. `docs/BACKLOG.md` is a snapshot and stays fr
 
 <!-- gen:step-08-finalize -->
 
-**Status:** Planned  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/TECH-STACK.md`  ·  **Writes:** `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:cleanup`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/TECH-STACK.md`  ·  **Writes:** `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:cleanup`
 
 <!-- /gen:step-08-finalize -->
 
-Ends initiation. It reads `CONTRIBUTING.md` from `main`, removes the fenced `INITIATION-ONLY` block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with `/cuevik-docs:update`. If the markers are missing it stops rather than guess which lines to delete.
+Ends initiation. It reads `CONTRIBUTING.md` from `main`, removes the fenced `INITIATION-ONLY` block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with `/cuevik-docs:update`. If the markers are missing it stops rather than guess which lines to delete. Its PR also closes the initiation epic.
 
 Initiation is complete when this PR is merged.
 
@@ -569,7 +569,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Available |
 | `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Available |
 | `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Available |
-| `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Planned |
+| `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Planned |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Planned |

@@ -394,8 +394,8 @@ h2.pb{break-before:page;margin-top:0}
 <text class="ttl" x="294" y="796">Finalize Governance</text>
 <text class="mono" x="294" y="811">08-finalize</text>
 <text class="note" x="294" y="825">CONTRIBUTING.md</text>
-<rect class="tg tg-p" height="16" rx="8" width="46" x="438" y="758"></rect>
-<text class="tg-t p" text-anchor="middle" x="461.0" y="769">Planned</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="758"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="769">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="774"></rect>
 <text class="ttl" x="548" y="795">PR → main</text>
 <text class="note" x="548" y="812">Approved by Architect</text>
@@ -646,9 +646,9 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled <code>PRD-NNN: &lt;Title&gt; (&lt;Priority&gt;)</code>), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, links each story to its epic as a sub-issue, adds them to the board, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
 <p>After setup, GitHub is the backlog. <code>docs/BACKLOG.md</code> is a snapshot and stays frozen.</p>
-<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag planned">Planned</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
+<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
 
-<p>Ends initiation. It reads <code>CONTRIBUTING.md</code> from <code>main</code>, removes the fenced <code>INITIATION-ONLY</code> block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with <code>/cuevik-docs:update</code>. If the markers are missing it stops rather than guess which lines to delete.</p>
+<p>Ends initiation. It reads <code>CONTRIBUTING.md</code> from <code>main</code>, removes the fenced <code>INITIATION-ONLY</code> block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with <code>/cuevik-docs:update</code>. If the markers are missing it stops rather than guess which lines to delete. Its PR also closes the initiation epic.</p>
 <p>Initiation is complete when this PR is merged.</p>
 <div class="keep k3"><h3 id="status">status</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Nothing (report only)  ·  <strong>You:</strong> Read the report</p></div>
 
@@ -851,7 +851,7 @@ h2.pb{break-before:page;margin-top:0}
 <td><code>/cuevik-start:08-finalize</code></td>
 <td>Finalize Governance</td>
 <td>Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones.</td>
-<td class="nw"><span class="tag planned">Planned</span></td>
+<td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
 <td><code>/cuevik-start:status</code></td>
