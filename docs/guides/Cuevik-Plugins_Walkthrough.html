@@ -1193,6 +1193,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <ul>
 <li><strong>GitHub only,</strong> and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.</li>
 <li><strong>Approval is process-enforced.</strong> GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.</li>
+<li><strong>Built, not yet run live:</strong> <code>cuevik-start</code> steps <code>03</code> to <code>08</code> and <code>cleanup</code>, and every <code>cuevik-ship</code> and <code>cuevik-docs</code> command. Only <code>00</code> to <code>02</code> and <code>status</code> have been run end to end on a real repo, so expect fixes after first use.</li>
 <li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying another user's template board.</li>
 <li><strong>Board copies:</strong> bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).</li>
 <li><strong>Not yet verified:</strong> creating sub-issue and blocked-by links from a cloud session, which <code>/cuevik-ship:03-create-backlog</code> relies on.</li>
