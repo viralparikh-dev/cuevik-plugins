@@ -4,11 +4,11 @@
 
 Cuevik Plugins turn project delivery into a sequence of numbered steps, each one a Claude Code command that runs inside your own repository. One plugin starts a project from an empty repo, one ships work an issue at a time through to a merged code PR, and one keeps the source-of-truth documents aligned throughout. Each later step checks that the previous step's PR is merged before it runs, so work only moves forward once it has been reviewed.
 
-| Plugin | Use it to | Entry command |
+| Plugin | Use it to | Version |
 | --- | --- | --- |
-| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, AI tool guide, README and backlog | `/cuevik-start:00-bootstrap` |
-| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | `/cuevik-ship:01-brainstorm` |
-| `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | `/cuevik-docs:audit` |
+| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, AI tool guide, README and backlog | 0.2.0 |
+| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.2.1 |
+| `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | 0.2.0 |
 
 ## Prerequisites
 
@@ -29,17 +29,13 @@ In Claude Code:
 /plugin install cuevik-ship@cuevik-plugins
 ```
 
-## Status
-
-Version 0.2.1. `cuevik-start` `00`–`02` and `status` have been run end to end on a real repo; every other command is built but not yet run live (see [#38](https://github.com/viralparikh-dev/cuevik-plugins/issues/38)).
-
 ## Versioning
 
 Each plugin is versioned independently. A plugin's `version` in its `plugin.json` follows [semver](https://semver.org) and is bumped only when that plugin's own installable behaviour changes — documentation-only edits (READMEs, guides) do not bump it. As a result the three plugins can sit at different versions at the same time; that is expected, not drift. The authoritative version for any plugin is the `version` field in its `plugin.json`.
 
-The repository git tag (`vX.Y.Z`) marks a repo-wide release milestone — the state of the whole marketplace at a point in time — not an assertion that every plugin is at that number. The `Version` line above tracks the latest tag.
+The repository git tag (`vX.Y.Z`) marks a repo-wide release milestone — the state of the whole marketplace at a point in time — not an assertion that every plugin is at that number. The Version column in the plugin table above lists each plugin's current `plugin.json` version.
 
-Cutting a release: bump only the plugins whose behaviour changed, update the `Version` line to the new tag, then tag the repo.
+Cutting a release: bump only the plugins whose behaviour changed, update the Version column in the plugin table to match, then tag the repo.
 
 ## License
 
