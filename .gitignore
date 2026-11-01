@@ -2,3 +2,7 @@
 __pycache__/
 .private-terms
 dist/
+
+# Local review working files (not committed)
+docs/extras/cuevik-start-review.md
+docs/extras/cuevik-start-action-items.md
