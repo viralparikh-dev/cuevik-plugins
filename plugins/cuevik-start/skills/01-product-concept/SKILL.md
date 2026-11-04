@@ -103,6 +103,25 @@ Override in brainstorming:
   included. Approve the draft with `AskUserQuestion` (`Yes` / `No`); after `Yes`, go on to runner
   §5.
 
+### Optional pitch
+
+Before the first question, offer once: the operator MAY paste a one-paragraph pitch. Ask it in
+chat as a single plain sentence, and accept "no" without comment.
+
+- **No pitch:** behave exactly as described above and below. Nothing in this subsection applies.
+- **Pitch given:** draft a strawman of `docs/PRODUCT.md` from it, then run the interview below
+  over the strawman instead of a blank page.
+  - Every statement in the strawman MUST trace to a phrase in the pitch. Show the operator the
+    strawman with each statement's source phrase beside it.
+  - Invent nothing. A section the pitch does not support stays an explicit gap (`Gap: not in the
+    pitch`), to be filled from the operator's answers. Success Criteria numbers, baselines,
+    thresholds and time frames are never taken from a guess: a pitch without them leaves a gap.
+  - The strawman is a draft, not an answer. Nothing in it counts as confirmed until the operator
+    confirms or rewrites it, section by section, in the playback and challenge steps above. Apply
+    the Product Owner challenge sequence to the strawman as you would to a fresh answer.
+  - All other rules in this file still apply: no technology, architecture or implementation in
+    the document, no `docs/superpowers/` files, `AskUserQuestion` only for the draft approval.
+
 Cover these sections, in this order, then write the document in template order:
 
 1. Problem Statement
@@ -157,3 +176,5 @@ Before approving the PR, verify every item. An unchecked item is a reason to req
 - [ ] Anti-patterns are approach/behaviour guardrails, not feature exclusions (those belong in
       Scope).
 - [ ] Nothing in this document dictates implementation, architecture, or tech choices.
+- [ ] If the operator gave a pitch, every statement in the document traces to the pitch or to the
+      operator's confirmed answers; no strawman claim was kept without confirmation.
