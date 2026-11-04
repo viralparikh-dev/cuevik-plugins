@@ -111,20 +111,21 @@ each number from the URL `gh issue create` prints:
    "<body>"`, then link it to its epic:
    `gh api -X POST repos/<owner>/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where
    `<id>` is `gh api repos/<owner>/<repo>/issues/<story> --jq .id`.
-4. **Board** — first decide whether the repo has a board: `.cuevik/config.json` has a `project`
-   object with a board `number`.
-   - **No board:** tell the operator that the backlog should live on a board, and push them to
-     set one up now (a GitHub Projects v2 board, wired the way `00-bootstrap` wires it) before
-     going on. Ask with `AskUserQuestion` (`Set up a board now` / `Continue without a board`).
-     Never create the board silently, and never block the step on it: on `Continue without a
+4. **Board** — first read `boardState` from `.cuevik/config.json`. Board calls are operations of
+   `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`; load it when a board is recorded.
+   - **`none`:** tell the operator that the backlog should live on a board, and push them to set
+     one up: a PR on `.cuevik/config.json` (config contract README, "Adding or repairing a
+     board"). Ask with `AskUserQuestion` (`Pause to set up a board` / `Continue without a board`).
+     Never create the board silently. On `Pause to set up a board`, stop here and print that
+     pointer: nothing is lost, because a re-run reuses the filed issues by exact title (Interview
+     step 1) once `.cuevik/config.json` on `main` has its `project`. On `Continue without a
      board`, record `Board: none, issues filed only` in the PR body and skip the rest of this
-     item. Once a board exists and `.cuevik/config.json` has its `project`, continue as below,
-     adding every issue filed above (including reused ones).
-   - **Board present:** add each epic and story directly:
-     `gh project item-add <number> --owner <project owner> --url <issue url> --format json --jq .id`
-     (from `.cuevik/config.json`), and set `Item Type` to `Epic` or `Story` (runner §7, Field
-     lookup and Set a value). Never set Status, Priority, Size, Sprint or an assignee: sprint
-     planning does that. A failed board call never stops the step: report it in the PR body.
+     item.
+   - **`configured` or `partial`:** add each epic and story directly with `board.addItem`, and set
+     `Item Type` to `Epic` or `Story` with `board.setField` (runner §7, Field lookup and Set a
+     value). Never set Status, Priority, Size, Sprint or an assignee: sprint planning does that. A
+     failed board call never stops the step: report it in the PR body. For `partial`, also record
+     `Board: partial, missing <parts>` in the PR body; there is no prompt.
 
 Any other `gh` failure: **STOP** and report what was filed and what was not. A re-run reuses the
 filed issues by exact title (Interview step 1).
@@ -140,8 +141,9 @@ Follow runner §6. Besides the `prSummary` (epic count, story count, priority br
 reviewer checklist below, list:
 
 - **Issues filed** — each epic with its stories, by number; reused ones marked.
-- **Board** — items added and Item Type set, `none, issues filed only` when the operator chose
-  to continue without a board, or each failure.
+- **Board** — items added and Item Type set; `none, issues filed only` when the repo has no board
+  and the operator chose to continue; `partial, missing <parts>` for a partial board; or each
+  failure.
 - **Proposed PRD.md changes** — gaps found while deriving the backlog, or `None`.
 
 ## Reviewer checklist
@@ -149,8 +151,9 @@ reviewer checklist below, list:
 Before approving the PR, verify every item. An unchecked item is a reason to request changes.
 
 - [ ] `BACKLOG.md` carries the frozen-snapshot note (issues are authoritative), and issues were
-      filed whether or not a board exists; with no board, the operator was pushed to set one up
-      and every filed issue was added once it existed, or the choice is recorded in the PR body.
+      filed whether or not a board exists; with `boardState` `none`, the operator was pushed to
+      set one up and every filed issue was added once it existed, or the choice is recorded in the
+      PR body.
 - [ ] Output matches the template skeleton — header block, frozen note, all four sections in
       order, and the references table present; no top-level section added or removed, and no
       `[placeholder]` left unfilled.

@@ -70,7 +70,8 @@ issue body and §1 of the file, unedited.
    never gets a number.
 2. **Slug** (`branches.md`, Names) from the working name or the description, shown in the plan.
 3. **Plan and approval** (`gate.md`, After the gate): the issue to create (exact title, body,
-   label), the board item, the branches, the worktree path and the folder. Title: the working
+   label), the board item (when the repo has a board), the branches, the worktree path and the
+   folder. Title: the working
    name in sentence case. Body: the sentences, a blank line, then the empty References block
    (`references-block.md`). For an existing issue: only the `idea` label (if added) and the
    branches.

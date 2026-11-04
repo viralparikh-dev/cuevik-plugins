@@ -3,16 +3,27 @@
   "title": ".cuevik/config.json",
   "description": "Project facts for the cuevik plugins, committed in the project repo. Owner/repo come from the git remote; the worktree root is plugin userConfig. Neither belongs here.",
   "type": "object",
-  "required": ["schemaVersion", "project", "initiation"],
+  "required": ["schemaVersion", "boardState", "initiation"],
   "additionalProperties": false,
   "properties": {
     "$schema": { "type": "string" },
     "schemaVersion": {
       "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
-      "const": 2
+      "const": 3
+    },
+    "boardState": {
+      "description": "Whether the repo has a GitHub Projects (v2) board the plugins use. `configured`: a board is recorded in `project` and everything bootstrap requires of it is done. `partial`: a board is recorded but a part is incomplete, listed in `missing`. `none`: no board is recorded (declined, or it could not be used); a valid state, not an error.",
+      "enum": ["configured", "partial", "none"]
+    },
+    "missing": {
+      "description": "Only with `boardState` `partial`. The parts of the board that are incomplete: `link` (board not linked to the repo), `items` (an initiation issue is not on the board), `fields` (a value bootstrap tried to set on a field the board has could not be set), `workflows` (a required workflow is off or its Status mapping is unconfirmed; required = all seven on a board bootstrap created, `Item closed` on an existing one). A field or option the board simply lacks is not listed.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["link", "items", "fields", "workflows"] }
     },
     "project": {
-      "description": "The GitHub Projects (v2) board that issues are added to and whose Status field cuevik-ship moves.",
+      "description": "The GitHub Projects (v2) board that issues are added to and whose Status field cuevik-ship moves. Present when `boardState` is `configured` or `partial`; absent when it is `none`.",
       "type": "object",
       "required": ["owner", "number", "id", "statusField"],
       "additionalProperties": false,
@@ -54,7 +65,7 @@
       }
     },
     "initiation": {
-      "description": "The issues that track cuevik-start's steps on the board, written by 00-bootstrap. All carry the `initiation` label and never `epic` or `story`, so backlog tooling never reads them. The runner puts `Closes #<story>` in each step's PR body; status cross-checks their state against the merged PRs.",
+      "description": "The issues that track cuevik-start's steps, written by 00-bootstrap and added to the board when there is one. Required in every `boardState`: the issues are filed without a board. All carry the `initiation` label and never `epic` or `story`, so backlog tooling never reads them. The runner puts `Closes #<story>` in each step's PR body; status cross-checks their state against the merged PRs.",
       "type": "object",
       "required": ["epic", "stories"],
       "additionalProperties": false,
@@ -65,7 +76,7 @@
           "minimum": 1
         },
         "stories": {
-          "description": "Step id -> issue number of that step's story. One per step except 00-bootstrap, which runs before the board exists.",
+          "description": "Step id -> issue number of that step's story. One per step except 00-bootstrap, whose story cannot exist before bootstrap runs.",
           "type": "object",
           "minProperties": 1,
           "propertyNames": { "pattern": "^[0-9]{2}-[a-z0-9-]+$" },
@@ -73,5 +84,19 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "boardState": { "const": "configured" } }, "required": ["boardState"] },
+      "then": { "required": ["project"], "not": { "required": ["missing"] } }
+    },
+    {
+      "if": { "properties": { "boardState": { "const": "partial" } }, "required": ["boardState"] },
+      "then": { "required": ["project", "missing"] }
+    },
+    {
+      "if": { "properties": { "boardState": { "const": "none" } }, "required": ["boardState"] },
+      "then": { "not": { "anyOf": [{ "required": ["project"] }, { "required": ["missing"] }] } }
+    }
+  ]
 }

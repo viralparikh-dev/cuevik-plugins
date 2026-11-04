@@ -97,7 +97,7 @@ Then the plan and approval (`gate.md`, After the gate), listing what applies:
 
 - **Path C:** the issue to file — exact title, body (a short statement of the problem from §1 and
   §2, then the empty References block) and labels (`bug` for a bug, none for a refactor), and the
-  board item (local sessions). It is filed only now: a title written before the interview
+  board item (local sessions, when the repo has a board). It is filed only now: a title written before the interview
   describes the first guess.
 - **Paths B and C:** `.../issue` from `origin/main` and the worktree (`branches.md`); from then on
   work in the worktree by absolute path.

@@ -1,5 +1,6 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
+  "boardState": "configured",
   "project": {
     "owner": "example-org",
     "number": 1,

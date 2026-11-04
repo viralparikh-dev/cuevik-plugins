@@ -5,12 +5,26 @@ Never hardcode an owner, repo, board number, field id or folder. Read them:
 | Fact | Source |
 | --- | --- |
 | Repo owner and name | the git remote: `gh repo view --json nameWithOwner --jq .nameWithOwner` |
-| Board owner, number, node id, Status field and option ids | `git show origin/main:.cuevik/config.json` `project` (contract: `references/contracts/config/`) |
+| Whether there is a board | `git show origin/main:.cuevik/config.json` `boardState` (contract: `references/contracts/config/`) |
+| Board owner, number, node id, Status field and option ids | the same file's `project`, present unless `boardState` is `none` |
 | Source-of-truth documents, owners, reviewers, upstream links | `git show origin/main:.cuevik/lineage.json` (contract: `references/contracts/lineage/`) |
 | Worktree root | the plugin's `worktree_root` option (`references/branches.md`) |
 
 Read the two `.cuevik/` files from `origin/main`, never from a work branch. If one fails its
-contract's schema, **STOP** and say which rule fails.
+contract's schema, **STOP** and say which rule fails. A config with `schemaVersion` 2 fails it:
+say `.cuevik/config.json is schemaVersion 2. Open a PR on it that sets "schemaVersion": 3 and adds
+"boardState": "configured" (leave project and initiation as they are), merge it, then re-run.`
+
+## Board state
+
+`boardState` decides whether the board rules in this file apply:
+
+- `none`: the repo has no board, which is valid. Make no `gh project` call anywhere, in a local or
+  a cloud session, and say nothing about it: not in a report, not as a list of board updates to make
+  by hand.
+- `configured` or `partial`: the rules below. `missing` (only with `partial`) is for humans and
+  `cuevik-start`'s `status`; a part the board lacks is skipped and reported by the per-call rules
+  below.
 
 ## Local or cloud
 

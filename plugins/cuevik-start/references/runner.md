@@ -44,8 +44,9 @@ Before starting, load:
    A step with `bootstrap: true` runs before `.cuevik/lineage.json` exists. It takes its owner and
    reviewers from the default lineage it is about to write, and has no upstream documents.
 4. `.cuevik/config.json` from `main`: `git show main:.cuevik/config.json`. Its
-   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6). A
-   step with `bootstrap: true` writes this file, so it has neither.
+   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6), and
+   `boardState` says whether the board bookkeeping (§7) applies. A step with `bootstrap: true`
+   writes this file, so it has none of them.
 5. The role file for the owner, plus one per extra reviewer:
    - `Product Owner` → `${CLAUDE_PLUGIN_ROOT}/references/roles/product-owner.md`
    - `Architect` → `${CLAUDE_PLUGIN_ROOT}/references/roles/solution-architect.md`
@@ -130,9 +131,14 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 
 3. **Bootstrap on `main`** — run `git show main:.cuevik/lineage.json` and
    `git show main:.cuevik/config.json`.
-   - Exit 0 for both: proceed.
+   - Exit 0 for both: proceed, after reading `schemaVersion` from the config.
    - Non-zero for either: **STOP**. Tell the operator to run `/cuevik-start:00-bootstrap` and
      merge its PR first.
+   - `schemaVersion` is not `3` (a config from before `boardState`): **STOP**. Tell the operator:
+     `.cuevik/config.json is schemaVersion 2. Open a PR on it that sets "schemaVersion": 3 and adds
+     "boardState": "configured" (leave project and initiation as they are), merge it, then re-run.`
+     (Config contract README, "Migrating from schemaVersion 2".) `bootstrap: true` steps skip this:
+     they write the file.
 
 4. **Previous step merged** — take the step listed immediately before this one in `steps.yml` and
    run `gh pr list --head <its branch> --base main --state merged --json number,url`.
@@ -185,8 +191,8 @@ do. Nothing is created, written or pushed before it.
 
    Any check that fails: **STOP** with what to fix. There is no question to answer.
 2. **Plan.** Print what the step will do as a short table: the branch it creates, the files it
-   writes, and every change on GitHub, including the §7 board updates (with the exact commands in
-   a fenced `sh` block below it).
+   writes, and every change on GitHub, including the §7 board updates unless `boardState` is
+   `none` (with the exact commands in a fenced `sh` block below it).
 3. **Approve.** Ask once, naming the count and pointing at the plan, e.g. `Make these 4 changes
    on GitHub? For more details, review my Plan that I articulated above.` or `Start 01 Product
    Concept on branch init/01-product-concept? For more details, review my Plan that I articulated
@@ -295,23 +301,26 @@ and merges the PR, and the next step refuses to run until then.
 
 ## 7. Board Bookkeeping
 
+The board is optional. Read `boardState` from `.cuevik/config.json` (Inputs §4):
+
+- `none`: skip this whole section. Make no call, report nothing, and add no board line to the PR
+  body. This is a valid repo, not a problem.
+- `configured` or `partial`: do the bookkeeping below. `partial` behaves like `configured`: a call
+  that needs a part the board lacks is skipped and reported, as any failed call is.
+
+Every board call is an operation in `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`; load it
+only when `boardState` is not `none`. This section holds no `gh project` command.
+
 The initiation issues mirror the steps on the board (`.cuevik/config.json` `initiation`). The
 merged PR stays the source of truth, so a board update that fails never stops a step: report it
 in the PR body and carry on. Never create fields or options.
 
-**Field lookup.** Read the board's fields once:
-`gh project field-list <number> --owner <project owner> --format json --limit 100`. Find a field
-by exact name; a single-select option by exact name in its `options`. A missing field or option:
-skip that update and say so in the PR body.
+**Field lookup:** `board.read` `fields`, once. A missing field or option: skip that update and say
+so in the PR body.
 
-**Item lookup.** An issue's board item id:
-`gh project item-list <number> --owner <project owner> --format json --limit 500 --jq '.items[] | select(.content.url=="<issue url>") | .id'`,
-where the issue url is `https://github.com/<owner>/<repo>/issues/<n>`. Not on the board: skip.
+**Item lookup:** `board.read` `item`, for an issue's board item id. Not on the board: skip.
 
-**Set a value:**
-`gh project item-edit --id <item id> --project-id <project.id> --field-id <field id>`, plus
-`--date <YYYY-MM-DD>` for a date field or `--single-select-option-id <option id>` for a
-single-select field (for Status, use `project.statusField` from the config).
+**Set a value:** `board.setField` (for Status, use `project.statusField` from the config).
 
 **Step start** (after §3, for a step with a story; a `bootstrap: true` step has none):
 

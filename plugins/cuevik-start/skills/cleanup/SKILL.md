@@ -58,8 +58,9 @@ Only when the last step in `steps.yml` (today `08-finalize`) has a merged PR, fr
 `gh pr list --head <its branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`.
 Otherwise skip this section and say initiation is not complete yet.
 
-1. `git show origin/main:.cuevik/config.json` (or `main`, after a pull). No `initiation` key: skip,
-   and say the board does not track initiation.
+1. `git show origin/main:.cuevik/config.json` (or `main`, after a pull). `boardState` `none`: skip
+   this section silently; there is no board to update. No `initiation` key: skip, and say
+   initiation is not tracked in issues.
 2. The End date is the `YYYY-MM-DD` part of that `mergedAt`. It goes on two items:
    `initiation.stories["<last step id>"]` and `initiation.epic`. (Every earlier story got its End
    date when the next step started, runner §7.)
