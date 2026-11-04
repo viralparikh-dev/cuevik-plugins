@@ -265,7 +265,7 @@ Not yet tested: linking a user-owned board to an organisation-owned repo.
 
 <!-- /gen:step-01-product-concept -->
 
-Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner with the `superpowers` brainstorming skill: one open question at a time, anchored in real moments, with a short playback of what it heard after each part for you to correct. It pushes back: every feature must answer *what user problem does this solve?*, and nothing technical belongs here. The result is `docs/PRODUCT.md` with six sections: Overview, Target Users, Features, Scope (In / Out), Success Criteria, Anti-Patterns.
+Defines what the product is, who it is for and why it exists. Claude interviews you as the Product Owner with the `superpowers` brainstorming skill: one open question at a time, anchored in real moments, with a short playback of what it heard after each part for you to correct. It pushes back: every feature must answer *what user problem does this solve?*, and nothing technical belongs here. The result is `docs/PRODUCT.md` with seven sections: Overview, Target Users (including Stakeholders), Features, Scope (In / Out), Success Criteria, Key Assumptions & Validation, Anti-Patterns. You can paste a one-paragraph pitch first: Claude drafts a strawman where every statement traces to your pitch, then interviews you over it.
 
 ### 02-product-requirements
 
@@ -330,7 +330,7 @@ The guide has ten sections: Project Context, Coding Conventions, Scope Boundarie
 
 <!-- /gen:step-06-readme -->
 
-Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install & Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), the setup sections are written as the intended setup and each is marked as pending and unverified until the app is scaffolded. You confirm which mode applies.
+Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install & Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), Environment Setup is written as the intended setup and marked pending and unverified until the app is scaffolded, while prerequisites, install and test show pointers to `TECH-STACK.md` and `CONTRIBUTING.md` instead of copied versions or commands. You confirm which mode applies.
 
 ### 07-backlog
 
@@ -342,7 +342,7 @@ Replaces the repo's boilerplate README with the project's real entry point, buil
 
 Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled `PRD-NNN: <Title> (<Priority>)`), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled `epic`, `story` and `priority:*`, links each story to its epic as a sub-issue, adds them to the board, and records the initial backlog in `docs/BACKLOG.md`: Summary, Epics, Stories, Out-of-Scope Notes.
 
-After setup, GitHub is the backlog. `docs/BACKLOG.md` is a snapshot and stays frozen.
+After setup, GitHub is the backlog. `docs/BACKLOG.md` is a frozen point-in-time snapshot and the issues are authoritative. Issues are always filed; if the repo has no board, you are asked to set one up and the issues are added to it.
 
 ### 08-finalize
 
@@ -353,6 +353,8 @@ After setup, GitHub is the backlog. `docs/BACKLOG.md` is a snapshot and stays fr
 <!-- /gen:step-08-finalize -->
 
 Ends initiation. It reads `CONTRIBUTING.md` from `main`, removes the fenced `INITIATION-ONLY` block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with `/cuevik-docs:update`. If the markers are missing it stops rather than guess which lines to delete. Its PR also closes the initiation epic.
+
+Before the PR opens it runs `cuevik-docs:audit` read-only over the document set and puts the findings in the PR body. This is advice, never a gate; fix findings afterwards with `/cuevik-docs:update`.
 
 Initiation is complete when this PR is merged.
 
