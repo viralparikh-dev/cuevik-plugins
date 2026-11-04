@@ -176,7 +176,7 @@ steps:
       - CONTRIBUTING.md
     replacesExisting: true    # CONTRIBUTING.md is already on main; this step transforms it
     commitMessage: "docs: finalize CONTRIBUTING.md for the development phase (08-finalize)"
-    prSummary: "State that the init-only governance block was removed, the permanent core and tooling layer were preserved, and the development-phase stub was left for the team; include the 08-finalize reviewer checklist."
+    prSummary: "State that the init-only governance block was removed, the permanent core and tooling layer were preserved, and the development-phase stub was left for the team; include the advisory cuevik-docs:audit findings (read-only) and the 08-finalize reviewer checklist."
     finalReminder: "CONTRIBUTING.md becomes final for the development phase only when the Architect merges the PR. Initiation is complete once this is merged; run /cuevik-start:cleanup afterward."
     specialActions:
       - "Read CONTRIBUTING.md from main."
@@ -184,3 +184,4 @@ steps:
       - "Insert the DEVELOPMENT-PHASE-GOVERNANCE stub from the step's skill where the removed block was."
       - "If the INITIATION-ONLY markers are absent from CONTRIBUTING.md on main, STOP. Do not delete lines by inference."
       - "Do not author a full development-phase policy; leave the stub for the team to expand via /cuevik-docs:update."
+      - "Invoke cuevik-docs:audit only, read-only (never fix), over the full doc set after the CONTRIBUTING.md approval; report findings in the PR body. Advisory: never a gate, and it changes no file."
