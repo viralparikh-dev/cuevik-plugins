@@ -42,6 +42,13 @@ understand what the product is and how it delivers the objective.]
 
 - [User type] — [the problem they have that this solves]
 
+### Stakeholders
+
+[Who sponsors, funds or is affected by the product — distinct from the target
+users above. A stakeholder need not use the product. Do not restate the users.]
+
+- [Stakeholder — role and their interest in the product]
+
 ## 3. Features
 
 [The high-level capability areas the product offers — what it can do, at the
@@ -67,7 +74,16 @@ asking the author.]
 
 - [Criterion — stated as an observable, measurable condition]
 
-## 6. Anti-Patterns
+## 6. Key Assumptions & Validation
+
+[The three to five riskiest product or market assumptions this product rests on.
+Product and market bets only — delivery assumptions live in PRD.md. Source from
+the operator's answers; invent nothing. The test MUST be concrete — not "validate
+later".]
+
+- [Assumption] · [why it is risky] · [cheapest test]
+
+## 7. Anti-Patterns
 
 [Approach and behaviour guardrails — what to avoid doing. Not feature
 exclusions; those live in Scope.]

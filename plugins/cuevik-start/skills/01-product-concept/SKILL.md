@@ -29,13 +29,19 @@ section must contain. Fill every section; add or drop none.
    and what breaks without this), **Objective** (two or three sentences on the outcome the product
    must achieve), **Description** (the mechanism: how the product delivers the objective).
 2. **Target Users** — specific people with a specific problem, each named by role. Never
-   "everyone" or "all users".
+   "everyone" or "all users". Includes a **Stakeholders** subsection: the sponsors, funders and
+   affected parties of the product, each with their interest in it. Stakeholders are distinct from
+   target users: a stakeholder need not use the product, and a list that only restates the target
+   users is not a stakeholder list.
 3. **Features** — high-level capability areas, each tied to a target user's problem. Themes of
    value, not requirements (those live in `PRD.md`), and not a re-listing of scope.
 4. **Scope (In / Out)** — what we are building and, explicitly, what we are not.
 5. **Success Criteria** — what "good" looks like, each criterion measurable without asking the
    author (`_writing-rules.md`, Measurability).
-6. **Anti-Patterns** — approach and behaviour guardrails, each with why. Not feature exclusions;
+6. **Key Assumptions & Validation** — the three to five riskiest product or market assumptions
+   the product rests on, each as *assumption · why it is risky · cheapest test*. Product and market
+   bets only: delivery assumptions (dependencies, constraints, timing) belong in `PRD.md`.
+7. **Anti-Patterns** — approach and behaviour guardrails, each with why. Not feature exclusions;
    those belong in Scope.
 
 ## Precondition: superpowers
@@ -100,14 +106,15 @@ Override in brainstorming:
 Cover these sections, in this order, then write the document in template order:
 
 1. Problem Statement
-2. Target Users
+2. Target Users, then Stakeholders
 3. Objective
 4. Vision
 5. Description
 6. Features
 7. Scope (In / Out)
 8. Success Criteria
-9. Anti-Patterns
+9. Key Assumptions & Validation
+10. Anti-Patterns
 
 The problem and the users come first because the objective and vision are sharper once those are
 pinned down.
@@ -115,6 +122,11 @@ pinned down.
 - Apply the Product Owner challenge sequence (`roles/product-owner.md`) to every feature: the
   user problem it solves, and which target user has it. Push back on a vague answer before
   writing it.
+- Stakeholders and Key Assumptions come from the operator's answers like every other section:
+  nothing invented, no guessed numbers. An assumption the operator cannot name stays an explicit
+  gap, not a plausible-sounding guess. Ask who sponsors or funds the product and who else is
+  affected, separately from who uses it; ask what would have to be true for the product to fail,
+  then the cheapest way to find out.
 - Push back on any target user that names no role or no problem, any criterion that cannot be
   measured, and any anti-pattern that is really a feature exclusion (offer to move it to Scope).
 - When an answer names a technology, architecture or implementation, do not write it into
@@ -131,12 +143,17 @@ each, for `03-architecture` and `04-tech-stack` to pick up. Write `None` when th
 
 Before approving the PR, verify every item. An unchecked item is a reason to request changes.
 
-- [ ] Output matches the template skeleton — header block, all six sections in order, and the
+- [ ] Output matches the template skeleton — header block, all seven sections in order, and the
       references table present; no top-level section added or removed, and no `[placeholder]`
       left unfilled.
 - [ ] Target users are specific — not "anyone" or "all users"; a real person with a real problem.
+- [ ] Stakeholders are sponsors, funders or affected parties with a stated interest — not the
+      target users restated.
 - [ ] Scope explicitly lists what is **not** being built — not just what is.
 - [ ] Success criteria are measurable — you could verify them without asking the author.
+- [ ] Key Assumptions lists three to five product/market assumptions, each with why it is risky
+      and a concrete cheapest test — not "we'll validate later", not a delivery assumption, and
+      nothing the operator did not state.
 - [ ] Anti-patterns are approach/behaviour guardrails, not feature exclusions (those belong in
       Scope).
 - [ ] Nothing in this document dictates implementation, architecture, or tech choices.
