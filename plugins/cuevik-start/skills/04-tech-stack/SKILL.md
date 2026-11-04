@@ -1,6 +1,6 @@
 ---
 name: 04-tech-stack
-description: Step 04 of cuevik-start. Run after 03-architecture's PR is merged, in a new session in the project folder. Picks each technology with the Architect against its alternatives, pins its version, and opens a PR adding docs/TECH-STACK.md plus the tooling layer of CONTRIBUTING.md (versions, install, run, test, lint and build commands, hooks) using only the approved technologies.
+description: Step 04 of cuevik-start. Run once 03-architecture's PR is open or merged, in the same session as 03 or a new one in the project folder. Picks each technology with the Architect against its alternatives, pins its version, and opens a PR adding docs/TECH-STACK.md plus the tooling layer of CONTRIBUTING.md (versions, install, run, test, lint and build commands, hooks) using only the approved technologies.
 disable-model-invocation: true
 ---
 
@@ -49,9 +49,10 @@ Every Reason or Used-for cell scopes the technology to its purpose, so it reads 
 Ask open questions as one plain sentence in chat, not with `AskUserQuestion` (runner, Asking The
 Operator, open interview questions). Confirmations and choices use `AskUserQuestion`.
 
-At runner §4, read `docs/PRD.md` and `docs/ARCHITECTURE.md` from `main`, and the body of the
-merged `03-architecture` PR:
-`gh pr list --head <branch> --base main --state merged --json number,body --jq '.[0]'`, branch
+At runner §4, read `docs/PRD.md` from `main`, `docs/ARCHITECTURE.md` from `main` (or, while the
+`03-architecture` PR is still open, from its branch — runner §1 check 5), and the body of the
+`03-architecture` PR, merged or open:
+`gh pr list --head <branch> --base main --state all --json number,body --jq '.[0]'`, branch
 from `steps.yml`. Its **Deferred to Tech Stack** list is the starting point: the products the
 operator already named.
 

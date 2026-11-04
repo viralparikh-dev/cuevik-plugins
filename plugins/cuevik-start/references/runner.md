@@ -13,7 +13,9 @@ GitHub only: run `gh` through the Bash tool.
 
 Run exactly one step per session.
 
-- Do not execute two step commands in the same session.
+- Do not execute two step commands in the same session. The one exception is `03-architecture`
+  followed by `04-tech-stack`: they are tightly coupled, so `04` MAY run in the same session as
+  `03` (or in a later one), gated per §1 check 4. They stay two documents and two PRs.
 - At the start of every step session, run §1 preconditions 1–2 (clean working tree, refresh
   `main`) first, then follow `${CLAUDE_PLUGIN_ROOT}/skills/status/SKILL.md` so status reflects
   what has been merged on GitHub. Do not repeat preconditions 1–2 afterward.
@@ -134,16 +136,23 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 
 4. **Previous step merged** — take the step listed immediately before this one in `steps.yml` and
    run `gh pr list --head <its branch> --base main --state merged --json number,url`.
+   Special case: for `04-tech-stack` only, the previous step (`03-architecture`) only needs to be
+   **open or merged**. Also run `gh pr list --head <its branch> --base main --state open --json
+   number,url`; a PR returned by either query passes. Every other step keeps the merged-only gate.
    - At least one PR returned: proceed. The self-review checklist in `CONTRIBUTING.md` was the
      approval.
    - None returned: **STOP**. Tell the operator which step's PR must be merged first, and that a
-     merely open PR does not count.
+     merely open PR does not count. (For `04-tech-stack`: that `03-architecture` must have an open
+     or merged PR.)
 
 5. **Upstream documents on `main`** — for every upstream document from Inputs §3, run
    `git show main:<document>`.
    - Exit 0 for every document: proceed.
    - Non-zero for any document: **STOP** and tell the operator which document is missing from
-     `main`.
+     `main`. Exception: when check 4 passed on an open (unmerged) `03-architecture` PR, read
+     `docs/ARCHITECTURE.md` from that PR's branch instead: `git fetch origin <branch>` then
+     `git show origin/<branch>:docs/ARCHITECTURE.md`. Every other upstream document still comes
+     from `main`.
    - Empty `upstream`: no upstream document is required.
 
 6. **Step not already finalized** — unless the step sets `replacesExisting: true`, run
@@ -168,7 +177,7 @@ do. Nothing is created, written or pushed before it.
    `Previous step (00-bootstrap) is merged | ✓`. Rows (N/A ones left out for `00-bootstrap`):
    - you are acting as the step's owner (its role);
    - the project's `.cuevik/` settings are on `main`;
-   - the previous step is merged;
+   - the previous step is merged (for `04-tech-stack`: `03-architecture` has an open or merged PR);
    - the documents this step reads are on `main`;
    - this step's document is not on `main` yet (or the step replaces it);
    - no uncommitted changes, and `main` is up to date;
@@ -314,6 +323,11 @@ single-select field (for Status, use `project.statusField` from the config).
    `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
    (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
    it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
+   If the previous step has no merged PR yet (`04-tech-stack` started while `03-architecture` is
+   still open), skip its End date. Also set `End date` on any earlier story that has a merged PR
+   but an empty `End date`, so the date `03-architecture` merged is recorded by the step after
+   `04-tech-stack`. Both steps keep their own story, `Start date` and `Working` status; nothing
+   is shared.
 
 **After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
 line (§6) links the PR to the story, and the board's workflows do the rest:
