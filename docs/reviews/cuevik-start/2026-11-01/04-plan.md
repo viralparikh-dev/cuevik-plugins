@@ -29,7 +29,7 @@ Every task implicitly includes these. A violation fails the task regardless of i
 | Track | Tasks | A no-human session may… |
 |---|---|---|
 | **A — autonomous** | 1–7 (items #1, #5, #7, #2, #3, #10, #11, #8) | implement fully, one PR each, in listed order, then stop. |
-| **B — design-gated** | 8–10 (items #9, #4, #6) | **NOT implement.** For each, write a design proposal to `docs/superpowers/plans/` (brainstorm output: options, chosen approach, exact file touch-list, open questions) and stop for human review. These were deliberately gated on an interactive design pass; their key decisions (the board-adapter seam shape, Express scope, and the exact step renumbering) are not settled here. |
+| **B — design-gated** | 8–10 (items #9, #4, #6) | **NOT implement.** For each, write a design proposal in this review folder (`docs/reviews/cuevik-start/2026-11-01/design-<name>.md`) (brainstorm output: options, chosen approach, exact file touch-list, open questions) and stop for human review. These were deliberately gated on an interactive design pass; their key decisions (the board-adapter seam shape, Express scope, and the exact step renumbering) are not settled here. |
 
 Track A tasks touch different files from each other and may each be reviewed and merged independently. Track B task 10 (renumber) must run **after** all Track A step-content changes exist, so it renames the final file set.
 
@@ -156,7 +156,7 @@ Failure modes the tasks imply but no single acceptance check fully exercises —
 
 ## Track B — Design-gated (do not implement without human review)
 
-For each: produce a proposal at `docs/superpowers/plans/2026-11-04-<name>.md` using superpowers:brainstorming, then stop. The proposal states options considered, the chosen approach, the exact file touch-list, and open questions. Implementation is a separate, human-approved pass.
+For each: produce a proposal in this review folder (`docs/reviews/cuevik-start/2026-11-01/design-<name>.md`) using superpowers:brainstorming, then stop. The proposal states options considered, the chosen approach, the exact file touch-list, and open questions. Implementation is a separate, human-approved pass.
 
 ### Task 8 — Harden 00-bootstrap: board optional in both lanes (item #9)
 
