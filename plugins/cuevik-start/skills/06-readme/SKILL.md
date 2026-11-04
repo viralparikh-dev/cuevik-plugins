@@ -23,6 +23,25 @@ before responding (brainstorming included) does not apply (runner, Skills).
 is, how to get it running and how to work on it. It summarizes the documents before it and links
 to them; it never restates them.
 
+## No duplication
+
+Two tiers. A value authored in two places drifts, so each value has one home.
+
+1. **Narrative** (Project Overview, Key Concepts): summarize the source document and link to it.
+   Never copy its prose, and never reproduce a list or paragraph from it.
+2. **Operational values** (prerequisite versions, install / run / test commands) have a single
+   source: versions live in `TECH-STACK.md`, commands in the `CONTRIBUTING.md` tooling layer. The
+   README never authors one of them itself.
+   - **Docs-first:** the README shows a pointer only (a one-line link to the source section),
+     with no copied version and no copied command.
+   - **Scaffolded:** the README MAY surface the commands, copied verbatim from the `CONTRIBUTING.md`
+     tooling layer and verified by running them (below), each section naming that source.
+     A README with no run commands is worse for the reader, which is why this is allowed.
+     Prerequisite versions stay a pointer to `TECH-STACK.md` in both modes.
+
+The badge row is a display of `TECH-STACK.md` §1 and §3 versions, not an authored value, and is
+exempt. `cuevik-docs:audit`'s Absorb lens guards drift that gets through anyway.
+
 ## What This Document Covers
 
 The template (`README.template.md`) owns the headings and their order. README is the header-block
@@ -44,12 +63,14 @@ exception (`references/templates.md`): no metadata block and no references table
    structural concepts from `ARCHITECTURE.md` (components, boundaries, data flow, patterns), plus
    only the domain nouns from `PRODUCT.md` §1–§2 that cannot be avoided. Never the `PRODUCT.md`
    §3 feature list.
-3. **Prerequisites** — every tool, runtime and account needed before setup, each with its version
-   from `TECH-STACK.md`.
+3. **Prerequisites** — the accounts and access needed before setup, and a pointer to
+   `TECH-STACK.md` for every tool and runtime version. No version is written here.
 4. **Environment Setup** — how to create the env file, then one table row per variable:
    description, required or optional, where to get the value.
-5. **Install & Run** — the install and run commands from the `CONTRIBUTING.md` tooling layer.
-6. **Run Tests** — the test command from the same layer.
+5. **Install & Run** — scaffolded: the install and run commands from the `CONTRIBUTING.md`
+   tooling layer, verbatim. Docs-first: a pointer to that layer only.
+6. **Run Tests** — scaffolded: the test command from the same layer, verbatim. Docs-first: a
+   pointer only.
 7. **Project Structure** — every top-level folder with a one-line purpose.
 8. **Further Reading** — the template's four links, unchanged.
 
@@ -65,15 +86,16 @@ adapter path 05 wrote. Show what is left, propose **Scaffolded** if anything is,
 **Docs-first**, and confirm with `AskUserQuestion` (`Scaffolded` / `Docs-first`). The operator's
 answer is the mode; state it in the PR body.
 
-- **Scaffolded.** Every command in Prerequisites, Environment Setup, Install & Run and Run Tests
-  is run in this session before the commit (`steps.yml` special action), from a clean state, and
+- **Scaffolded.** Every command in Environment Setup, Install & Run and Run Tests, and every
+  prerequisite check the README names, is run in this session before the commit (`steps.yml` special action), from a clean state, and
   works. A long-running command (a dev server, a watcher) is started, checked to come up without
   an error, then stopped. A command that fails is fixed with the operator or left out and listed
   in the PR body; never presented as working. Environment Setup lists every key of the repo's
   env example file (e.g. `.env.example`) and no key that is not in it; no example file: ask
   whether one should exist, and list the gap in the PR body.
-- **Docs-first.** Nothing can be run. Those four sections are written from `TECH-STACK.md` and
-  the tooling layer as the intended setup, and each opens with the same marker:
+- **Docs-first.** Nothing can be run. Prerequisites, Install & Run and Run Tests hold pointers
+  only (see No duplication). Environment Setup is written from the operator and `TECH-STACK.md`
+  as the intended setup, and opens with this marker:
 
   ```markdown
   > **Pending scaffold — unverified.** These steps follow TECH-STACK.md and have not been run
@@ -81,7 +103,8 @@ answer is the mode; state it in the PR body.
   ```
 
   Environment variables come from the operator and `TECH-STACK.md` §6, flagged for checking when
-  the scaffold lands. Project Structure lists the folders that exist plus the ones
+  the scaffold lands. Each pointer section says the commands are pending until the scaffold
+  lands. Project Structure lists the folders that exist plus the ones
   `ARCHITECTURE.md` §5 plans, each planned one marked `(planned)`.
 
 A tooling-layer command that reads `Not set yet` is written as that sentence in prose, never as a
@@ -96,7 +119,8 @@ where to get each value, accounts, and anything the operator says is missing. Sh
 revise one section at a time, and approve it with `AskUserQuestion` `Approve README.md?`
 (`Yes` / `No`).
 
-- Link to `ARCHITECTURE.md` and `TECH-STACK.md` rather than copying from them.
+- Link to `ARCHITECTURE.md` and `TECH-STACK.md` rather than copying from them. Do not paste a
+  version or a command into the draft except as the No duplication rule allows.
 - The current `README.md` on `main` is replaced whole (`steps.yml` special actions): name in the
   plan that it is overwritten, and keep none of its boilerplate. Anything in it worth keeping is
   offered to the operator section by section before the draft, not carried over silently.
@@ -123,8 +147,12 @@ Before approving the PR, verify every item. An unchecked item is a reason to req
 - [ ] The mode is stated in the PR body and the setup sections match it:
   - Scaffolded: every setup command was run and works from a clean state; every env key is
     documented with where to get its value.
-  - Docs-first: the four setup sections each open with the `Pending scaffold — unverified`
-    marker, and no command is presented as tested.
-- [ ] Every prerequisite has a version.
+  - Docs-first: Environment Setup opens with the `Pending scaffold — unverified` marker, the other
+    setup sections are pointers, and no command is presented as tested.
+- [ ] No value is authored in two places: no prerequisite version appears in the README (it points
+      to `TECH-STACK.md`), and every command shown traces verbatim to the `CONTRIBUTING.md`
+      tooling layer. Docs-first has pointers only, with no copied version or command. Flag any
+      duplicate.
+- [ ] Project Overview and Key Concepts summarize and link; neither restates source prose.
 - [ ] Project Structure has a one-line purpose per top-level folder.
 - [ ] No leftover boilerplate from the previous README.

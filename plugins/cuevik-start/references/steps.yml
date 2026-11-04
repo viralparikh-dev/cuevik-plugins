@@ -147,7 +147,7 @@ steps:
     specialActions:
       - "Replace the repo's current README with the generated project README."
       - "Remove any leftover placeholder or boilerplate content from README.md."
-      - "Scaffolded mode (application code on main): test every command included in README.md before committing. Docs-first mode: mark the four setup sections Pending scaffold — unverified instead (skills/06-readme/SKILL.md, Mode)."
+      - "Scaffolded mode (application code on main): test every command included in README.md before committing. Docs-first mode: show pointers only for versions and commands, and mark Environment Setup Pending scaffold — unverified instead (skills/06-readme/SKILL.md, No duplication and Mode)."
 
   - id: 07-backlog
     title: Initial Backlog

@@ -26,10 +26,12 @@ that is a product capability list, not a glossary.]
 
 ## Prerequisites
 
-[Exact tools, runtimes, and accounts required before setup, with version
-numbers.]
+[Accounts and access needed before setup. Do not write tool or runtime versions
+here — they have one source, TECH-STACK.md; point to it.]
 
-- [Tool / runtime] [version]
+- [Account / access]
+
+Tool and runtime versions: see [TECH-STACK.md](docs/TECH-STACK.md).
 
 ## Environment Setup
 
@@ -46,7 +48,10 @@ cp .env.example .env
 
 ## Install & Run
 
-[Exact commands to install dependencies and start the app locally.]
+[Scaffolded mode: the install and run commands, copied verbatim from the
+CONTRIBUTING.md tooling layer and verified. Docs-first mode: replace the code
+block with a one-line pointer to the CONTRIBUTING.md tooling layer — no
+commands.]
 
 ```bash
 [install command]
@@ -55,7 +60,9 @@ cp .env.example .env
 
 ## Run Tests
 
-[Exact command(s) to run the test suite.]
+[Scaffolded mode: the test command, copied verbatim from the CONTRIBUTING.md
+tooling layer and verified. Docs-first mode: a one-line pointer only — no
+commands.]
 
 ```bash
 [test command]
