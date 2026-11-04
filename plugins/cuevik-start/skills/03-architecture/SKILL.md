@@ -34,7 +34,8 @@ each section must contain. Fill every section; add or drop none.
    diagram: a fenced `mermaid` block (GitHub renders it) or a fenced `text` block.
 2. **Data Design** — the core entities, their key attributes and relationships, which component
    owns each, and how long it is kept. Kinds of storage (relational, document, file, cache), not
-   products.
+   products. Formal domain-driven design (bounded contexts) is out of scope unless the operator
+   opts in; the template's §2 carries the same one-line note.
 3. **Data Flow & Interactions** — how data moves between components and external systems for the
    main `PRD.md` workflows: one numbered flow (or sequence diagram) per workflow, including what
    happens when a step fails.
