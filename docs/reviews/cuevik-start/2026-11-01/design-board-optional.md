@@ -69,7 +69,7 @@ Status: **design settled with the maintainer on 2026-11-04; awaiting explicit ap
 - `description` frontmatter and `steps.yml` `00` `prSummary`/`entries` wording: "and project board" becomes optional. `steps.yml` `summary` and titles are not touched (build_docs derives from them).
 
 ### 4. Other cuevik-start consumers
-- **`runner.md` §1 check 4:** `schemaVersion` must be 3, else STOP with the migration line. `bootstrap: true` steps are exempt (they write the file).
+- **`runner.md` §1 check 3** (bootstrap on `main`; the config is read there): `schemaVersion` must be 3, else STOP with the migration line. `bootstrap: true` steps are exempt (they write the file). Inputs §4 also names `boardState`.
 - **`runner.md` §2:** the plan lists the §7 board updates only when `boardState` is not `none`.
 - **`runner.md` §7:** `none` skips the whole section silently (no report line, nothing in the PR body). `configured` and `partial` behave as today: a failed call is reported and never stops a step. §7 calls adapter operations by name.
 - **`07-backlog` §4:** `none` → `AskUserQuestion` `Pause to set up a board` / `Continue without a board`. Pause stops cleanly with the contract README pointer; a re-run reuses the filed issues by exact title (Interview step 1). Continue records `Board: none, issues filed only` in the PR body. `configured`/`partial` add directly through `board.addItem` and `board.setField`; `partial` adds a PR-body line naming `missing`, with no prompt. This replaces Task 5's test ("a `project` object with a board `number`") with `boardState`, and its "Set up a board now" option with "Pause", because setting up a board is now a manual config PR.
@@ -90,6 +90,13 @@ Every v2 config has `project`, so the mapping is deterministic. Operator opens a
 
 ### 7. Adding or repairing a board later (documented manual steps)
 Contract README section: create or link the board by hand, read the ids with the `gh` commands already in the README, add the initiation issues to the board, then open a PR on `.cuevik/config.json` that adds `project`, sets `boardState`, and sets or clears `missing`. This is the target of every nudge.
+
+## Implementation notes (found while building; no design decision changed)
+- The runner reads the config in §1 check 3, not check 4; the design text above is corrected.
+- `board.read` gained an `id` variant (the board node id for `project.id`), so no `gh project` command stays in `00` §F.
+- `status` ends with "Do not suggest fixes"; that rule now allows the Next line and the pointer inside a `**Board:**` or migration line.
+- `cuevik-ship` skills `01-brainstorm` and `04-plan-intent` list "the board item" in their plans; both now say "when the repo has a board". `07-execute-plan` §2.1 also skips silently for `none`.
+- Left as found, flagged in the PR: the runner's item lookup returns only `.id` while Step start reads its `.status`.
 
 ## Out of scope
 - Express lane behavior and a `lane` field: Task 9. (Task 8 only guarantees `none` is valid everywhere.)
