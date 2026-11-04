@@ -75,13 +75,16 @@ Then, for each step:
 
 ## 3. Initiation issues
 
-The board mirrors the steps through the issues `00-bootstrap` filed. The merged PR stays the
-source of truth: this section never changes a row's Status or the Next line; it only adds
-`**Check:**` lines where GitHub's issues disagree with the rows.
+The issues `00-bootstrap` filed mirror the steps, on the board when the repo has one. The merged PR
+stays the source of truth: this section never changes a row's Status or the Next line; it only adds
+`**Check:**` lines where GitHub's issues disagree with the rows, and one `**Board:**` line (step 5).
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
-   silently. No `initiation` key: one Check line, `.cuevik/config.json has no initiation issues,
-   so the board does not track initiation.`, then skip the rest.
+   silently. `schemaVersion` 2: one Check line, `.cuevik/config.json is schemaVersion 2. Open a PR
+   on it that sets "schemaVersion": 3 and adds "boardState": "configured" (leave project and
+   initiation as they are), merge it, then re-run.`, then go on. No `initiation` key: one Check
+   line, `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`,
+   then skip the rest.
 2. `gh issue list --label initiation --state all --limit 100 --json number,state`, once.
 3. For each step in `initiation.stories`, with story `#n`:
 
@@ -95,6 +98,12 @@ source of truth: this section never changes a row's Status or the Next line; it 
    in .cuevik/config.json`.
 4. The epic `initiation.epic`: not in the list, closed while any row is not `✓ merged`, or open
    while every row is `✓ merged` — one Check line saying which.
+5. The board, from `boardState`. `none` is a valid state, not a mismatch, so it is a `**Board:**`
+   line, not a Check line: `**Board:** none (issues only). To add one, open a PR on
+   .cuevik/config.json (config contract README, "Adding or repairing a board").` `partial`: `**Board:**
+   partial, missing <parts from missing>. To repair it, open a PR on .cuevik/config.json (config
+   contract README, "Adding or repairing a board").` `configured`: no line. The issue cross-check
+   above runs in every state: it reads the issues, not the board.
 
 ## 4. Report
 
@@ -121,7 +130,7 @@ source of truth: this section never changes a row's Status or the Next line; it 
 
 After the table, print one `**Check:**` line for each `⚠ mismatch` row, for each `✓ merged`
 row that comes after a step that is not merged (steps ran out of order), and for each issue
-disagreement from §3. Then print one
+disagreement from §3. Then print the `**Board:**` line from §3 step 5, if there is one, and one
 `**Next:**` line. It is decided by the first row in `steps.yml` order that is not `✓ merged`:
 
 - `⚠ mismatch`: `blocked — <id> does not add up (see Check).`
@@ -136,5 +145,6 @@ disagreement from §3. Then print one
 
 ## Nothing else
 
-Do not suggest fixes, ask questions, or offer to run any command. When a step's runner follows
-this file, render the report, then return to the runner; the step continues from there.
+Do not suggest fixes, ask questions, or offer to run any command. The only advice is the Next line
+and the pointer inside a `**Board:**` or migration Check line. When a step's runner follows this
+file, render the report, then return to the runner; the step continues from there.

@@ -28,7 +28,7 @@ The repository is private: you need read access and git credentials on your mach
 
 ## Requirements
 
-A repo bootstrapped with `/cuevik-start:00-bootstrap` (it reads `.cuevik/config.json`), `gh` with the `project` scope, a local Claude Code session. Depends on `cuevik-docs`. Optional plugin setting `worktree_root`: the folder where each issue's worktree is created.
+A repo bootstrapped with `/cuevik-start:00-bootstrap` (it reads `.cuevik/config.json`), `gh` (with the `project` scope when the repo has a board), a local Claude Code session. Depends on `cuevik-docs`. Optional plugin setting `worktree_root`: the folder where each issue's worktree is created.
 
 ## Status
 

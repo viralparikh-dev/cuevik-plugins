@@ -39,7 +39,8 @@ consequential to guess.
    first task whose proof still fails).
 3. **The card** (local sessions): `Ready` → proceed. `Working` → a run may already be live: ask
    `Continue anyway?` (`Yes` / `No`). Anything else → report it and ask the same. Not on the board
-   or a cloud session: say so and proceed.
+   or a cloud session: say so and proceed. `boardState` `none`: there is no card; proceed, saying
+   nothing.
 
 Then the plan and approval (`gate.md`, After the gate): the code branch from `origin/main`, the
 card to `Working`, the waves and task count, the ship gate commands, and the code PR to `main`
@@ -48,7 +49,8 @@ the PR.
 
 ## 2. Start
 
-1. Card to `Working` (local; `config.md`). Cloud: skip and report.
+1. Card to `Working` (local; `config.md`). Cloud: skip and report. `boardState` `none`: skip,
+   silently.
 2. In the worktree: `git switch -c ship/<n>-<slug>/07-execute-plan origin/main` (reuse: switch to
    it). This branch has no `docs/ship/`.
 3. Read the plan from the issue branch (`git show origin/ship/<n>-<slug>/issue:...plan.md`) in

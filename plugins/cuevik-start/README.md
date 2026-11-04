@@ -6,7 +6,7 @@ Start a project the governed way: nine steps (`00`–`08`) from an empty repo to
 
 | Command | Writes |
 |---|---|
-| `/cuevik-start:00-bootstrap` | Repo and board, `CONTRIBUTING.md`, `.cuevik/` |
+| `/cuevik-start:00-bootstrap` | Repo, an optional board, `CONTRIBUTING.md`, `.cuevik/` |
 | `/cuevik-start:01-product-concept` | `docs/PRODUCT.md` |
 | `/cuevik-start:02-product-requirements` | `docs/PRD.md` |
 | `/cuevik-start:03-architecture` | `docs/ARCHITECTURE.md` |
@@ -31,7 +31,7 @@ The repository is private: you need read access and git credentials on your mach
 
 ## Requirements
 
-`gh` signed in with the `project` scope, a local Claude Code session, and admin rights on the repo. Depends on `cuevik-docs` and `superpowers@claude-plugins-official`.
+`gh` signed in (with the `project` scope if you want a board), a local Claude Code session, and admin rights on the repo. Depends on `cuevik-docs` and `superpowers@claude-plugins-official`.
 
 ## Status
 

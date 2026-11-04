@@ -144,9 +144,9 @@ gh issue comment <n> --body "Requirement changed in <docs PR url>."
 - **Split extras:** each body ends with its own References block: `Split from: #<n>`, the
   `Brainstorm:` permalink copied from `#<n>`, `Docs PR: #<q>`, `Epic: #<e>`.
 - A story joining an existing epic: add its ID to the epic's `Requirements:` line.
-- **Board** (local sessions only, `config.md`): `gh project item-add` for every new issue, and
-  `Item Type` `Epic` or `Story` on new items and on the converted issue. Never set Status. In a
-  cloud session skip it and list the URLs to add.
+- **Board** (local sessions only, `config.md`; none when `boardState` is `none`): `gh project
+  item-add` for every new issue, and `Item Type` `Epic` or `Story` on new items and on the
+  converted issue. Never set Status. In a cloud session skip it and list the URLs to add.
 - Any other `gh` failure: **STOP** and report what was written and what was not; a re-run
   classifies the written rows as **Already filed**.
 
@@ -160,8 +160,8 @@ End with, and nothing after:
 
 - every issue created, edited or closed — number, title, URL — grouped by epic;
 - the blocked-by links added;
-- cloud runs: the URLs to add to the board locally, unless its `Auto-add to project` workflow
-  covers them;
+- cloud runs with a board: the URLs to add to the board locally, unless its `Auto-add to project`
+  workflow covers them;
 - stale work folders, and epics whose title drifted from the section name;
 - next: `/cuevik-ship:04-plan-intent <n>` in a new session in the issue's worktree, and
   `/cuevik-ship:04-plan-intent <m>` for each split story nothing blocks (it creates their branch

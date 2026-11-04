@@ -1,6 +1,6 @@
 ---
 name: 00-bootstrap
-description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo and project board, files the initiation epic and stories on the board, turns on auto-delete head branches, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json and .markdownlint.json.
+description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo, optionally connects or creates a project board, files the initiation epic and stories (on the board when there is one), turns on auto-delete head branches, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json and .markdownlint.json.
 disable-model-invocation: true
 ---
 
@@ -12,10 +12,14 @@ Load these in order and run them as one workflow:
 2. The `00-bootstrap` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
    commit message, PR summary, special preconditions and actions.
 3. This file — what is specific to bootstrap.
+4. `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` — every board operation (`board.read`,
+   `board.create`, …) and how its result is classified. This file holds the questions and calls
+   the operations by name.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
 before running 00-bootstrap.` On conflict, precedence is runner > `steps.yml` > this file, except
-where the runner defers to this file (runner §0 and §1 for `bootstrap: true`).
+where the runner defers to this file (runner §0 and §1 for `bootstrap: true`). The adapter owns the
+board commands and results.
 
 Owner and reviewers come from the `CONTRIBUTING.md` entry of
 `${CLAUDE_PLUGIN_ROOT}/references/contracts/lineage/lineage.example.json` (runner Inputs §3).
@@ -33,7 +37,7 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
 2. **Repo** (§B). Repo creates are confirmed and run here, because every later check needs `main`
    on GitHub.
 3. **Runner §1 checks 1, 2 and 7** — check 7 is the `steps.yml` special precondition plus §C.
-4. **Board** (§D). Questions and reads only.
+4. **Board** (§D). Optional. Questions and reads only.
 5. **Runner §2.** Show the checks table, then the plan: every §E change that applies, with its
    commands. Ask once: `Make these <N> changes on GitHub? For more details, review my Plan that I
    articulated above.` (`Yes, make all <N>` · `No, stop`).
@@ -113,10 +117,10 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 1. `gh repo view <repo> --json defaultBranchRef --jq .defaultBranchRef.name` is `main`, or
    **STOP**: the runner and every step use `main`.
 2. `gh repo view <repo> --json viewerPermission --jq .viewerPermission` is `ADMIN`, or **STOP**:
-   bootstrap changes a repo setting and links a board.
+   bootstrap changes a repo setting, and links a board when there is one.
 3. `git show main:.cuevik/config.json` and `git show main:.cuevik/lineage.json` both non-zero, or
-   **STOP**: `This repo is already bootstrapped.` Change the board through a PR that edits
-   `.cuevik/config.json`.
+   **STOP**: `This repo is already bootstrapped.` Add or change the board through a PR that edits
+   `.cuevik/config.json` (the config contract README, "Adding or repairing a board").
 4. `gh pr list --head init/00-bootstrap --state open --json url` returns `[]`, or **STOP** —
    `A 00-bootstrap PR is already open: <url>. Merge it (then this step is done), or close it and
    delete its branch (git push origin --delete init/00-bootstrap, git branch -D init/00-bootstrap),
@@ -132,34 +136,28 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 
 ## D. Board (questions and reads only)
 
+The board is optional. Every board call is an operation in
+`${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` (the adapter); this section holds the
+questions. A board result never stops bootstrap: `unavailable`, or the operator choosing `No
+board`, ends the board work with state `none` (§F), and a `degraded` result becomes a `missing`
+part.
+
 1. **Owner.** Ask: `Use <repo owner> as the board owner? (yes, or name another user or
    organisation)`. A board can belong to a different owner than the repo.
-2. **Projects probe.** `gh project list --owner <board-owner> --limit 1`. Non-zero: **STOP** —
-   `gh cannot read Projects for <board-owner>. In a local session, run gh auth refresh -s project.
-   Cloud sessions cannot reach Projects v2.`
-3. **Pick or create.** List the open boards:
-   `gh project list --owner <board-owner> --format json --jq '.projects[] | {number, title}'`.
-   Ask which number to use, or whether to create a new board (suggest the repo name as title).
-   For a new board, resolve the template first (D.6).
-4. **Already linked?** For an existing board:
-
-   ```sh
-   gh api graphql -f owner=<repo-owner> -f name=<repo-name> -f query='
-     query($owner:String!,$name:String!){repository(owner:$owner,name:$name){
-       projectsV2(first:50){nodes{number owner{... on User{login} ... on Organization{login}}}}}}' \
-     --jq '.data.repository.projectsV2.nodes'
-   ```
-
-   Linked when a node has the board's number and owner.
-5. **Status field.** For an existing board, check now; for a new one, after it is created (§E):
-
-   ```sh
-   gh project field-list <number> --owner <board-owner> --format json \
-     --jq '.fields[] | select(.name=="Status") | {id, type, options: (.options | map({(.name): .id}) | add)}'
-   ```
-
-   No output, or a `type` other than `ProjectV2SingleSelectField`: **STOP** — the board needs a
-   single-select field named `Status`.
+2. **Projects probe.** `board.read` `probe`. `unavailable`: say why, in the adapter's words, and
+   that bootstrap goes on without a board. The state is `none`: skip the rest of §D, §E.1, §E.2,
+   §E.5 and the board lines of §E.4. A cloud session ends up here, because it cannot reach Projects.
+3. **Pick, create or skip.** `board.read` `list`. Ask `Which board should track this project?` with
+   up to two of the most likely open boards (labelled `#<number> <title>`), `Create a new board`
+   (suggest the repo name as title) and `No board`. List every open board in the chat block above
+   the question; any other number comes through `Other`.
+   - `No board`: the operator's choice, not a failure. The state is `none`: skip as in step 2, and
+     do not report it as a problem.
+   - A new board: resolve the template first (D.6).
+4. **Already linked?** For an existing board, `board.read` `linked`.
+5. **Status field.** For an existing board, `board.read` `status` now; for a new one, after it is
+   created (§E). `unavailable` (no single-select field named `Status`): say so and ask step 3
+   again, so the operator can pick another board or `No board`.
 6. **Template** (new board only). Read the Cuevik template's `owner`, `number`, `title` and `url`
    from `${CLAUDE_PLUGIN_ROOT}/references/board-template.json`; never write them from memory. Ask
    `How should the new board start?` with these options, in this order:
@@ -175,62 +173,32 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
      the operator's next message is the answer. Accept
      `https://github.com/users/<owner>/projects/<number>`, the `orgs/` form, or `<owner>/<number>`.
      Anything else: say what form is expected and ask again.
-   - **Check** the chosen template can be read:
-     `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
-     Exit 0: the new board is a copy of it (§E.1), with its fields, views and workflows.
-     Non-zero: say so and why, then ask the first question again.
+   - **Check** the chosen template can be read: `board.read` `template`. Exit 0: the new board is a
+     copy of it (§E.1), with its fields, views and workflows. `unavailable`: say so and why, then
+     ask the first question again.
    - **Blank board:** confirm with `Yes` / `No` that a board with only GitHub's default Status
      options and no custom fields or views is wanted. Never pick for the operator.
 
 ## E. Remote changes
 
 List every change below that applies in the runner §2 plan, with its exact command. Run them,
-once approved there, in this order:
+once approved there, in this order. A board operation (the adapter) never stops bootstrap: note
+its result for §F and the PR body (`degraded` with its part, or `unavailable`) and go on. Any other
+failure **STOPS**.
 
-1. **Create the board** (if chosen):
-   - From the template (D.6):
-     `gh project copy <template-number> --source-owner <template-owner> --target-owner <board-owner> --title "<title>" --format json --jq .number`.
-     Draft issues are not copied. Then compare the copy with the template. Run this once with the
-     template (`> template.txt`) and once with the new board (`> board.txt`), writing both files in
-     a temporary folder outside the repo. It prints one line per value, so `diff` output is
-     readable. Use `gh`'s built-in `--jq`; do not assume a separate `jq` is installed.
-
-     ```sh
-     gh api graphql -f o=<owner> -F n=<number> -f query='
-       query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
-         fields(first:50){nodes{... on ProjectV2FieldCommon{name dataType}
-           ... on ProjectV2SingleSelectField{options{name}}
-           ... on ProjectV2IterationField{configuration{duration startDay}}}}
-         views(first:20){nodes{name layout filter
-           fields(first:50){nodes{... on ProjectV2FieldCommon{name}}}
-           groupByFields(first:5){nodes{... on ProjectV2FieldCommon{name}}}
-           verticalGroupByFields(first:5){nodes{... on ProjectV2FieldCommon{name}}}
-           sortByFields(first:5){nodes{direction field{... on ProjectV2FieldCommon{name}}}}}}
-         workflows(first:20){nodes{name enabled}}}}}}' \
-       --jq '.data.repositoryOwner.projectV2 | paths(scalars) as $p
-             | "\($p | map(tostring) | join(".")) = \(getpath($p))"'
-     ```
-
-     Then `diff template.txt board.txt`. Check both files are non-empty first: two empty files
-     also give "no differences". Report every difference; do not stop on one. The operator
-     decides whether to fix it by hand. Say what the check cannot see: the settings inside each
-     workflow (for example which Status "Item closed" sets) are not readable through the API.
-   - Blank (operator chose it in D.6):
-     `gh project create --owner <board-owner> --title "<title>" --format json --jq .number`.
-
-   Then run D.5 on the new board.
-2. **Link the board** (unless already linked), from the repo folder so it links this repo:
-   `gh project link <number> --owner <board-owner>`. It prints nothing on success, so re-run the
-   D.4 query and confirm the board now appears. A user-owned board linked to an
-   organisation-owned repo is untested. If the link fails, **STOP** and show the error; do not
-   retry with another owner.
+1. **Create the board** (if chosen): `board.create`, then `board.read` `status` on the new board
+   (D.5). `unavailable`: report why. The state is `none`: skip §E.2, §E.5 and the board lines of
+   §E.4.
+2. **Link the board** (unless already linked): `board.link`. `degraded` (part `link`): show the
+   error and go on.
 3. **Auto-delete head branches** (unless
    `gh repo view <repo> --json deleteBranchOnMerge --jq .deleteBranchOnMerge` is already `true`):
    `gh repo edit <repo> --delete-branch-on-merge`.
-4. **Initiation issues.** They show initiation's progress on the board: one epic, plus one story
-   per step in `steps.yml` without `bootstrap: true`, in order (this step has none: the board does
-   not exist before it). They carry only the `initiation` label, never `epic` or `story`, which
-   belong to the real backlog. This is one change in the §2 plan; list every title there.
+4. **Initiation issues.** They show initiation's progress, on the board when there is one: one
+   epic, plus one story per step in `steps.yml` without `bootstrap: true`, in order (this step has
+   none: it runs before the issues exist). They carry only the `initiation` label, never `epic` or
+   `story`, which belong to the real backlog. This is one change in the §2 plan; list every title
+   there. The issues are filed whatever the board state.
    - Label, unless `gh label list --search initiation --json name --jq '.[].name'` prints
      `initiation`: `gh label create initiation --color 0E8A16 --description "cuevik-start initiation tracking"`.
    - Existing: `gh issue list --label initiation --state all --limit 100 --json number,title,state,url`.
@@ -251,104 +219,30 @@ once approved there, in this order:
      `gh api repos/<repo>/issues/<epic>/sub_issues --jq '.[].number'` already lists it:
      `gh api -X POST repos/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where `<id>` is
      `gh api repos/<repo>/issues/<story> --jq .id` (the REST id, not the number).
-   - Board: `gh project item-add <number> --owner <board-owner> --url <issue url>` for the epic and
-     each story, with `--format json --jq .id` to get each item's id. Adding an item that is
-     already on the board is harmless and returns the same id. Do not set Status; the board's own
-     workflows set it when an item is added and when its issue closes.
-   - Fields: set `Priority` and `Size` on each story's item from the step's `storyPriority` and
-     `storySize` in `steps.yml`, and `Priority` `High` on the epic. Set `Item Type` to `Epic` on the
-     epic and `Story` on each story (a custom field: GitHub reserves the name `Type` for
-     organisation Issue Types). Look the fields up by name
-     (runner §7, Field lookup), then
-     `gh project item-edit --id <item id> --project-id <project id> --field-id <field id> --single-select-option-id <option id>`.
-     A board without the field, or without that option: skip it and say so in the PR body. Never
-     create fields or options.
-   - Efforts: set the `Efforts` number field on each story's item to the step's `storyEfforts`
-     (hours): `gh project item-edit ... --field-id <field id> --number <hours>`. Leave the epic's
-     empty: the board sums its stories. No `Efforts` field: skip, as above.
-   - Sprint: only on a board whose `Sprint` iteration field has **no sprints at all** (current,
-     upcoming or completed). Read them:
-
-     ```sh
-     gh api graphql -f o=<board-owner> -F n=<number> -f query='
-       query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
-         field(name:"Sprint"){... on ProjectV2IterationField{id configuration{duration
-           iterations{id title} completedIterations{id title}}}}}}}}' \
-       --jq '.data.repositoryOwner.projectV2.field'
-     ```
-
-     - Both lists empty: create `Sprint-00`, starting today, for the field's `duration` in days.
-       This call **replaces the field's whole sprint list**, which is why it runs only when the
-       list is empty:
-
-       ```sh
-       gh api graphql -f fid=<field id> -f d=<YYYY-MM-DD> -F len=<duration> -f query='
-         mutation($fid:ID!,$d:Date!,$len:Int!){updateProjectV2Field(input:{fieldId:$fid,
-           iterationConfiguration:{startDate:$d,duration:$len,iterations:[{title:"Sprint-00",
-           startDate:$d,duration:$len}]}}){projectV2Field{... on ProjectV2IterationField{
-           configuration{iterations{id title}}}}}}'
-       ```
-
-       Then put the epic and every story in it:
-       `gh project item-edit ... --field-id <field id> --iteration-id <Sprint-00 id>`.
-     - Any sprint already there: create none and leave the items' Sprint empty. Later sprints
-       follow the same name format: `Sprint-01`, `Sprint-02`, ….
-     - No `Sprint` iteration field: skip and say so in the PR body.
+   - Board (only when a board is recorded): `board.addItem` for the epic and each story. Do not set
+     Status. `degraded`: part `items`.
+   - Fields (same condition): `board.setField` for these values. `Priority` and `Size` on each
+     story's item from the step's `storyPriority` and `storySize` in `steps.yml`, and `Priority`
+     `High` on the epic. `Item Type` `Epic` on the epic and `Story` on each story (a custom field:
+     GitHub reserves the name `Type` for organisation Issue Types). A board without the field, or
+     without that option: skip it and say so in the PR body. Never create fields or options. A set
+     that fails on a field the board has: part `fields`.
+   - Efforts: `board.setField` the `Efforts` number field on each story's item to the step's
+     `storyEfforts` (hours). Leave the epic's empty: the board sums its stories. No `Efforts`
+     field: skip, as above.
+   - Sprint: the adapter's `Sprint` procedure (`board.setField`), then the epic and every story go
+     in `Sprint-00` when it was created. No `Sprint` iteration field: skip and say so in the PR
+     body.
 
    Report the epic and story numbers; §F writes them to `.cuevik/config.json`.
-5. **Board workflows.** The initiation cards move only through the board's own workflows. These
-   seven must be on:
+5. **Board workflows** (only when a board is recorded): `board.workflows`. All seven are required
+   on a board created in §E.1; on an existing board only `Item closed`. Its result `degraded`
+   (part `workflows`) when the operator picks `Skip workflows`; `Stop bootstrap` is the operator's
+   own choice, so **STOP** and report what is on and what is not.
 
-   | Workflow | Note |
-   | --- | --- |
-   | `Auto-add sub-issues to project` | |
-   | `Auto-add to project` | A template copy never has it on: it needs this repo in its filter |
-   | `Auto-close issue` | |
-   | `Item added to project` | |
-   | `Item closed` | |
-   | `Pull request linked to issue` | |
-   | `Pull request merged` | |
-
-   Read them (a workflow that was never set up is not listed; treat it as off):
-
-   ```sh
-   gh api graphql -f o=<board-owner> -F n=<number> -f query='
-     query($o:String!,$n:Int!){repositoryOwner(login:$o){... on ProjectV2Owner{projectV2(number:$n){
-       workflows(first:50){nodes{name enabled}}}}}}' \
-     --jq '.data.repositoryOwner.projectV2.workflows.nodes[] | "\(.enabled) \(.name)"'
-   ```
-
-   No API turns a workflow on or changes its settings, so guide the operator through each one
-   that is off. Open `https://github.com/users/<board-owner>/projects/<number>/workflows`
-   (`orgs/` instead of `users/` for an organisation), then for each workflow:
-   - Click it in the left list, click **Edit**, switch it **On**, click **Save and turn on**.
-   - `Auto-add to project` also needs its filter: in **Filters**, pick the repository
-     `<repo-name>` and set the filter text to `is:issue,pr is:open label:bug`.
-
-   Ask with options `Done, check again` and `Stop bootstrap`. On `Done`, re-read and repeat until
-   all seven are on. On `Stop`, **STOP** and report what is on and what is not.
-   - A board created in §E.1: all seven are required.
-   - An existing board: only `Item closed` is required. List the others that are off and offer
-     the same steps; the operator may decline, and the PR body says which are off.
-
-   The API shows only whether a workflow is on, not its settings, and cannot change them. The
-   runner relies on these Status values (runner §7), so show this table and ask the operator to
-   check each one on the board's Workflows page (click it, **Edit**, set the Status, **Save**):
-
-   | Workflow | Must set Status to |
-   | --- | --- |
-   | `Item added to project` | `Backlog` |
-   | `Pull request linked to issue` | `Reviewing` |
-   | `Item closed` | `Done` |
-   | `Pull request merged` | `Done` |
-
-   Then ask `Are these four set, and Auto-add to project filtered to <repo-name>?` with `Yes` /
-   `No, stop`. A board without one of these Status options: say which, and that its cards will
-   not move to it. Record the answer in the PR body.
-
-Report each result. If one fails, **STOP** and report what was done and what was not. A re-run
-finds the board in the list, sees the link, skips the setting and reuses the `initiation` issues by
-title, so nothing is created twice.
+Report each result. If a change that is not a board operation fails, **STOP** and report what was
+done and what was not. A re-run finds the board in the list, sees the link, skips the setting and
+reuses the `initiation` issues by title, so nothing is created twice.
 
 ## F. Outputs (on `init/00-bootstrap`)
 
@@ -364,11 +258,13 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
+    "boardState": "<configured | partial | none>",
+    "missing": ["<link | items | fields | workflows>"],
     "project": {
       "owner": "<board-owner>",
       "number": <number>,
-      "id": "<gh project view <number> --owner <board-owner> --format json --jq .id>",
+      "id": "<board.read id>",
       "statusField": {
         "id": "<Status field id from §D.5>",
         "options": { "<option name>": "<option id>" }
@@ -381,8 +277,16 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
   }
   ```
 
+  `boardState` comes from the board results of §D and §E, never from a guess:
+  - no board recorded (`No board`, the probe or `board.create` `unavailable`, or no usable
+    `Status` field): `none`. Write neither `project` nor `missing`.
+  - a board recorded and no `degraded` result: `configured`. Write `project`, not `missing`.
+  - a board recorded and at least one `degraded` result: `partial`. Write `project`, and `missing`
+    with each degraded part once (`link`, `items`, `fields`, `workflows`).
+
   `options` holds every option from §D.5, as read. `stories` has one entry per story from §E.4,
-  keyed by step id. No `$schema` key. It must satisfy
+  keyed by step id. `initiation` is always written: the issues are filed whatever the state. No
+  `$schema` key. It must satisfy
   `${CLAUDE_PLUGIN_ROOT}/references/contracts/config/config.schema.json`: re-read the file and check
   each rule there before committing.
 - **`.cuevik/lineage.json`** — a byte-for-byte copy of
@@ -406,14 +310,18 @@ the runner, `steps.yml`, templates, roles or contracts into the repo.
 Follow runner §5–§6. The PR body covers the `prSummary`:
 
 - Repo: connected or created (owner, name, visibility), and any first commit from B.4.
-- Board: owner, number, URL; existing, copied from the template (with any differences), or blank;
-  linked now or already linked.
+- Board: the `boardState` recorded. For `configured` or `partial`: owner, number, URL; existing,
+  copied from the template (with any differences), or blank; linked now or already linked. For
+  `partial`: each `missing` part and why. For `none`: why (the operator chose no board, or the
+  adapter's reason). `none` and `partial` end with: `Add or repair the board through a PR on
+  .cuevik/config.json (config contract README, "Adding or repairing a board"). 07 and status remind
+  you.`
 - Repo settings changed: auto-delete head branches.
-- Initiation issues: the epic and each story, by number, created now or reused; assignee, and the
-  Item Type, Priority, Size and Efforts set, and Sprint-00 created and used (or each skipped, with
-  why).
-- Board workflows: which of the seven (§E.5) are on, and that `Auto-add to project` filters this
-  repo with `is:issue,pr is:open label:bug`.
+- Initiation issues: the epic and each story, by number, created now or reused; assignee. With a
+  board: the Item Type, Priority, Size and Efforts set, and Sprint-00 created and used (or each
+  skipped, with why).
+- Board workflows (with a board): which of the seven (§E.5) are on, and that `Auto-add to project`
+  filters this repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
 - The reviewer checklist below, and the self-review gate from `CONTRIBUTING.md`.
 
@@ -422,12 +330,17 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `CONTRIBUTING.md` holds the governance layer verbatim, with both `INITIATION-ONLY` markers.
       In insert mode, the existing text is unchanged.
 - [ ] No stack-specific commands in `CONTRIBUTING.md`.
-- [ ] `.cuevik/config.json` names the board that is linked to this repo, and its ids were read
-      from GitHub.
+- [ ] `.cuevik/config.json` has `schemaVersion` 3 and a `boardState` that matches what happened:
+      `none` has neither `project` nor `missing`; `configured` has `project` and no `missing`;
+      `partial` has `project` and a non-empty `missing`. The PR body says why for `none` and
+      `partial`.
+- [ ] With a board recorded, `project` names the board that is linked to this repo (unless
+      `missing` lists `link`), and its ids were read from GitHub.
 - [ ] `.cuevik/lineage.json` matches the plugin's default lineage.
 - [ ] `.cuevik/config.json` `initiation` matches the `initiation`-labelled issues: the epic and one
-      story per step after 00, each a sub-issue of the epic and on the board. No `epic` or `story`
-      label on any of them.
+      story per step after 00, each a sub-issue of the epic, and on the board when there is one
+      (unless `missing` lists `items`). No `epic` or `story` label on any of them.
 - [ ] `gh repo view --json deleteBranchOnMerge` returns `true`.
-- [ ] The board's seven workflows (§E.5) are on; `Auto-add to project` names this repo.
+- [ ] With a board recorded, its required workflows (§E.5) are on, or `missing` lists `workflows`;
+      `Auto-add to project` names this repo.
 - [ ] No plugin machinery (runner, registry, templates, roles, contracts) is in the diff.
