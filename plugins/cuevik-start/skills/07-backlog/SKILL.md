@@ -20,8 +20,10 @@ before running 07-backlog.` On conflict, precedence is runner > `steps.yml` > th
 before responding (brainstorming included) does not apply (runner, Skills).
 
 This step turns `docs/PRD.md` into GitHub issues the team works from, and records what it filed in
-`docs/BACKLOG.md`. That file is a snapshot: it is frozen once this PR merges, and GitHub issues
-are the backlog from then on. Later requirements reach GitHub through `/cuevik-ship:03-create-backlog`,
+`docs/BACKLOG.md`. Issues are always filed, on every repo, with or without a board. The file is
+always generated, as a build output: a frozen point-in-time snapshot of what this step filed. It
+is frozen once this PR merges, the issues are authoritative, and GitHub issues are the backlog
+from then on. Later requirements reach GitHub through `/cuevik-ship:03-create-backlog`,
 never through an edit of `BACKLOG.md`.
 
 ## What This Document Covers
@@ -109,11 +111,20 @@ each number from the URL `gh issue create` prints:
    "<body>"`, then link it to its epic:
    `gh api -X POST repos/<owner>/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where
    `<id>` is `gh api repos/<owner>/<repo>/issues/<story> --jq .id`.
-4. **Board** — add each epic and story:
-   `gh project item-add <number> --owner <project owner> --url <issue url> --format json --jq .id`
-   (from `.cuevik/config.json`), and set `Item Type` to `Epic` or `Story` (runner §7, Field
-   lookup and Set a value). Never set Status, Priority, Size, Sprint or an assignee: sprint
-   planning does that. A failed board call never stops the step: report it in the PR body.
+4. **Board** — first decide whether the repo has a board: `.cuevik/config.json` has a `project`
+   object with a board `number`.
+   - **No board:** tell the operator that the backlog should live on a board, and push them to
+     set one up now (a GitHub Projects v2 board, wired the way `00-bootstrap` wires it) before
+     going on. Ask with `AskUserQuestion` (`Set up a board now` / `Continue without a board`).
+     Never create the board silently, and never block the step on it: on `Continue without a
+     board`, record `Board: none, issues filed only` in the PR body and skip the rest of this
+     item. Once a board exists and `.cuevik/config.json` has its `project`, continue as below,
+     adding every issue filed above (including reused ones).
+   - **Board present:** add each epic and story directly:
+     `gh project item-add <number> --owner <project owner> --url <issue url> --format json --jq .id`
+     (from `.cuevik/config.json`), and set `Item Type` to `Epic` or `Story` (runner §7, Field
+     lookup and Set a value). Never set Status, Priority, Size, Sprint or an assignee: sprint
+     planning does that. A failed board call never stops the step: report it in the PR body.
 
 Any other `gh` failure: **STOP** and report what was filed and what was not. A re-run reuses the
 filed issues by exact title (Interview step 1).
@@ -129,13 +140,17 @@ Follow runner §6. Besides the `prSummary` (epic count, story count, priority br
 reviewer checklist below, list:
 
 - **Issues filed** — each epic with its stories, by number; reused ones marked.
-- **Board** — items added and Item Type set, or each failure.
+- **Board** — items added and Item Type set, `none, issues filed only` when the operator chose
+  to continue without a board, or each failure.
 - **Proposed PRD.md changes** — gaps found while deriving the backlog, or `None`.
 
 ## Reviewer checklist
 
 Before approving the PR, verify every item. An unchecked item is a reason to request changes.
 
+- [ ] `BACKLOG.md` carries the frozen-snapshot note (issues are authoritative), and issues were
+      filed whether or not a board exists; with no board, the operator was pushed to set one up
+      and every filed issue was added once it existed, or the choice is recorded in the PR body.
 - [ ] Output matches the template skeleton — header block, frozen note, all four sections in
       order, and the references table present; no top-level section added or removed, and no
       `[placeholder]` left unfilled.

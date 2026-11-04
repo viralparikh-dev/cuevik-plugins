@@ -9,8 +9,9 @@
 
 <!-- @inject: _doc-references.md -->
 
-> **Frozen after initiation.** This is the backlog `07-backlog` filed. GitHub issues are the
-> backlog from now on; this file is not updated when epics or stories are added.
+> **Frozen snapshot — generated build output, as of [YYYY-MM-DD].** This is what `07-backlog`
+> filed at that point in time. GitHub issues are authoritative and are the live backlog from now
+> on; this file is never updated when epics or stories are added or change state.
 
 ---
 
