@@ -40,6 +40,8 @@ whitebox or sequence diagram is preferred.]
 
 [Core entities, schema/storage layout, and how data is structured.]
 
+> Formal domain-driven design (bounded contexts) is out of scope unless the operator opts in.
+
 ## 3. Data Flow & Interactions
 
 [How data moves between components and external systems.]
