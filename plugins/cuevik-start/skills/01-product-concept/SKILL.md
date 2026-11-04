@@ -152,6 +152,22 @@ pinned down.
   `PRODUCT.md`. Restate the underlying need in product terms, and keep the technical point for the
   PR body (below).
 
+## Express profile
+
+When `/cuevik-start:express` runs this step, the following applies and nothing else in this file
+changes. The lane asks for the optional pitch itself, before anything else; do not ask again.
+
+- **Written sections:** 1 Overview, 2 Target Users (Stakeholders included), 3 Features, 4 Scope,
+  5 Success Criteria. Skip interview items 9 (Key Assumptions & Validation) and 10 (Anti-Patterns).
+- **Skipped sections stay.** Sections 6 and 7 keep their headings, in template order, and hold
+  exactly one line and nothing else: `Not covered in the Express lane. Add it with /cuevik-docs:update
+  docs/PRODUCT.md.`
+- **Unchanged:** the interview rules, the pitch handling, the Product Owner challenge sequence, no
+  guessed numbers, no technology in the document, the approval of the draft.
+- **Checklist.** "All seven sections in order" means: sections 1–5 filled, sections 6 and 7 holding
+  only the line above. The Key Assumptions and Anti-Patterns lines do not apply. Every other line
+  applies as written.
+
 ## PR body
 
 Follow runner §6. Besides the `prSummary` and the reviewer checklist below, add a **Deferred to

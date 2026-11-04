@@ -1,6 +1,6 @@
 # cuevik-start
 
-Start a project the governed way: nine steps (`00`–`08`) from an empty repo to a reviewed `CONTRIBUTING.md`, product concept, PRD, architecture, tech stack, AI tool guide, README and backlog, each landed by its own PR. Part of [cuevik-plugins](../../README.md).
+Start a project the governed way: nine steps (`00`–`08`) from an empty repo to a reviewed `CONTRIBUTING.md`, product concept, PRD, architecture, tech stack, AI tool guide, README and backlog, each landed by its own PR. For an MVP or spike, `express` is the lean path: governance, a lean product concept and PRD, and the backlog, in one session and one PR. Part of [cuevik-plugins](../../README.md).
 
 ## Commands
 
@@ -15,10 +15,11 @@ Start a project the governed way: nine steps (`00`–`08`) from an empty repo to
 | `/cuevik-start:06-readme` | `README.md` |
 | `/cuevik-start:07-backlog` | `docs/BACKLOG.md` and the GitHub issues |
 | `/cuevik-start:08-finalize` | Removes the initiation-only rules from `CONTRIBUTING.md` |
+| `/cuevik-start:express` | The lean path in one PR: `CONTRIBUTING.md`, `.cuevik/`, a lean `docs/PRODUCT.md` and `docs/PRD.md`, `docs/BACKLOG.md` and the GitHub issues |
 | `/cuevik-start:status` | Nothing (progress report) |
 | `/cuevik-start:cleanup` | Deletes merged local `init/*` branches |
 
-Run one step per session, in order. Each step needs the previous step's PR merged.
+Run one step per session, in order. Each step needs the previous step's PR merged. `express` is the exception: one session, one PR, for the work of `00`, `01`, `02` and `07`.
 
 ## Install
 
@@ -35,6 +36,6 @@ The repository is private: you need read access and git credentials on your mach
 
 ## Status
 
-`00`–`02` and `status` have been run end to end. `03`–`08` and `cleanup` are built but not yet run live.
+`00`–`02` and `status` have been run end to end. `03`–`08`, `cleanup` and `express` are built but not yet run live.
 
 Full guide: [Walkthrough](../../docs/guides/Cuevik-Plugins_Walkthrough.md).

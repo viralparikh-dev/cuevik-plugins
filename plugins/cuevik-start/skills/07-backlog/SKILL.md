@@ -130,6 +130,23 @@ each number from the URL `gh issue create` prints:
 Any other `gh` failure: **STOP** and report what was filed and what was not. A re-run reuses the
 filed issues by exact title (Interview step 1).
 
+## Express profile
+
+When `/cuevik-start:express` runs this step, the following applies and nothing else in this file
+changes.
+
+- **Sources.** Read `docs/PRODUCT.md` and `docs/PRD.md` from the lane's working branch, not
+  `main`. `ARCHITECTURE.md`, `TECH-STACK.md`, `AI-TOOL-GUIDE.md` and `README.md` do not exist and
+  are not needed. `PRD.md` §7 is not written in Express, so there is no non-functional epic and no
+  NFR priority question.
+- **Board.** `boardState` is `none` and the lane asks no board question. Skip step 4 of Filing
+  entirely: no prompt, no board call. The PR body's Board line is `none, issues filed only`.
+- **Output.** `docs/BACKLOG.md` is written as usual: the frozen snapshot of what the lane filed. Its
+  `Derived from` line lists `PRODUCT.md` and `PRD.md`.
+- **Checklist.** The first line reads: `BACKLOG.md` carries the frozen-snapshot note, issues were
+  filed, and the PR body says `Board: none, issues filed only`. Every other line applies as
+  written.
+
 ## BACKLOG.md
 
 Fill the template with the issue numbers just captured, then show it and ask `Approve

@@ -72,3 +72,33 @@ this checklist is the approval. Complete it in the PR before merging any `init/*
       initial commit.
 <!-- END INITIATION-ONLY -->
 <!-- END CONTENT -->
+
+## Express variant of the initiation-only block
+
+`/cuevik-start:express` writes the CONTENT text above with the whole `INITIATION-ONLY` block (both
+marker lines included) replaced by the text between the `BEGIN EXPRESS BLOCK` / `END EXPRESS
+BLOCK` markers below. The `INITIATION-ONLY` markers stay exact so `08-finalize`, `status` and
+`00-bootstrap`'s "already bootstrapped" check work on an Express repo unchanged. The self-review
+gate is the same text as in the block above: change one, change both.
+
+<!-- BEGIN EXPRESS BLOCK -->
+<!-- BEGIN INITIATION-ONLY -->
+## Initiation branching and self-review gate
+
+Project initiation runs as the `/cuevik-start:express` lane: one session and one PR, from the
+branch `init/express`, which writes `CONTRIBUTING.md`, `.cuevik/`, `.markdownlint.json`,
+`docs/PRODUCT.md`, `docs/PRD.md` and `docs/BACKLOG.md`.
+
+### Self-review gate
+
+Initiation is solo and process-enforced: GitHub does not let an author approve their own PR, so
+this checklist is the approval. Complete it in the PR before merging any `init/*` PR:
+
+- [ ] At least a few hours, ideally a full day, have passed since writing the document
+      (fresh-eyes pass).
+- [ ] The document covers every section its step requires.
+- [ ] No upstream document changed on `main` after this branch was created.
+- [ ] The change is in a PR. Nothing was pushed to `main` directly, apart from bootstrap's empty
+      initial commit.
+<!-- END INITIATION-ONLY -->
+<!-- END EXPRESS BLOCK -->

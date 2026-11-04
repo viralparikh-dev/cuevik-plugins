@@ -12,7 +12,7 @@ Three plugins with one rule: every document and change reaches `main` through a 
 
 | Plugin | Use it to | Commands |
 |---|---|---|
-| `cuevik-start` | Start a project the governed way | `00`–`08`, `status`, `cleanup` |
+| `cuevik-start` | Start a project the governed way | `00`–`08`, `express`, `status`, `cleanup` |
 | `cuevik-ship` | Deliver one issue at a time, from idea to code PR | `01`–`07`, `cleanup` |
 | `cuevik-docs` | Audit and update source-of-truth documents | `audit`, `update` |
 
@@ -24,10 +24,10 @@ Each command carries a tag. **Available** means you can install and run it today
 
 Before you install:
 
-- [GitHub CLI](https://cli.github.com) (`gh`), signed in with the `project` scope: `gh auth login`, then `gh auth refresh -s project`.
-- A local Claude Code session. Cloud sessions cannot reach GitHub Projects.
+- [GitHub CLI](https://cli.github.com) (`gh`), signed in: `gh auth login`. To use a project board, also add the `project` scope: `gh auth refresh -s project`.
+- A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board.
 - Read access to the marketplace repository, which is private for now.
-- Admin rights on the project's repo. `00-bootstrap` changes a repo setting and links a board.
+- Admin rights on the project's repo. `00-bootstrap` changes a repo setting, and links a board when there is one.
 - GitHub as your host. It is the only one supported.
 
 Install, in Claude Code:
@@ -47,7 +47,7 @@ Run commands in your project folder (the repo root), in a new Claude Code sessio
 
 ## 3. How it works
 
-- **One step, one session.** Run one step per session. Ask for a second step in the same session and it tells you to start a new one.
+- **One step, one session.** Run one step per session. Ask for a second step in the same session and it tells you to start a new one. The one exception is `express`, which does the work of four steps in one session.
 - **One PR per step.** A step works on its own branch (`init/<name>` in `cuevik-start`), commits there, and opens a PR to `main` once you approve. It never commits to `main`.
 - **Merged means final.** A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.
 - **Nothing happens without a yes.** Before it creates a branch, writes files, files issues or pushes, a step shows a checklist of what it verified and waits for your explicit `yes`.
@@ -224,9 +224,9 @@ flowchart TB
 
 ## 5. cuevik-start: set up a project
 
-Nine steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage.
+Nine steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, `express` does the work of four of them in one session and one PR; it is described last in this section.
 
-Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` holds the project board's ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
+Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` records whether the project has a board and, if so, its ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
 
 ### 00-bootstrap
 
@@ -236,12 +236,12 @@ Two small files describe the project to the plugins; `00-bootstrap` writes and c
 
 <!-- /gen:step-00-bootstrap -->
 
-Connects or creates the GitHub repo and project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it shows its checks, lists every change with its commands, and asks once to make them all.
+Connects or creates the GitHub repo and, if you want one, a project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it shows its checks, lists every change with its commands, and asks once to make them all.
 
 - **Repo.** Connects the folder to a GitHub repo, or creates one. It asks for the owner and name, and for the visibility of a new repo (private is suggested). In an empty folder it clones an existing repo. It stops if the folder has files but no repo (it never commits your files for you), if the folder sits inside another repo, or if `origin` is not on GitHub.
-- **Board.** Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one or create a new one. A new board starts from one of three choices: the Cuevik template (recommended), your own template (pick one of your boards or paste its link), or a blank board. If the template cannot be read, it asks again. A blank board gets only GitHub's default Status options (`Todo`, `In Progress`, `Done`). The board needs a single-select field named `Status`.
-- **Remote changes.** Approved together with one yes: create the board, link it to the repo, turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then it checks the board's seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including `Auto-add to project` with this repo in its filter.
-- **Initiation issues.** An `Epic: Project Initiation` epic and one story per later step, such as `INIT-01: Product Concept`, labelled `initiation`, assigned to you, added to the board as sub-issues of the epic, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields. On a board with no sprints yet, it creates `Sprint-00` and puts them all in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the `epic` or `story` labels, so the real backlog never picks them up.
+- **Board (optional).** Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one, create a new one, or use no board. A new board starts from one of three choices: the Cuevik template (recommended), your own template (pick one of your boards or paste its link), or a blank board. If the template cannot be read, it asks again. A blank board gets only GitHub's default Status options (`Todo`, `In Progress`, `Done`). The board needs a single-select field named `Status`; without one it is not used. If bootstrap cannot reach Projects (no `project` scope, or a cloud session) it goes on without a board. A board problem never stops bootstrap: the result is recorded in `.cuevik/config.json` as `configured`, `partial` (with what is missing) or `none`, and reported in the PR.
+- **Remote changes.** Approved together with one yes: create the board and link it to the repo (when you chose a board), turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then, when there is a board, it checks its seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including `Auto-add to project` with this repo in its filter. You may skip them; the board is then recorded as `partial`.
+- **Initiation issues.** An `Epic: Project Initiation` epic and one story per later step, such as `INIT-01: Product Concept`, labelled `initiation`, assigned to you, linked as sub-issues of the epic. With a board they are also added to it, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields; on a board with no sprints yet, `Sprint-00` is created and they all go in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the `epic` or `story` labels, so the real backlog never picks them up.
 - **The PR.** Opens `init/00-bootstrap` with `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json` and `.markdownlint.json`. An existing `.markdownlint.json` is kept. An existing `CONTRIBUTING.md` keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, `chore: initialize repository`, on `main` and pushes it. That is the only commit bootstrap makes on `main`.
 - **The governance text** covers the review flow, Conventional Commits and the rule never to push to `main`. It also carries the initiation-only branching table and the self-review checklist, which `08-finalize` removes.
 - **It stops, and says what to fix,** if `gh` is not signed in, the default branch is not `main`, you lack admin rights on the repo, the repo is already bootstrapped, or a `00-bootstrap` PR is already open.
@@ -250,7 +250,7 @@ Review the PR:
 
 - `CONTRIBUTING.md` holds the governance text verbatim, with both `INITIATION-ONLY` markers. If it already existed, your text is unchanged.
 - No stack-specific commands in `CONTRIBUTING.md`.
-- `.cuevik/config.json` names the board linked to this repo, with ids read from GitHub, and the initiation issue numbers.
+- `.cuevik/config.json` says whether the repo has a board (`boardState`), names it with ids read from GitHub when it does, and holds the initiation issue numbers.
 - `.cuevik/lineage.json` matches the plugin's default lineage.
 - Auto-delete is on: `gh repo view --json deleteBranchOnMerge` returns `true`.
 - No plugin files (runner, registry, templates, roles) in the diff.
@@ -340,9 +340,9 @@ Replaces the repo's boilerplate README with the project's real entry point, buil
 
 <!-- /gen:step-07-backlog -->
 
-Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled `PRD-NNN: <Title> (<Priority>)`), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled `epic`, `story` and `priority:*`, links each story to its epic as a sub-issue, adds them to the board, and records the initial backlog in `docs/BACKLOG.md`: Summary, Epics, Stories, Out-of-Scope Notes.
+Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled `PRD-NNN: <Title> (<Priority>)`), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled `epic`, `story` and `priority:*`, links each story to its epic as a sub-issue, adds them to the board when the repo has one, and records the initial backlog in `docs/BACKLOG.md`: Summary, Epics, Stories, Out-of-Scope Notes.
 
-After setup, GitHub is the backlog. `docs/BACKLOG.md` is a frozen point-in-time snapshot and the issues are authoritative. Issues are always filed; if the repo has no board, you are asked to set one up and the issues are added to it.
+After setup, GitHub is the backlog. `docs/BACKLOG.md` is a frozen point-in-time snapshot and the issues are authoritative. Issues are always filed. If the repo has no board you can pause to set one up (a PR on `.cuevik/config.json`) and re-run, which reuses the issues already filed, or continue without one.
 
 ### 08-finalize
 
@@ -366,9 +366,9 @@ Initiation is complete when this PR is merged.
 
 <!-- /gen:cmd-cuevik-start-status -->
 
-Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.
+Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.
 
-It starts with a progress line, one cell per step, such as `██░░░░░░░ 2/9 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue on the board disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row.
+It starts with a progress line, one cell per step, such as `██░░░░░░░ 2/9 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a `Board:` line saying so and how to add or repair it. For a repo set up with `express`, the four steps it covered show as merged by the Express PR.
 
 ### cleanup
 
@@ -378,7 +378,27 @@ It starts with a progress line, one cell per step, such as `██░░░░�
 
 <!-- /gen:cmd-cuevik-start-cleanup -->
 
-Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once `08-finalize` is merged it also records the End date of the last story and of the initiation epic on the board. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
+Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once `08-finalize` is merged it also records the End date of the last story and of the initiation epic on the board, if the repo has one. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
+
+### express
+
+<!-- gen:cmd-cuevik-start-express -->
+
+**Status:** Available  ·  **Branch:** `init/express`  ·  **PR to:** `main`  ·  **Writes:** Governance files, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`, issues  ·  **You:** Interviews, approve, review and merge
+
+<!-- /gen:cmd-cuevik-start-express -->
+
+The lean path for an MVP or spike. Run it instead of the nine steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch `init/express`, it does the work of `00`, `01`, `02` and `07`:
+
+- **A pitch, if you have one.** It asks first for an optional one-paragraph pitch. With one, `01` drafts a strawman in which every statement traces to the pitch; without, it interviews you as usual.
+- **Bootstrap without a board.** The repo, `CONTRIBUTING.md` (the permanent rules plus a short initiation block that holds only the self-review checklist), `.cuevik/config.json` (`boardState` `none`), the default `.cuevik/lineage.json`, `.markdownlint.json`, and the initiation issues: an epic and one story per step `01` to `08`.
+- **A lean `PRODUCT.md` and `PRD.md`.** `PRODUCT.md` fills Overview, Target Users, Features, Scope and Success Criteria. `PRD.md` fills Overview, Features / Capabilities, Functional Requirements, Acceptance Criteria and Out of Scope. Every other heading stays, with one line saying it is not covered in the Express lane. The writing rules are the same as in the full steps.
+- **The backlog.** `07` files the epics and stories and writes `docs/BACKLOG.md`, with no question about a board.
+- **What it skips.** `03` to `06` and `08`: no `ARCHITECTURE.md`, `TECH-STACK.md`, `AI-TOOL-GUIDE.md` or `README.md`.
+
+The PR has four commits (bootstrap, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for `01`, `02` and `07`; the epic and the other stories stay open.
+
+To graduate later, run `/cuevik-start:03-architecture` and the steps after it as usual. The merged Express PR counts as the PR of the steps it covered, and `/cuevik-docs:update` deepens the lean documents.
 
 To revise a document after its step is merged, use `/cuevik-docs:update <document>` instead of re-running the step.
 
@@ -386,7 +406,7 @@ To revise a document after its step is merged, use `/cuevik-docs:update <documen
 
 ## 6. cuevik-ship: deliver one issue at a time
 
-Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through `00-bootstrap`, because it reads the board's ids from `.cuevik/config.json`. Every command is `/cuevik-ship:<name>`. `<n>` is the issue number and `<slug>` its short name. The line under each heading is generated from the branches-and-files table in section 8.
+Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through `00-bootstrap`, because it reads `.cuevik/config.json`, including the board's ids when the repo has a board. Every command is `/cuevik-ship:<name>`. `<n>` is the issue number and `<slug>` its short name. The line under each heading is generated from the branches-and-files table in section 8.
 
 ### How it differs from cuevik-start
 
@@ -413,7 +433,7 @@ Takes an idea or an existing issue number.
 - **The folder.** `docs/ship/<n>-<slug>/brainstorming/` holds `brainstorm.md`, plus attachments and any other files found along the way.
 - **An existing issue.** It refuses an epic, sends a bug to `04-plan-intent`, and accepts an existing story (step 03 then treats it as changed). It never closes a story that already existed.
 - **The outcome** is the PR into the issue branch. If you reject the idea, that PR is the record, and the issue is closed as *not planned* once you say yes. An abandoned idea is closed the same way and cleaned up like a rejection.
-- **The board.** An idea may land on the project board, and its card carries through when the idea becomes a story.
+- **The board.** If the repo has a board, an idea may land on it, and its card carries through when the idea becomes a story.
 
 ### 02-audit-prd
 
@@ -443,7 +463,7 @@ Turns the ratified requirements into GitHub issues. It writes to GitHub only; it
 - **The idea becomes a story.** Its title becomes `PRD-NNN: <Title> (<Priority>)` and the `idea` label is removed. Epics and stories share the labels `epic`, `story` and `priority:*` with `cuevik-start`.
 - **Finding the epic.** In order: the parent of existing stories in the same PRD section, then an `epic` issue citing that section, then `docs/BACKLOG.md`, then a new epic. If several candidates fit it asks, and it never moves a story to another parent without your yes.
 - **Splitting.** An idea that covers several requirements becomes several stories. The original issue keeps the first ID in prerequisite order, and you can change that in the approval table. Each extra story goes under its own PRD section's epic and starts its own branch set at `04-plan-intent`, linking back to the original's brainstorming.
-- **The board.** Issues are added to the project board only from a local session.
+- **The board.** If the repo has a board, issues are added to it only from a local session.
 - **The gate for step 04.** Step 04 checks that the References have an `Epic:` line and that the issue no longer has the `idea` label.
 
 ### 04-plan-intent
@@ -569,7 +589,7 @@ What a change to each document flags, from the default lineage:
 
 | Command | Title | What it does | Status |
 |---|---|---|---|
-| `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and project board, then lands the governance baseline in a reviewed PR. | Available |
+| `/cuevik-start:00-bootstrap` | Bootstrap | Connects or creates the GitHub repo and, optionally, a project board, then lands the governance baseline in a reviewed PR. | Available |
 | `/cuevik-start:01-product-concept` | Product Concept | Drafts the product concept with you: what it is, who it is for and why it exists. | Available |
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
@@ -580,6 +600,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
+| `/cuevik-start:express` | Express | The lean path for an MVP or spike: governance, a lean product concept and PRD, and the backlog, in one session and one PR. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
@@ -599,6 +620,7 @@ The nine numbered `cuevik-start` steps are not repeated here: see section 5. In 
 |---|---|---|---|---|
 | `/cuevik-start:status` | — | — | Nothing (report only) | Read the report |
 | `/cuevik-start:cleanup` | — | — | Deletes merged local `init/*` branches | Confirm the list |
+| `/cuevik-start:express` | `init/express` | `main` | Governance files, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`, issues | Interviews, approve, review and merge |
 | `/cuevik-ship:01-brainstorm` | `ship/<n>-<slug>/01-brainstorm` | `ship/<n>-<slug>/issue` | GitHub issue and brainstorming folder | Approve or reject, then merge |
 | `/cuevik-ship:02-audit-prd` | `ship/<n>-<slug>/02-audit-prd` (cut from `main`) | `main` | `PRODUCT.md` and `PRD.md` changes | Review and merge |
 | `/cuevik-ship:03-create-backlog` | — | — | GitHub issues: epic and stories | Approve the list |
@@ -640,7 +662,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | You see | Cause and fix |
 |---|---|
 | `gh is not signed in` | Run `gh auth login`, then re-run. |
-| `gh cannot read Projects for <owner>` | The token lacks the `project` scope. In a local session run `gh auth refresh -s project`. Cloud sessions cannot reach Projects. |
+| `gh cannot read Projects for <owner>` | Bootstrap goes on without a board and says so. To use a board, add the `project` scope in a local session (`gh auth refresh -s project`), then add the board later (see below). Cloud sessions cannot reach Projects. |
 | `Uncommitted changes detected` | A step starts from a clean working tree. Commit or stash, then re-run. |
 | `Could not fast-forward main` | Local `main` has diverged, or there is no network. Fix the pull error, then re-run. |
 | Run `/cuevik-start:00-bootstrap` and merge its PR first | `.cuevik/config.json` or `.cuevik/lineage.json` is not on `main` yet. |
@@ -652,12 +674,13 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `This folder has files but is not a git repo` | Commit the files to a repo yourself, then re-run. Bootstrap never commits your files. |
 | `origin points at <url>, which does not exist or you cannot access` | Fix or remove `origin`, then re-run. |
 | `origin` is not on github.com | GitHub is the only supported host. |
-| The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting and links a board, so it needs admin rights. |
-| `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To change the board, open a PR that edits `.cuevik/config.json`. |
-| A `00-bootstrap` PR is already open | Merge it, or close it and delete its branch, then re-run. |
-| The board needs a single-select field named `Status` | Add that field to the board, or choose another board. |
+| The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting (and links a board, if you use one), so it needs admin rights. |
+| `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To add or repair the board, open a PR that edits `.cuevik/config.json`: add `project` and set `boardState` (and `missing` for a partial board). |
+| `.cuevik/config.json is schemaVersion 2` | The config predates the optional board. Open a PR that sets `"schemaVersion": 3` and adds `"boardState": "configured"`, leaving the rest as it is. `cuevik-start` (from `01`) and `cuevik-ship` stop until it is merged. |
+| A `00-bootstrap` PR, or an Express PR, is already open | Merge it, or close it and delete its branch, then re-run. |
+| The board needs a single-select field named `Status` | Add that field to the board, choose another board, or choose no board. |
 | The template board cannot be read | Name another template, choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
-| Linking the board fails | The step stops and shows GitHub's error. Fix the cause and re-run; it does not retry with another owner. |
+| Linking the board fails | Bootstrap shows GitHub's error and goes on, recording the board as `partial` (missing `link`). It does not retry with another owner. Fix the link yourself, then update `.cuevik/config.json`. |
 | You asked for a second step in the same session | One step per session. Start a new session for the next step. |
 
 ---
@@ -666,7 +689,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 - **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
 - **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
-- **Built, not yet run live:** `cuevik-start` steps `03` to `08` and `cleanup`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
+- **Built, not yet run live:** `cuevik-start` steps `03` to `08`, `cleanup` and `express`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
 - **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying another user's template board.
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.
