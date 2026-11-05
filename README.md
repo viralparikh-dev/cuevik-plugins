@@ -6,15 +6,15 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 
 | Plugin | Use it to | Version |
 | --- | --- | --- |
-| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, AI tool guide, README and backlog | 0.2.0 |
-| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.2.1 |
-| `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | 0.2.0 |
+| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, test strategy, AI tool guide, README and backlog; or the lean `express` path for an MVP | 0.3.0 |
+| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.3.0 |
+| `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | 0.3.0 |
 
 ## Prerequisites
 
-- [GitHub CLI](https://cli.github.com) (`gh`), signed in with the `project` scope: `gh auth refresh -s project`
-- A GitHub account. `/cuevik-start:00-bootstrap` creates the repo and Projects board if they are missing, after you confirm each one
-- A local Claude Code session. Cloud sessions cannot reach GitHub Projects
+- [GitHub CLI](https://cli.github.com) (`gh`), signed in (`gh auth login`); add the `project` scope to use a project board: `gh auth refresh -s project`
+- A GitHub account. `/cuevik-start:00-bootstrap` creates the repo if it is missing, and a Projects board if you want one, after you confirm each
+- A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board
 - The `superpowers` plugin from the official Claude marketplace (`claude-plugins-official`): `cuevik-start` installs it as a dependency, and `/cuevik-start:01-product-concept` runs its brainstorming skill for the interview
 - Read access to this repository (it is private)
 
