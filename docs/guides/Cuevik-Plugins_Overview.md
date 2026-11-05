@@ -1,6 +1,6 @@
 # Cuevik Plugins — Overview
 
-**Plugins:** Cuevik Start, Cuevik Ship, Cuevik Docs  ·  **Author:** Viral Parikh
+**Plugins:** Cuevik Start, Cuevik Ship, Cuevik Docs, Cuevik Deck  ·  **Author:** Viral Parikh
 
 Claude Code plugins that take a software project from an empty folder to delivered work, with every document and change reviewed and approved by a person before it counts.
 
@@ -19,6 +19,10 @@ Deliver one piece of work at a time, from idea to reviewed code: brainstorm, req
 ### Cuevik Docs
 
 Keep the documents that define the project honest: audit them for gaps, contradictions and repeats, and change any of them through the same review.
+
+### Cuevik Deck
+
+Turn a Statement of Work into a project kickoff deck. A discovery questionnaire captures the engagement, technical approach, agile ways of working, quality targets and governance, then Claude writes a reviewed brief and a client-ready deck you can present.
 
 ## How it works
 
@@ -79,3 +83,9 @@ Every command below is available. A command not yet built would be tagged **Plan
 |---|---|---|
 | `/cuevik-docs:audit` | Reviews documents for gaps, contradictions and repeats. | Available |
 | `/cuevik-docs:update` | Changes a core document through the same review. | Available |
+
+### Cuevik Deck
+
+| Command | What it does | Status |
+|---|---|---|
+| `/cuevik-deck:kickoff-meeting` | Turns a Statement of Work into a project kickoff deck. | Available |

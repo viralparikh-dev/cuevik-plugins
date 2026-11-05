@@ -1,8 +1,8 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.3.0, cuevik-ship 0.3.0, cuevik-docs 0.3.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.3.0, cuevik-ship 0.3.0, cuevik-docs 0.3.0, cuevik-deck 0.1.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
-Claude drafts each step, you approve it. This guide covers all three plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
+Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
 ---
 
@@ -15,6 +15,7 @@ Three plugins with one rule: every document and change reaches `main` through a 
 | `cuevik-start` | Start a project the governed way | `00`–`09`, `express`, `migrate`, `status`, `cleanup` |
 | `cuevik-ship` | Deliver one issue at a time, from idea to code PR | `01`–`07`, `cleanup` |
 | `cuevik-docs` | Audit and update source-of-truth documents | `audit`, `update` |
+| `cuevik-deck` | Turn a Statement of Work into a project kickoff deck | `kickoff-meeting` |
 
 Each command carries a tag. **Available** means you can install and run it today. **Planned** means it is described here from the design and is not installable yet. The tags are generated from the plugins, so they change as commands are built.
 
@@ -436,7 +437,7 @@ To revise a document after its step is merged, use `/cuevik-docs:update <documen
 
 ## 6. cuevik-ship: deliver one issue at a time
 
-Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through `00-bootstrap`, because it reads `.cuevik/config.json`, including the board's ids when the repo has a board. Every command is `/cuevik-ship:<name>`. `<n>` is the issue number and `<slug>` its short name. The line under each heading is generated from the branches-and-files table in section 8.
+Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through `00-bootstrap`, because it reads `.cuevik/config.json`, including the board's ids when the repo has a board. Every command is `/cuevik-ship:<name>`. `<n>` is the issue number and `<slug>` its short name. The line under each heading is generated from the branches-and-files table in section 9.
 
 ### How it differs from cuevik-start
 
@@ -614,7 +615,23 @@ What a change to each document flags, from the default lineage:
 
 ---
 
-## 8. Command reference
+## 8. cuevik-deck: a kickoff deck from a Statement of Work
+
+One command, standalone. Unlike the other plugins it needs no repository and opens no PR: it reads a Statement of Work, interviews you, and writes two files — a reviewed brief and a slide deck — to a folder you choose. Every command is `/cuevik-deck:<name>`.
+
+### kickoff-meeting
+
+<!-- gen:cmd-cuevik-deck-kickoff-meeting -->
+
+**Status:** Available  ·  **Branch:** none  ·  **PR to:** none  ·  **Writes:** `KICKOFF-BRIEF.md` and the deck  ·  **You:** Answer the questionnaire, approve the brief
+
+<!-- /gen:cmd-cuevik-deck-kickoff-meeting -->
+
+Reads the SoW (a file or pasted text) and pulls out the engagement: objectives, deliverables, scope, timeline and commercial model. It then runs a structured questionnaire one section at a time, pre-filled from the SoW so you confirm or correct rather than answer from scratch: engagement and scope, technical landscape, agile ways of working, non-functional requirements (with measurable targets), governance and expectations, and risks. It assembles the answers into `KICKOFF-BRIEF.md` for your approval, then renders a client-ready deck — PowerPoint by default, or Google Slides or Claude Design Slides on request. Both files land in the folder you name; nothing is committed, and no number is invented for a requirement — an unanswered target is marked `[TBD]` to resolve before the kickoff.
+
+---
+
+## 9. Command reference
 
 ### What each command does
 
@@ -644,6 +661,7 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-ship:cleanup` | Clean up | Removes the issue's worktree and local branches and archives the remote branch as a tag, after listing them for your confirmation. | Available |
 | `/cuevik-docs:audit` | Audit | Reads your docs once and reports gaps (Align), contradictions (Drift) and duplication (Absorb). | Available |
 | `/cuevik-docs:update` | Update | Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents. | Available |
+| `/cuevik-deck:kickoff-meeting` | Kickoff Meeting | Turns a Statement of Work into a project kickoff deck via a discovery questionnaire and a reviewed brief. | Available |
 
 ### Branches and files (ship, docs and utility commands)
 
@@ -665,10 +683,11 @@ The ten numbered `cuevik-start` steps are not repeated here: see section 5. In `
 | `/cuevik-ship:cleanup` | — | — | Worktree, local branches, archive tag | Confirm the list |
 | `/cuevik-docs:audit` | — | — | A findings report | Read the report |
 | `/cuevik-docs:update` | `docs/update/<doc>` | `main` | The document, via PR | Review and merge |
+| `/cuevik-deck:kickoff-meeting` | — | — | `KICKOFF-BRIEF.md` and the deck | Answer the questionnaire, approve the brief |
 
 ---
 
-## 9. Who owns which document
+## 10. Who owns which document
 
 From the default lineage: who owns each document, who reviews a change to it, and what it is built from.
 
@@ -690,7 +709,7 @@ From the default lineage: who owns each document, who reviews a change to it, an
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 A step stops with a message rather than guessing. Fix the cause and re-run it. `00-bootstrap` skips what it already did, so a re-run does not create anything twice.
 
@@ -720,11 +739,11 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 ---
 
-## 11. Known limits
+## 12. Known limits
 
 - **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
 - **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
-- **Built, not yet run live:** `cuevik-start` steps `03` to `09`, `cleanup`, `express` and `migrate`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
+- **Built, not yet run live:** `cuevik-start` steps `03` to `09`, `cleanup`, `express` and `migrate`, and every `cuevik-ship`, `cuevik-docs` and `cuevik-deck` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
 - **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying another user's template board.
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.

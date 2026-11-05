@@ -17,6 +17,10 @@
     {
       "name": "cuevik-docs",
       "source": "./plugins/cuevik-docs"
+    },
+    {
+      "name": "cuevik-deck",
+      "source": "./plugins/cuevik-deck"
     }
   ]
 }

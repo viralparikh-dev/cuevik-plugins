@@ -31,8 +31,9 @@ WALK = DOCS / "Cuevik-Plugins_Walkthrough.md"
 OVER = DOCS / "Cuevik-Plugins_Overview.md"
 BYACTOR = DOCS / "Cuevik-Plugins_WalkthroughByActor.pdf"
 COMMANDS = DOCS / "Cuevik-Plugins_Commands.pdf"
-PLUGINS = ("cuevik-start", "cuevik-ship", "cuevik-docs")
-PLUGIN_TITLE = {"cuevik-start": "Cuevik Start", "cuevik-ship": "Cuevik Ship", "cuevik-docs": "Cuevik Docs"}
+PLUGINS = ("cuevik-start", "cuevik-ship", "cuevik-docs", "cuevik-deck")
+PLUGIN_TITLE = {"cuevik-start": "Cuevik Start", "cuevik-ship": "Cuevik Ship", "cuevik-docs": "Cuevik Docs",
+                "cuevik-deck": "Cuevik Deck"}
 T1 = "What each command does"
 T2 = "Branches and files (ship, docs and utility commands)"
 CMD = re.compile(r"`/(cuevik-[a-z]+):([\w-]+)`")
