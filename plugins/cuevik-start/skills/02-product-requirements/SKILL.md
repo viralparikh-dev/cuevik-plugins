@@ -171,6 +171,28 @@ action. Fold each answer into the requirement, a new requirement, §9 or §12, a
   (`_writing-rules.md`, Measurability), and on an acceptance criterion that only restates its
   requirement.
 
+## Express profile
+
+When `/cuevik-start:express` runs this step, the following applies and nothing else in this file
+changes. `docs/PRODUCT.md` is read from the lane's working branch, not `main`.
+
+- **Written sections:** §1 Overview, §4 Features / Capabilities, §6 Functional Requirements, §8
+  Acceptance Criteria, §9 Out of Scope.
+- **Skipped sections stay.** §2, §3, §5, §7, §10, §11 and §12 keep their headings, in template
+  order, and hold exactly one line and nothing else: `Not covered in the Express lane. Add it with
+  /cuevik-docs:update docs/PRD.md.` The `Contents` list is unchanged.
+- **Order and review.** Part 1 covers §1 and §4 only. Part 2 is one §4 capability at a time: its
+  §6 subsection and its §8 rows, with no user stories. Part 3 covers §9 only, starting from
+  `PRODUCT.md`'s Scope Out and the items the operator deferred. The attack round, Possibilities,
+  Guesses and numbers, and Challenges apply as written. The rules about §7 (an NFR without a
+  number, an empty §7) do not apply: §7 is not written.
+- **IDs.** `PRD-NNN` numbers §6 only. A later update that adds §7 continues the sequence.
+- **Checklist.** "All twelve sections in order" means: §1, §4, §6, §8 and §9 filled, every other
+  section holding only the line above. The lines on user stories per feature and on §7 numbers do
+  not apply. Every other line applies as written, and "§1–§3 summarize" reads "§1 summarizes".
+- **PR body lists.** Quality attributes the operator names go under **NFRs without targets**, since
+  §7 is not written.
+
 ## PR body
 
 Follow runner §6. Besides the `prSummary` and the reviewer checklist below, add three lists, one

@@ -305,6 +305,15 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 Do not add stack-specific commands to `CONTRIBUTING.md`; `04-tech-stack` appends them. Never copy
 the runner, `steps.yml`, templates, roles or contracts into the repo.
 
+## Express profile
+
+`/cuevik-start:express` drives §A, §B, §C, §E.3, §E.4 and §F. It skips §D, §E.1, §E.2 and §E.5 and
+the board bullets of §E.4: the lane has no board, so the state is `none` without a question. In §F
+it writes `CONTRIBUTING.md` with the Express variant of the initiation-only block
+(`contributing-governance.md`, "Express variant") and `.cuevik/config.json` with `boardState`
+`none`. The branch, the commit and the PR (§G) belong to the lane, not to this step. The reviewer
+checklist applies with one change: its first line accepts the Express variant of the block.
+
 ## G. PR
 
 Follow runner §5–§6. The PR body covers the `prSummary`:

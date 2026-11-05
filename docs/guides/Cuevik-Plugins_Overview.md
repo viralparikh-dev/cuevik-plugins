@@ -25,7 +25,7 @@ Keep the documents that define the project honest: audit them for gaps, contradi
 - **Reviewed, not trusted.** Every step ends in a change that a person approves. Nothing counts until it is approved.
 - **One step at a time.** Each command does one job and will not run until the step before it is approved.
 - **Clear ownership.** Each document has a named owner and reviewers, so the right person signs off. On a small team one person can hold both roles.
-- **Built on GitHub.** Works with your GitHub repository and project board.
+- **Built on GitHub.** Works with your GitHub repository and, optionally, a project board.
 
 ## Who signs off
 
@@ -56,6 +56,7 @@ Every command below is available. A command not yet built would be tagged **Plan
 | `/cuevik-start:08-finalize` | Hands over permanent rules and closes out setup. | Available |
 | `/cuevik-start:status` | Shows how far project setup has got. | Available |
 | `/cuevik-start:cleanup` | Tidies up after setup is complete. | Available |
+| `/cuevik-start:express` | The lean path for an MVP or spike: working rules, a lean concept and requirements, and a backlog in one session. | Available |
 
 ### Cuevik Ship
 

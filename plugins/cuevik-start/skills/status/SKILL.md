@@ -13,7 +13,9 @@ repo. It takes no arguments. Run every `gh` command through the Bash tool.
 Load `${CLAUDE_PLUGIN_ROOT}/references/steps.yml`. Its steps are the rows, in its order. Each
 entry supplies `id`, `branch`, `outputs` (the first is the primary output), `bootstrap` and
 `replacesExisting`. Never hardcode a step list. If the file fails to load, stop and output:
-`Error: steps.yml could not be loaded.`
+`Error: steps.yml could not be loaded.` Also load `${CLAUDE_PLUGIN_ROOT}/references/express.yml`
+(the Express lane's `branch` and `covers`); if it fails to load, stop and output: `Error:
+express.yml could not be loaded.`
 
 Run every check silently, then render the report once. Do not print intermediate command output.
 
@@ -73,6 +75,13 @@ Then, for each step:
    On a `✓ merged` row whose branch still exists, append `local branch left —
    /cuevik-start:cleanup` (local) or `branch left on GitHub` (GitHub).
 
+   **Express lane.** Once, run `gh pr list --head <express.yml branch> --base main --state all
+   --json number,state,title,url`; take the newest `MERGED` PR if there is one, else the `OPEN`
+   one, else the newest `CLOSED` one. For each step in `covers` whose own PR query (1) found
+   nothing, that Express PR is the step's PR, and Detail starts `express PR #n`. Everything else
+   in 1–3 applies as written. The rows of the steps not in `covers` are not affected: a repo run
+   through the lane shows `00`, `01`, `02`, `07` as `✓ merged` and the rest as `— not started`.
+
 ## 3. Initiation issues
 
 The issues `00-bootstrap` filed mirror the steps, on the board when the repo has one. The merged PR
@@ -100,7 +109,9 @@ stays the source of truth: this section never changes a row's Status or the Next
    while every row is `✓ merged` — one Check line saying which.
 5. The board, from `boardState`. `none` is a valid state, not a mismatch, so it is a `**Board:**`
    line, not a Check line: `**Board:** none (issues only). To add one, open a PR on
-   .cuevik/config.json (config contract README, "Adding or repairing a board").` `partial`: `**Board:**
+   .cuevik/config.json (config contract README, "Adding or repairing a board").` In a repo with a
+   merged Express PR (§2), print no `**Board:**` line for `none`: the lane asks for no board.
+   `partial`: `**Board:**
    partial, missing <parts from missing>. To repair it, open a PR on .cuevik/config.json (config
    contract README, "Adding or repairing a board").` `configured`: no line. The issue cross-check
    above runs in every state: it reads the issues, not the board.
@@ -139,7 +150,11 @@ disagreement from §3. Then print the `**Board:**` line from §3 step 5, if ther
 - `⊙ branch`: `/cuevik-start:<id> in a new session. Branch <branch> exists; the runner asks
   whether to reuse or delete it.`
 - `— not started`: `/cuevik-start:<id> in a new session.` For `08-finalize`, add `It strips the
-  INITIATION-ONLY block from CONTRIBUTING.md; the last step.`
+  INITIATION-ONLY block from CONTRIBUTING.md; the last step.` When the row is `03-architecture`
+  and the Express lane has a merged PR (§2): `Express lane complete (express PR #n). To graduate,
+  /cuevik-start:03-architecture in a new session; optional.`
+- `⟳ PR open` on a row decided by an open Express PR: `merge express PR #n; the lane is then
+  complete.`
 - Every row `✓ merged`: `Initiation complete. Run /cuevik-start:cleanup to delete merged local
   init/* branches. Revise a document with /cuevik-docs:update <document>.`
 
