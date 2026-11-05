@@ -89,6 +89,8 @@ No project-level test strategy artifact exists. Add `docs/TEST-STRATEGY.md` as a
 - `cuevik-ship` messages and `config.md` carry the same migrate text as the runner. `cuevik-ship`'s design and plan steps do not read `TEST-STRATEGY.md` yet; that is a possible follow-up, not part of this PR.
 - Verified by script: the migrate rules turn the pre-change default lineage into the new default lineage exactly, leave the new one unchanged, keep project-specific edits, and give the same result from a version 2 or a version 3 config.
 
+- A live run of the migrate rules on a real old-format repo (config version 2, only `00` merged) gave a two-file PR that validated and matched the new default lineage; it showed the edits must be minimal text edits that keep the files' formatting, and that a refused push must stop the command. Both are in the skill.
+
 ## Out of scope
 - A QA role file; plugin version bumps; filing the new initiation story during migration; rewriting `CONTRIBUTING.md` during migration.
 - CI/CD and operational readiness (deferred in the plan).

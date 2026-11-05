@@ -76,14 +76,18 @@ diff in a fenced `diff` block. Ask `Open a PR with these edits to .cuevik/config
 1. Branch `init/migrate` from `main`. If it exists locally or on GitHub, the runner §3 rule
    applies (ask `Reuse it` / `Delete it`, delete only after a yes). `/cuevik-start:cleanup`
    removes the local branch after the PR merges.
-2. Write the two files: 2-space indent, a trailing newline, the existing key order.
+2. Edit the two files in place with minimal text edits and keep their formatting (an inline array
+   stays inline; the new lineage entry is copied as text from the default lineage), so the diff
+   shows only the changes listed in section 2. Do not re-serialize the JSON.
 3. Check each result against its schema: re-read the schema files and check every rule before
    committing. For the lineage also: every `upstream` path is the path of a document in the file,
    no document lists itself, no cycle. Any failure: stop, show it, change nothing more.
 4. `git add .cuevik/config.json .cuevik/lineage.json`, then `git commit` with the message `chore:
    migrate .cuevik files to the current contract versions`.
 5. Ask `Push and open the PR?` (`Yes` / `No`). Never push without a yes.
-6. `git push -u origin init/migrate`, then `gh pr create --base main --head init/migrate`, title
+6. `git push -u origin init/migrate`. If the push is refused (for example a 403 because git holds
+   another account's credentials than `gh`), say so and stop: the commit stays local and the
+   operator fixes the credentials. Then `gh pr create --base main --head init/migrate`, title
    the commit message. Body, in this order: the edits (as in step 3); the key renames and any
    unknown story key left in place; then these notes that apply:
    - No initiation story exists for `05-test-strategy` and none was filed. `status` lists that
