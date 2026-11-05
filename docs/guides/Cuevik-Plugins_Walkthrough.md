@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.3.0, cuevik-ship 0.3.0, cuevik-docs 0.3.0, cuevik-deck 0.1.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.4.0, cuevik-ship 0.3.0, cuevik-docs 0.3.0, cuevik-deck 0.1.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -410,12 +410,12 @@ Deletes the local `init/*` branches whose PR is merged. It skips and reports any
 The lean path for an MVP or spike. Run it instead of the ten steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch `init/express`, it does the work of `00`, `01`, `02` and `08`:
 
 - **A pitch, if you have one.** It asks first for an optional one-paragraph pitch. With one, `01` drafts a strawman in which every statement traces to the pitch; without, it interviews you as usual.
-- **Bootstrap without a board.** The repo, `CONTRIBUTING.md` (the permanent rules plus a short initiation block that holds only the self-review checklist), `.cuevik/config.json` (`boardState` `none`), the default `.cuevik/lineage.json`, `.markdownlint.json`, and the initiation issues: an epic and one story per step `01` to `09`.
+- **Bootstrap without a board.** The repo, `CONTRIBUTING.md` (the permanent rules plus a short initiation block that holds only the self-review checklist), `.cuevik/config.json` (`boardState` `none`, `backlogModel` `flat`), the default `.cuevik/lineage.json`, `.markdownlint.json`, and the initiation issues: one story per step `01` to `09`, each a `Task` where the org has issue types, and **no epic**.
 - **A lean `PRODUCT.md` and `PRD.md`.** `PRODUCT.md` fills Overview, Target Users, Features, Scope and Success Criteria. `PRD.md` fills Overview, Features / Capabilities, Functional Requirements, Acceptance Criteria and Out of Scope. Every other heading stays, with one line saying it is not covered in the Express lane. The writing rules are the same as in the full steps.
-- **The backlog.** `08` files the epics and stories and writes `docs/BACKLOG.md`, with no question about a board.
+- **The backlog.** `08` files the stories as `Feature`s (where the org has issue types) and writes `docs/BACKLOG.md`, with no epics filed as issues — they stay as logical rows in `BACKLOG.md` — and no question about a board.
 - **What it skips.** `03` to `07` and `09`: no `ARCHITECTURE.md`, `TECH-STACK.md`, `TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` or `README.md`.
 
-The PR has four commits (bootstrap, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for `01`, `02` and `08`; the epic and the other stories stay open.
+The PR has four commits (bootstrap, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for `01`, `02` and `08`; the other stories stay open (there is no epic).
 
 To graduate later, run `/cuevik-start:03-architecture` and the steps after it as usual. The merged Express PR counts as the PR of the steps it covered, and `/cuevik-docs:update` deepens the lean documents.
 
@@ -730,7 +730,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `origin` is not on github.com | GitHub is the only supported host. |
 | The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting (and links a board, if you use one), so it needs admin rights. |
 | `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To add or repair the board, open a PR that edits `.cuevik/config.json`: add `project` and set `boardState` (and `missing` for a partial board). |
-| `.cuevik/config.json is schemaVersion <n>` | The config is older than the current contract (before the optional board, or before the steps were renumbered). Run `/cuevik-start:migrate` and merge its PR. `cuevik-start` (from `01`) and `cuevik-ship` stop until then. |
+| `.cuevik/config.json is schemaVersion <n>` | The config is older than the current contract (before the optional board, before the steps were renumbered, or before the backlog model was recorded). Run `/cuevik-start:migrate` and merge its PR. `cuevik-start` (from `01`) and `cuevik-ship` stop until then. |
 | A `00-bootstrap`, Express or migration PR is already open | Merge it, or close it and delete its branch, then re-run. |
 | The board needs a single-select field named `Status` | Add that field to the board, choose another board, or choose no board. |
 | The template board cannot be read | Name another template, choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
@@ -748,9 +748,9 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.
 - **Plugin settings:** in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. `cuevik-ship`'s worktree-folder setting uses the same mechanism and is untested.
-- **Labels, not issue types.** GitHub issue types are not used, because user-owned repos do not have them.
+- **Labels, plus issue types in the Express lane.** The standard lane and `cuevik-ship` use labels only. The Express lane additionally gives its issues a native type (`Task` for `INIT-*`, `Feature` for `PRD-*`) when the repo's owner is an organisation that has issue types; a user-owned repo cannot, so it files them untyped.
 - **`docs/BACKLOG.md` is a snapshot.** After setup, GitHub is the backlog.
-- **Older repos need `/cuevik-start:migrate`.** A repo set up before the optional board or before the test strategy step was added has the old config version and step ids; `cuevik-start` (from `01`) and `cuevik-ship` stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.
+- **Older repos need `/cuevik-start:migrate`.** A repo set up before the optional board, the test strategy step, or the backlog model was recorded has the old config version and step ids; `cuevik-start` (from `01`) and `cuevik-ship` stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.
 
 ---
 
@@ -758,6 +758,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 | Version | Date | Change |
 |---|---|---|
+| 0.4.0 | 2026-11-05 | `cuevik-start` 0.4.0: the Express lane files no epic issues and gives its issues a native type (`Task` for `INIT-*`, `Feature` for `PRD-*`) where the organisation has issue types; config contract version 5 adds `backlogModel` (`epic-grouped` for the standard lane, `flat` for Express) — run `/cuevik-start:migrate` on older repos |
 | 0.3.0 | 2026-11-05 | `cuevik-start`: new `05-test-strategy` step (the old `05` to `08` are now `06` to `09`), the `express` and `migrate` commands, an optional project board. Config contract version 4: run `/cuevik-start:migrate` on older repos. `cuevik-ship` and `cuevik-docs` follow the new contract; the ship design step uses the test strategy |
 | 0.2.1 | 2026-10-28 | `cuevik-ship` 0.2.1: fixes `03-create-backlog` frontmatter that did not parse |
 | 0.2.0 | 2026-10-28 | First release, covering `cuevik-start` 0.2.0, `cuevik-ship` 0.2.0 and `cuevik-docs` 0.2.0 |

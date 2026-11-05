@@ -137,15 +137,23 @@ changes.
 
 - **Sources.** Read `docs/PRODUCT.md` and `docs/PRD.md` from the lane's working branch, not
   `main`. `ARCHITECTURE.md`, `TECH-STACK.md`, `TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` and `README.md` do not
-  exist and are not needed. `PRD.md` §7 is not written in Express, so there is no non-functional epic and no
-  NFR priority question.
-- **Board.** `boardState` is `none` and the lane asks no board question. Skip step 4 of Filing
+  exist and are not needed. `PRD.md` §7 is not written in Express, so there is no non-functional
+  epic grouping and no NFR priority question.
+- **No epics.** The lane's `backlogModel` is `flat`. Skip Filing step 2 (Epics) and the sub-issue
+  link in Filing step 3: file only the `PRD-NNN` stories, with `story` + `priority:*`. Epics stay
+  logical — `docs/BACKLOG.md`'s Epics section lists `E1`, `E2`, … with the Issue column `—`, and
+  the Stories section's `Parent epic` column points at those logical IDs.
+- **Issue types.** Give each `PRD-*` story the `Feature` issue type when the owner supports it (the
+  lane's Issue types procedure in `skills/express/SKILL.md`); a reused story missing its type gets
+  `gh issue edit <n> --type Feature`.
+- **Board.** `boardState` is `none` and the lane asks no board question. Skip Filing step 4 (Board)
   entirely: no prompt, no board call. The PR body's Board line is `none, issues filed only`.
 - **Output.** `docs/BACKLOG.md` is written as usual: the frozen snapshot of what the lane filed. Its
   `Derived from` line lists `PRODUCT.md` and `PRD.md`.
-- **Checklist.** The first line reads: `BACKLOG.md` carries the frozen-snapshot note, issues were
-  filed, and the PR body says `Board: none, issues filed only`. Every other line applies as
-  written.
+- **Checklist.** The first line reads: `BACKLOG.md` carries the frozen-snapshot note, the `PRD-*`
+  stories were filed with no epic issue and no sub-issue link (Epics rows are logical, Issue `—`),
+  each story carries the `Feature` type where the owner supports it, and the PR body says `Board:
+  none, issues filed only`. Every other line applies as written.
 
 ## BACKLOG.md
 

@@ -13,8 +13,9 @@ repo, so every clone and every session sees the same values.
 | Fact | Home |
 |---|---|
 | Whether the repo has a board, and how complete it is | **here** (`boardState`, `missing`) |
+| How issues are organised: epics-as-issues, or flat/typed | **here** (`backlogModel`) |
 | Project board: owner, number, node id, Status field id and option ids | **here** (`project`) |
-| Initiation tracking issues: epic and one story per step | **here** (`initiation`) |
+| Initiation tracking issues: one story per step (plus an epic when `epic-grouped`) | **here** (`initiation`) |
 | Repo owner/name | the git remote (`gh repo view --json nameWithOwner`) |
 | Worktree root folder | `cuevik-ship` plugin `userConfig` (machine fact, not project fact) |
 
@@ -46,6 +47,21 @@ A field or option the board simply lacks is not listed: bootstrap skips it and s
 A board with no single-select `Status` field cannot be recorded at all (`project.statusField` is
 required), so that case is `none`.
 
+## Backlog model
+
+`backlogModel` says how this repo's issues are organised. It is set once at bootstrap and read by
+both plugins:
+
+| `backlogModel` | Meaning | `initiation.epic` |
+|---|---|---|
+| `epic-grouped` | Epics are filed as GitHub issues; stories are their sub-issues. The standard lane. | required |
+| `flat` | No epic issues: stories are distinguished by native GitHub issue type (`Task` for initiation, `Feature` for the backlog) and have no epic parent. The Express lane. | forbidden |
+
+A `flat` repo keeps epics only as logical groupings in `docs/BACKLOG.md`, never as issues. The
+schema forbids `initiation.epic` on a `flat` repo and requires it on an `epic-grouped` one, so the
+two cannot contradict. `cuevik-ship` reads `backlogModel` and, on a `flat` repo, files new stories
+typed and ungrouped rather than resolving or creating an epic.
+
 `project.owner` is stored because a board can belong to a different user or organisation than the
 repo. `statusField.options` holds every option on the board, by the board's own names. Skills look
 up an id by name; which names a skill moves cards to is decided by that skill, not by this
@@ -53,12 +69,13 @@ contract. The order of `options` carries no meaning (`gh --jq` sorts keys); read
 order.
 
 `initiation` holds the issue numbers `00-bootstrap` creates to show initiation's progress: one
-`Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per step after `00-bootstrap`
-(its own story cannot exist before it runs), keyed by step id. The issues are filed whatever the
-`boardState`, and are added to the board when there is one. They carry only the `initiation` label,
-never `epic` or `story`, so `cuevik-start:08-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic
-lookup never pick them up. The merged PR stays the source of truth for a step; the issues only
-mirror it.
+`INIT-<NN>: <title>` story per step after `00-bootstrap` (its own story cannot exist before it
+runs), keyed by step id, plus — on an `epic-grouped` repo — one `Epic: Project Initiation` epic in
+`initiation.epic`. A `flat` repo files no epic and gives each story the native `Task` issue type
+instead. The issues are filed whatever the `boardState`, and are added to the board when there is
+one. They carry only the `initiation` label, never `epic` or `story`, so `cuevik-start:08-backlog`,
+`docs/BACKLOG.md` and `cuevik-ship`'s epic lookup never pick them up. The merged PR stays the source
+of truth for a step; the issues only mirror it.
 
 ## Where the values come from
 
@@ -74,19 +91,21 @@ The `initiation` numbers are the ones `gh issue create` printed when `00-bootstr
 ## Migrating from an older schemaVersion
 
 Version 3 added `boardState`. Version 4 renamed four step ids, which are the keys of
-`initiation.stories`, when the test strategy step was inserted. Older configs are not accepted:
-`cuevik-start` and `cuevik-ship` stop on one and say so.
+`initiation.stories`, when the test strategy step was inserted. Version 5 added `backlogModel`.
+Older configs are not accepted: `cuevik-start` and `cuevik-ship` stop on one and say so.
 
 Bring a repo current with `/cuevik-start:migrate`. It opens one PR that edits both
 `.cuevik/config.json` and `.cuevik/lineage.json`. By hand, open a PR that does this to
 `.cuevik/config.json`:
 
-1. set `"schemaVersion": 4`;
+1. set `"schemaVersion": 5`;
 2. for a version 2 config, add `"boardState": "configured"` (every version 2 config has a
    `project`, so the value is the same for all of them);
-3. rename these keys in `initiation.stories`: `05-ai-tool-guide` to `06-ai-tool-guide`,
+3. add `"backlogModel": "epic-grouped"` (every existing repo files epics, so the value is the same
+   for all of them);
+4. rename these keys in `initiation.stories`: `05-ai-tool-guide` to `06-ai-tool-guide`,
    `06-readme` to `07-readme`, `07-backlog` to `08-backlog`, `08-finalize` to `09-finalize`;
-4. leave everything else as it is;
+5. leave everything else as it is;
 
 and this to `.cuevik/lineage.json`, in the same PR:
 

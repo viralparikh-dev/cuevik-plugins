@@ -454,6 +454,7 @@ tr{break-inside:avoid}
 td:first-child,td.nw{white-space:nowrap}
 td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
+.tbl.wide th,.tbl.wide td{padding-left:5px;padding-right:5px}  /* dense 5-column command tables: tighter sides to fit the portrait page box (vertical padding left to each page) */
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
 .tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:var(--text-xs);font-weight:600;border:1px solid var(--border);white-space:nowrap}
@@ -655,14 +656,15 @@ def shape(body_html, eyebrow, foot, overview=False):
         next(h for h in h2s if h.get_text().startswith("Every command"))["class"] = "pb"
     for t in soup.find_all("table"):
         short = len(t.find_all("tr")) <= 9
-        wrap = soup.new_tag("div", attrs={"class": "tbl short" if short else "tbl"}); t.wrap(wrap)
+        wide = len(t.find_all("th")) >= 5  # a dense command table: tighter padding (CSS .tbl.wide) keeps it in the page box
+        wrap = soup.new_tag("div", attrs={"class": " ".join(["tbl"] + (["short"] if short else []) + (["wide"] if wide else []))}); t.wrap(wrap)
         for td in t.find_all("td"):
             txt = td.get_text(strip=True)
             if txt in ("Available", "Planned"):  # the status tag
                 td.clear(); td.append(tag_el(soup, txt)); td["class"] = "nw"
             elif len(txt) <= 12:
                 td["class"] = "nw"
-        for code in t.find_all("code") if len(t.find_all("th")) >= 5 else []:
+        for code in t.find_all("code") if wide else []:
             if len(code.get_text()) > 24:  # only a wide table needs its long paths to wrap, at a slash
                 marked = code.decode_contents().replace("/", "/<wbr>")
                 code.clear(); code.append(BeautifulSoup(marked, "html.parser")); code["class"] = "wrap"

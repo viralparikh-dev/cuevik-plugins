@@ -1,6 +1,7 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "boardState": "configured",
+  "backlogModel": "epic-grouped",
   "project": {
     "owner": "example-org",
     "number": 1,

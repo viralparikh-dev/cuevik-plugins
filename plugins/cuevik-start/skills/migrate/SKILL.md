@@ -1,6 +1,6 @@
 ---
 name: migrate
-description: Brings an older repo's .cuevik/ files up to the current contract and step ids, in one PR. Config version 2 or 3 goes to 4 (adds boardState, renames the story keys); the lineage gets the renamed step ids, the docs/TEST-STRATEGY.md entry and its upstream links. Run in the project folder. A repo that is already current gets "Nothing to migrate." Changes nothing until you say yes, and never merges.
+description: Brings an older repo's .cuevik/ files up to the current contract and step ids, in one PR. Config versions 2–4 come up to 5 (adds boardState, backlogModel, renames the story keys); the lineage gets the renamed step ids, the docs/TEST-STRATEGY.md entry and its upstream links. Run in the project folder. A repo that is already current gets "Nothing to migrate." Changes nothing until you say yes, and never merges.
 disable-model-invocation: true
 ---
 
@@ -44,11 +44,13 @@ file is left exactly as found, including project-specific owners, reviewers and 
 
 **`.cuevik/config.json`**
 
-1. `schemaVersion` becomes `4`.
+1. `schemaVersion` becomes `5`.
 2. `schemaVersion` 2 (no `boardState`): add `"boardState": "configured"` right after
    `schemaVersion`. Every version 2 config has a `project`; if `project` is missing, **STOP** —
    `config.json has no project, so it cannot be migrated safely. Fix it by hand.`
-3. In `initiation.stories`, rename each key that is a legacy id (an `aliases` entry) to the id it
+3. No `backlogModel` key: add `"backlogModel": "epic-grouped"` right after `boardState`. Every
+   existing repo files epics, so the value is the same for all of them.
+4. In `initiation.stories`, rename each key that is a legacy id (an `aliases` entry) to the id it
    belongs to. A key that is neither current nor legacy stays, and is listed in the PR body. A
    legacy key and its current id both present: **STOP** and name them.
 
@@ -61,9 +63,9 @@ file is left exactly as found, including project-specific owners, reviewers and 
    whose `upstream` lacks `docs/TEST-STRATEGY.md`: insert it right after `docs/TECH-STACK.md` in
    that list (at the end if that is absent).
 
-**Already current.** `schemaVersion` is `4`, no legacy id is left in either file, the lineage has
-the `docs/TEST-STRATEGY.md` entry and the upstream links of step 3: output `Nothing to migrate.`
-and stop.
+**Already current.** `schemaVersion` is `5`, `backlogModel` is present, no legacy id is left in
+either file, the lineage has the `docs/TEST-STRATEGY.md` entry and the upstream links of step 3:
+output `Nothing to migrate.` and stop.
 
 ## 3. Show and approve
 
