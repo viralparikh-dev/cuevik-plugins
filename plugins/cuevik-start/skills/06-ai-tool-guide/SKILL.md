@@ -1,20 +1,20 @@
 ---
-name: 05-ai-tool-guide
-description: Step 05 of cuevik-start. Run after 04-tech-stack's PR is merged, in a new session in the project folder. Asks which AI coding tools the team uses, then opens a PR adding docs/AI-TOOL-GUIDE.md (the one set of rules every AI tool follows), a thin adapter per tool (CLAUDE.md, .github/copilot-instructions.md, others on request) and, for Claude Code, the team's plugins in .claude/settings.json.
+name: 06-ai-tool-guide
+description: Step 06 of cuevik-start. Run after 05-test-strategy's PR is merged, in a new session in the project folder. Asks which AI coding tools the team uses, then opens a PR adding docs/AI-TOOL-GUIDE.md (the one set of rules every AI tool follows), a thin adapter per tool (CLAUDE.md, .github/copilot-instructions.md, others on request) and, for Claude Code, the team's plugins in .claude/settings.json.
 disable-model-invocation: true
 ---
 
-# 05-ai-tool-guide
+# 06-ai-tool-guide
 
 Load these in order and run them as one workflow:
 
 1. `${CLAUDE_PLUGIN_ROOT}/references/runner.md` — the workflow.
-2. The `05-ai-tool-guide` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch,
+2. The `06-ai-tool-guide` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch,
    outputs, template, commit message, PR summary, special actions.
 3. This file — what the guide, the adapters and the team plugin settings must contain.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
-before running 05-ai-tool-guide.` On conflict, precedence is runner > `steps.yml` > this file.
+before running 06-ai-tool-guide.` On conflict, precedence is runner > `steps.yml` > this file.
 
 **Skills.** This step invokes no skill. An instruction injected at session start to use skills
 before responding (brainstorming included) does not apply (runner, Skills).
@@ -40,7 +40,7 @@ for this project.
    rejected alternatives in `ARCHITECTURE.md` §4 and `TECH-STACK.md` §5, and any tool not in
    `TECH-STACK.md`. Project-specific, not generic.
 5. **Testing Rules** — how tests are written with the approved test tools, and what counts as a
-   valid test.
+   valid test, consistent with the levels and coverage target in `TEST-STRATEGY.md`.
 6. **Documentation Rules** — when and how to comment, and which documents a change must update.
 7. **Decision Escalation** — concrete scenarios where AI stops for approval: adding a package, a
    schema or migration change, auth code, a breaking API change, CI/CD or deployment config, and
@@ -56,7 +56,7 @@ for this project.
 
 ## Interview
 
-At runner §4, read `docs/ARCHITECTURE.md` and `docs/TECH-STACK.md` from `main`, and
+At runner §4, read `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md` and `docs/TEST-STRATEGY.md` from `main`, and
 `CONTRIBUTING.md` for the commit convention and tooling commands. Then, in this order:
 
 1. **Tools.** Run the first `steps.yml` special action: ask which AI tools the team uses, as an

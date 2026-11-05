@@ -161,13 +161,15 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#02-product-requirements">02-product-requirements</a></li>
 <li><a href="#03-architecture">03-architecture</a></li>
 <li><a href="#04-tech-stack">04-tech-stack</a></li>
-<li><a href="#05-ai-tool-guide">05-ai-tool-guide</a></li>
-<li><a href="#06-readme">06-readme</a></li>
-<li><a href="#07-backlog">07-backlog</a></li>
-<li><a href="#08-finalize">08-finalize</a></li>
+<li><a href="#05-test-strategy">05-test-strategy</a></li>
+<li><a href="#06-ai-tool-guide">06-ai-tool-guide</a></li>
+<li><a href="#07-readme">07-readme</a></li>
+<li><a href="#08-backlog">08-backlog</a></li>
+<li><a href="#09-finalize">09-finalize</a></li>
 <li><a href="#status">status</a></li>
 <li><a href="#cleanup">cleanup</a></li>
 <li><a href="#express">express</a></li>
+<li><a href="#migrate">migrate</a></li>
 </ul>
 </li>
 <li><a href="#6-cuevik-ship-deliver-one-issue-at-a-time">6. cuevik-ship: deliver one issue at a time</a><ul>
@@ -211,7 +213,7 @@ h2.pb{break-before:page;margin-top:0}
 <tr>
 <td class="nw"><code>cuevik-start</code></td>
 <td>Start a project the governed way</td>
-<td><code>00</code>–<code>08</code>, <code>express</code>, <code>status</code>, <code>cleanup</code></td>
+<td><code>00</code>–<code>09</code>, <code>express</code>, <code>migrate</code>, <code>status</code>, <code>cleanup</code></td>
 </tr>
 <tr>
 <td class="nw"><code>cuevik-ship</code></td>
@@ -270,15 +272,15 @@ h2.pb{break-before:page;margin-top:0}
 
 <div class="keep k3"><h3 id="cuevik-start">cuevik-start</h3><p>Lanes are the document owners from the project's lineage. Every command is <code>/cuevik-start:&lt;name&gt;</code>.</p></div>
 
-<figure class="sw"><svg aria-label="flow-start by actor" role="img" viewbox="0 0 780 850" xmlns="http://www.w3.org/2000/svg">
+<figure class="sw"><svg aria-label="flow-start by actor" role="img" viewbox="0 0 780 936" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="ah0" markerheight="7" markerwidth="7" orient="auto" refx="7" refy="4" viewbox="0 0 8 8"><path class="arrow" d="M0 0 L8 4 L0 8 z"></path></marker></defs>
-<rect class="lane warm" height="826" rx="14" width="244" x="12" y="12"></rect>
+<rect class="lane warm" height="912" rx="14" width="244" x="12" y="12"></rect>
 <text class="lane-h" x="28" y="34">Product Owner</text>
-<text class="lane-s" x="28" y="50">owns 01 · 02 · 07</text>
-<rect class="lane cool" height="826" rx="14" width="244" x="266" y="12"></rect>
+<text class="lane-s" x="28" y="50">owns 01 · 02 · 08</text>
+<rect class="lane cool" height="912" rx="14" width="244" x="266" y="12"></rect>
 <text class="lane-h" x="282" y="34">Architect</text>
-<text class="lane-s" x="282" y="50">owns 00 · 03 · 04 · 05 · 06 · 08</text>
-<rect class="lane gh" height="826" rx="14" width="244" x="520" y="12"></rect>
+<text class="lane-s" x="282" y="50">owns 00 · 03 · 04 · 05 · 06 · 07 · 09</text>
+<rect class="lane gh" height="912" rx="14" width="244" x="520" y="12"></rect>
 <text class="lane-h" x="536" y="34">GitHub</text>
 <text class="lane-s" x="536" y="50">PR to main, then merge</text>
 <path class="link" d="M388 144 V154 H134 V164" marker-end="url(#ah0)"></path>
@@ -287,8 +289,9 @@ h2.pb{break-before:page;margin-top:0}
 <path class="link" d="M388 402 V422" marker-end="url(#ah0)"></path>
 <path class="link" d="M388 488 V508" marker-end="url(#ah0)"></path>
 <path class="link" d="M388 574 V594" marker-end="url(#ah0)"></path>
-<path class="link" d="M388 660 V670 H134 V680" marker-end="url(#ah0)"></path>
-<path class="link" d="M134 746 V756 H388 V766" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 660 V680" marker-end="url(#ah0)"></path>
+<path class="link" d="M388 746 V756 H134 V766" marker-end="url(#ah0)"></path>
+<path class="link" d="M134 832 V842 H388 V852" marker-end="url(#ah0)"></path>
 <path class="link side" d="M496 111 H534" marker-end="url(#ah0)"></path>
 <path class="link side" d="M242 197 H534" marker-end="url(#ah0)"></path>
 <path class="link side" d="M242 283 H534" marker-end="url(#ah0)"></path>
@@ -296,9 +299,11 @@ h2.pb{break-before:page;margin-top:0}
 <path class="link side" d="M280 369 H242" marker-end="url(#ah0)"></path>
 <path class="link side" d="M496 455 H534" marker-end="url(#ah0)"></path>
 <path class="link side" d="M496 541 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M280 541 H242" marker-end="url(#ah0)"></path>
 <path class="link side" d="M496 627 H534" marker-end="url(#ah0)"></path>
-<path class="link side" d="M242 713 H534" marker-end="url(#ah0)"></path>
-<path class="link side" d="M496 799 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 713 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M242 799 H534" marker-end="url(#ah0)"></path>
+<path class="link side" d="M496 885 H534" marker-end="url(#ah0)"></path>
 <rect class="card cool" height="66" rx="10" width="216" x="280" y="78"></rect>
 <rect class="pill" height="16" rx="8" width="59" x="292" y="70"></rect>
 <text class="pill-t" text-anchor="middle" x="321.5" y="81">STEP 00</text>
@@ -359,47 +364,60 @@ h2.pb{break-before:page;margin-top:0}
 <rect class="card cool" height="66" rx="10" width="216" x="280" y="508"></rect>
 <rect class="pill" height="16" rx="8" width="59" x="292" y="500"></rect>
 <text class="pill-t" text-anchor="middle" x="321.5" y="511">STEP 05</text>
-<text class="ttl" x="294" y="538">AI Tool Guide</text>
-<text class="mono" x="294" y="553">05-ai-tool-guide</text>
-<text class="note" x="294" y="567">docs/AI-TOOL-GUIDE.md + 3 more</text>
+<text class="ttl" x="294" y="538">Test Strategy</text>
+<text class="mono" x="294" y="553">05-test-strategy</text>
+<text class="note" x="294" y="567">docs/TEST-STRATEGY.md</text>
 <rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="500"></rect>
 <text class="tg-t a" text-anchor="middle" x="455.5" y="511">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="516"></rect>
 <text class="ttl" x="548" y="537">PR → main</text>
-<text class="note" x="548" y="554">Approved by Architect</text>
+<text class="note" x="548" y="554">Approved by Architect + Product Owner</text>
+<rect class="dash" height="28" rx="14" width="216" x="26" y="527"></rect>
+<text class="note" x="40" y="545">Product Owner co-reviews</text>
 <rect class="card cool" height="66" rx="10" width="216" x="280" y="594"></rect>
 <rect class="pill" height="16" rx="8" width="59" x="292" y="586"></rect>
 <text class="pill-t" text-anchor="middle" x="321.5" y="597">STEP 06</text>
-<text class="ttl" x="294" y="624">README</text>
-<text class="mono" x="294" y="639">06-readme</text>
-<text class="note" x="294" y="653">README.md</text>
+<text class="ttl" x="294" y="624">AI Tool Guide</text>
+<text class="mono" x="294" y="639">06-ai-tool-guide</text>
+<text class="note" x="294" y="653">docs/AI-TOOL-GUIDE.md + 3 more</text>
 <rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="586"></rect>
 <text class="tg-t a" text-anchor="middle" x="455.5" y="597">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="602"></rect>
 <text class="ttl" x="548" y="623">PR → main</text>
 <text class="note" x="548" y="640">Approved by Architect</text>
-<rect class="card warm" height="66" rx="10" width="216" x="26" y="680"></rect>
-<rect class="pill" height="16" rx="8" width="59" x="38" y="672"></rect>
-<text class="pill-t" text-anchor="middle" x="67.5" y="683">STEP 07</text>
-<text class="ttl" x="40" y="710">Initial Backlog</text>
-<text class="mono" x="40" y="725">07-backlog</text>
-<text class="note" x="40" y="739">docs/BACKLOG.md</text>
-<rect class="tg tg-a" height="16" rx="8" width="57" x="173" y="672"></rect>
-<text class="tg-t a" text-anchor="middle" x="201.5" y="683">Available</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="680"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="672"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="683">STEP 07</text>
+<text class="ttl" x="294" y="710">README</text>
+<text class="mono" x="294" y="725">07-readme</text>
+<text class="note" x="294" y="739">README.md</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="672"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="683">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="688"></rect>
 <text class="ttl" x="548" y="709">PR → main</text>
-<text class="note" x="548" y="726">Approved by Product Owner</text>
-<rect class="card cool" height="66" rx="10" width="216" x="280" y="766"></rect>
-<rect class="pill" height="16" rx="8" width="59" x="292" y="758"></rect>
-<text class="pill-t" text-anchor="middle" x="321.5" y="769">STEP 08</text>
-<text class="ttl" x="294" y="796">Finalize Governance</text>
-<text class="mono" x="294" y="811">08-finalize</text>
-<text class="note" x="294" y="825">CONTRIBUTING.md</text>
-<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="758"></rect>
-<text class="tg-t a" text-anchor="middle" x="455.5" y="769">Available</text>
+<text class="note" x="548" y="726">Approved by Architect</text>
+<rect class="card warm" height="66" rx="10" width="216" x="26" y="766"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="38" y="758"></rect>
+<text class="pill-t" text-anchor="middle" x="67.5" y="769">STEP 08</text>
+<text class="ttl" x="40" y="796">Initial Backlog</text>
+<text class="mono" x="40" y="811">08-backlog</text>
+<text class="note" x="40" y="825">docs/BACKLOG.md</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="173" y="758"></rect>
+<text class="tg-t a" text-anchor="middle" x="201.5" y="769">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="774"></rect>
 <text class="ttl" x="548" y="795">PR → main</text>
-<text class="note" x="548" y="812">Approved by Architect</text>
+<text class="note" x="548" y="812">Approved by Product Owner</text>
+<rect class="card cool" height="66" rx="10" width="216" x="280" y="852"></rect>
+<rect class="pill" height="16" rx="8" width="59" x="292" y="844"></rect>
+<text class="pill-t" text-anchor="middle" x="321.5" y="855">STEP 09</text>
+<text class="ttl" x="294" y="882">Finalize Governance</text>
+<text class="mono" x="294" y="897">09-finalize</text>
+<text class="note" x="294" y="911">CONTRIBUTING.md</text>
+<rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="844"></rect>
+<text class="tg-t a" text-anchor="middle" x="455.5" y="855">Available</text>
+<rect class="dash" height="50" rx="10" width="216" x="534" y="860"></rect>
+<text class="ttl" x="548" y="881">PR → main</text>
+<text class="note" x="548" y="898">Approved by Architect</text>
 </svg></figure>
 <div class="keep k3"><h3 class="pg" id="cuevik-ship">cuevik-ship</h3><p>You approve and merge, Claude runs each command in its own session, and GitHub holds the issue, branches and PRs. Every command is <code>/cuevik-ship:&lt;name&gt;</code>.</p></div>
 
@@ -588,7 +606,7 @@ h2.pb{break-before:page;margin-top:0}
 <text class="note" x="548" y="210">docs/update/&lt;doc&gt;</text>
 </svg></figure>
 <hr/>
-<div class="keep k2"><h2 id="5-cuevik-start-set-up-a-project"><span class="num">5</span>cuevik-start: set up a project</h2><p>Nine steps, run in order, one session and one PR each. Each step reads the documents before it from <code>main</code>, so the order matters. Every command is <code>/cuevik-start:&lt;name&gt;</code> and runs on branch <code>init/&lt;name&gt;</code>. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, <code>express</code> does the work of four of them in one session and one PR; it is described last in this section.</p></div>
+<div class="keep k2"><h2 id="5-cuevik-start-set-up-a-project"><span class="num">5</span>cuevik-start: set up a project</h2><p>Ten steps, run in order, one session and one PR each. Each step reads the documents before it from <code>main</code>, so the order matters. Every command is <code>/cuevik-start:&lt;name&gt;</code> and runs on branch <code>init/&lt;name&gt;</code>. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, <code>express</code> does the work of four of them in one session and one PR; it is described last in this section.</p></div>
 
 <p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> records whether the project has a board and, if so, its ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p>
 <div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
@@ -600,7 +618,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>Remote changes.</strong> Approved together with one yes: create the board and link it to the repo (when you chose a board), turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then, when there is a board, it checks its seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including <code>Auto-add to project</code> with this repo in its filter. You may skip them; the board is then recorded as <code>partial</code>.</li>
 <li><strong>Initiation issues.</strong> An <code>Epic: Project Initiation</code> epic and one story per later step, such as <code>INIT-01: Product Concept</code>, labelled <code>initiation</code>, assigned to you, linked as sub-issues of the epic. With a board they are also added to it, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields; on a board with no sprints yet, <code>Sprint-00</code> is created and they all go in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the <code>epic</code> or <code>story</code> labels, so the real backlog never picks them up.</li>
 <li><strong>The PR.</strong> Opens <code>init/00-bootstrap</code> with <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code> and <code>.markdownlint.json</code>. An existing <code>.markdownlint.json</code> is kept. An existing <code>CONTRIBUTING.md</code> keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, <code>chore: initialize repository</code>, on <code>main</code> and pushes it. That is the only commit bootstrap makes on <code>main</code>.</li>
-<li><strong>The governance text</strong> covers the review flow, Conventional Commits and the rule never to push to <code>main</code>. It also carries the initiation-only branching table and the self-review checklist, which <code>08-finalize</code> removes.</li>
+<li><strong>The governance text</strong> covers the review flow, Conventional Commits and the rule never to push to <code>main</code>. It also carries the initiation-only branching table and the self-review checklist, which <code>09-finalize</code> removes.</li>
 <li><strong>It stops, and says what to fix,</strong> if <code>gh</code> is not signed in, the default branch is not <code>main</code>, you lack admin rights on the repo, the repo is already bootstrapped, or a <code>00-bootstrap</code> PR is already open.</li>
 </ul>
 <p>Review the PR:</p>
@@ -632,22 +650,26 @@ h2.pb{break-before:page;margin-top:0}
 
 <p>Designs the system from the requirements. Claude works through it with you as the Architect, one section at a time: it asks first, may offer two or three labelled possible designs with their trade-offs to pick from, attacks each draft (a failing component, load at the PRD's targets, a breach), and only then asks you to approve. Every number comes from the PRD or from you, and product names go to the next step. The result is <code>docs/ARCHITECTURE.md</code> with eight sections: System Architecture, Data Design, Data Flow &amp; Interactions, Key Design Decisions, Implementation Conventions, Integration Points, Security Posture &amp; Data Classification, Non-Functional Approach.</p>
 <p>Every significant decision is written as <strong>Context, Decision, Alternatives rejected, Trade-offs</strong>. The Product Owner co-reviews the scope only. If the architecture contradicts or widens the scope in the PRD, they block the PR with a written scope conflict. Resolving it takes a PRD update through its own PR first, then the architecture is revised.</p>
-<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-ai-tool-guide</code></p></div>
+<div class="keep k3"><h3 id="04-tech-stack">04-tech-stack</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>  ·  <strong>Writes:</strong> <code>docs/TECH-STACK.md</code>, <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:05-test-strategy</code></p></div>
 
 <p>Locks the approved technologies and the trade-offs behind them. Claude starts from the products named during the architecture step, offers labelled candidates with their trade-offs for each open choice, and takes every version from you or from the technology's own release page, never from memory. The result is <code>docs/TECH-STACK.md</code> with six sections: Languages &amp; Frameworks, Datastores, Cloud &amp; Infrastructure Services, Key Libraries / Tools, Selection Trade-offs, Versions &amp; Constraints.</p>
 <p>It then appends a tooling layer (versions; install, run, test, lint and build commands; hooks) to the end of <code>CONTRIBUTING.md</code> between <code>TOOLING-LAYER</code> markers, writing <code>Not set yet</code> for any command not known before the code exists, using only technologies approved in <code>TECH-STACK.md</code> and leaving the governance layer from <code>00-bootstrap</code> untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.</p>
-<div class="keep k3"><h3 id="05-ai-tool-guide">05-ai-tool-guide</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>, <code>.claude/settings.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-readme</code></p></div>
+<div class="keep k3"><h3 id="05-test-strategy">05-test-strategy</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect, Product Owner  ·  <strong>Reads:</strong> <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>docs/TEST-STRATEGY.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:06-ai-tool-guide</code></p></div>
+
+<p>Sets how the product will be verified. Claude reads the PRD, the architecture and the tech stack, summarizes what needs verifying, and interviews the Architect one section at a time. The result is <code>docs/TEST-STRATEGY.md</code> with six sections: Test Levels, Coverage Target, Test Environment &amp; Data, NFR Verification, Quality Ownership, Defect Management.</p>
+<p>Every number, the coverage target above all, comes from you: with no coverage target the step cannot finish. NFR pass thresholds are copied from the PRD, never invented, and no test tool is named that <code>TECH-STACK.md</code> does not list. The Architect owns it and the Product Owner co-reviews, checking that every Must requirement maps to a test level. The AI tool guide, the README and the backlog are built after it and can refer to it.</p>
+<div class="keep k3"><h3 id="06-ai-tool-guide">06-ai-tool-guide</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>  ·  <strong>Writes:</strong> <code>docs/AI-TOOL-GUIDE.md</code>, <code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>, <code>.claude/settings.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-readme</code></p></div>
 
 <p>Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes <code>docs/AI-TOOL-GUIDE.md</code> and only the adapter files for those tools (<code>CLAUDE.md</code>, <code>.github/copilot-instructions.md</code>). The shared rules live in the guide; each adapter points to it and holds only tool-specific settings. If the team uses Claude Code, it also writes <code>.claude/settings.json</code> with the plugins you pick for the team (for example <code>superpowers</code> and <code>code-review</code>), so everyone who opens the repo is offered the same ones. Tools that are not plugins, such as graphify, are listed in the guide as a manual prerequisite.</p>
 <p>The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.</p>
-<div class="keep k3"><h3 id="06-readme">06-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:07-backlog</code></p></div>
+<div class="keep k3"><h3 id="07-readme">07-readme</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>  ·  <strong>Writes:</strong> <code>README.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-backlog</code></p></div>
 
 <p>Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install &amp; Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), Environment Setup is written as the intended setup and marked pending and unverified until the app is scaffolded, while prerequisites, install and test show pointers to <code>TECH-STACK.md</code> and <code>CONTRIBUTING.md</code> instead of copied versions or commands. You confirm which mode applies.</p>
-<div class="keep k3"><h3 id="07-backlog">07-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:08-finalize</code></p></div>
+<div class="keep k3"><h3 id="08-backlog">08-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Product Owner  ·  <strong>Reviewers:</strong> Product Owner  ·  <strong>Reads:</strong> <code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code>  ·  <strong>Writes:</strong> <code>docs/BACKLOG.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:09-finalize</code></p></div>
 
 <p>Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled <code>PRD-NNN: &lt;Title&gt; (&lt;Priority&gt;)</code>), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled <code>epic</code>, <code>story</code> and <code>priority:*</code>, links each story to its epic as a sub-issue, adds them to the board when the repo has one, and records the initial backlog in <code>docs/BACKLOG.md</code>: Summary, Epics, Stories, Out-of-Scope Notes.</p>
 <p>After setup, GitHub is the backlog. <code>docs/BACKLOG.md</code> is a frozen point-in-time snapshot and the issues are authoritative. Issues are always filed. If the repo has no board you can pause to set one up (a PR on <code>.cuevik/config.json</code>) and re-run, which reuses the issues already filed, or continue without one.</p>
-<div class="keep k3"><h3 id="08-finalize">08-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
+<div class="keep k3"><h3 id="09-finalize">09-finalize</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> <code>docs/TECH-STACK.md</code>  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>  ·  <strong>Then:</strong> <code>/cuevik-start:cleanup</code></p></div>
 
 <p>Ends initiation. It reads <code>CONTRIBUTING.md</code> from <code>main</code>, removes the fenced <code>INITIATION-ONLY</code> block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with <code>/cuevik-docs:update</code>. If the markers are missing it stops rather than guess which lines to delete. Its PR also closes the initiation epic.</p>
 <p>Before the PR opens it runs <code>cuevik-docs:audit</code> read-only over the document set and puts the findings in the PR body. This is advice, never a gate; fix findings afterwards with <code>/cuevik-docs:update</code>.</p>
@@ -655,22 +677,26 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k3"><h3 id="status">status</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Nothing (report only)  ·  <strong>You:</strong> Read the report</p></div>
 
 <p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.</p>
-<p>It starts with a progress line, one cell per step, such as <code>██░░░░░░░ 2/9 · next: 02-product-requirements</code>, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a <code>Board:</code> line saying so and how to add or repair it. For a repo set up with <code>express</code>, the four steps it covered show as merged by the Express PR.</p>
+<p>It starts with a progress line, one cell per step, such as <code>██░░░░░░░░ 2/10 · next: 02-product-requirements</code>, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a <code>Board:</code> line saying so and how to add or repair it. For a repo set up with <code>express</code>, the four steps it covered show as merged by the Express PR.</p>
 <div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
 
-<p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once <code>08-finalize</code> is merged it also records the End date of the last story and of the initiation epic on the board, if the repo has one. Run it any time, typically after <code>08-finalize</code> merges. GitHub has already deleted the remote branches.</p>
+<p>Deletes the local <code>init/*</code> branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once <code>09-finalize</code> is merged it also records the End date of the last story and of the initiation epic on the board, if the repo has one. Run it any time, typically after <code>09-finalize</code> merges. GitHub has already deleted the remote branches.</p>
 <div class="keep k3"><h3 id="express">express</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>init/express</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> Governance files, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>, issues  ·  <strong>You:</strong> Interviews, approve, review and merge</p></div>
 
-<p>The lean path for an MVP or spike. Run it instead of the nine steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch <code>init/express</code>, it does the work of <code>00</code>, <code>01</code>, <code>02</code> and <code>07</code>:</p>
+<p>The lean path for an MVP or spike. Run it instead of the ten steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch <code>init/express</code>, it does the work of <code>00</code>, <code>01</code>, <code>02</code> and <code>08</code>:</p>
 <ul>
 <li><strong>A pitch, if you have one.</strong> It asks first for an optional one-paragraph pitch. With one, <code>01</code> drafts a strawman in which every statement traces to the pitch; without, it interviews you as usual.</li>
-<li><strong>Bootstrap without a board.</strong> The repo, <code>CONTRIBUTING.md</code> (the permanent rules plus a short initiation block that holds only the self-review checklist), <code>.cuevik/config.json</code> (<code>boardState</code> <code>none</code>), the default <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>, and the initiation issues: an epic and one story per step <code>01</code> to <code>08</code>.</li>
+<li><strong>Bootstrap without a board.</strong> The repo, <code>CONTRIBUTING.md</code> (the permanent rules plus a short initiation block that holds only the self-review checklist), <code>.cuevik/config.json</code> (<code>boardState</code> <code>none</code>), the default <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>, and the initiation issues: an epic and one story per step <code>01</code> to <code>09</code>.</li>
 <li><strong>A lean <code>PRODUCT.md</code> and <code>PRD.md</code>.</strong> <code>PRODUCT.md</code> fills Overview, Target Users, Features, Scope and Success Criteria. <code>PRD.md</code> fills Overview, Features / Capabilities, Functional Requirements, Acceptance Criteria and Out of Scope. Every other heading stays, with one line saying it is not covered in the Express lane. The writing rules are the same as in the full steps.</li>
-<li><strong>The backlog.</strong> <code>07</code> files the epics and stories and writes <code>docs/BACKLOG.md</code>, with no question about a board.</li>
-<li><strong>What it skips.</strong> <code>03</code> to <code>06</code> and <code>08</code>: no <code>ARCHITECTURE.md</code>, <code>TECH-STACK.md</code>, <code>AI-TOOL-GUIDE.md</code> or <code>README.md</code>.</li>
+<li><strong>The backlog.</strong> <code>08</code> files the epics and stories and writes <code>docs/BACKLOG.md</code>, with no question about a board.</li>
+<li><strong>What it skips.</strong> <code>03</code> to <code>07</code> and <code>09</code>: no <code>ARCHITECTURE.md</code>, <code>TECH-STACK.md</code>, <code>TEST-STRATEGY.md</code>, <code>AI-TOOL-GUIDE.md</code> or <code>README.md</code>.</li>
 </ul>
-<p>The PR has four commits (bootstrap, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for <code>01</code>, <code>02</code> and <code>07</code>; the epic and the other stories stay open.</p>
+<p>The PR has four commits (bootstrap, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for <code>01</code>, <code>02</code> and <code>08</code>; the epic and the other stories stay open.</p>
 <p>To graduate later, run <code>/cuevik-start:03-architecture</code> and the steps after it as usual. The merged Express PR counts as the PR of the steps it covered, and <code>/cuevik-docs:update</code> deepens the lean documents.</p>
+<div class="keep k3"><h3 id="migrate">migrate</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>init/migrate</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The two <code>.cuevik/</code> files  ·  <strong>You:</strong> Approve, review and merge</p></div>
+
+<p>Brings an older repo up to date. Run it when a step or <code>cuevik-ship</code> stops with <code>.cuevik/config.json is schemaVersion &lt;n&gt;</code>. It reads <code>.cuevik/config.json</code> and <code>.cuevik/lineage.json</code> from <code>main</code> and, after showing the exact edits and getting your yes, opens one PR from <code>init/migrate</code> that sets the config to version 4 (adding <code>boardState</code> to a version 2 config), renames the stories' keys to the current step ids, renames the step ids in the lineage, and adds the <code>docs/TEST-STRATEGY.md</code> entry with its upstream links.</p>
+<p>Nothing else changes: no issue is filed, <code>CONTRIBUTING.md</code> is not touched (its initiation-only table keeps the old ids until <code>09-finalize</code>), and it never merges. A repo that is already current gets <code>Nothing to migrate.</code> Merge the PR, then re-run the step you wanted. A migrated repo has no initiation story for <code>05-test-strategy</code>, so <code>status</code> lists that step as not started until you run it.</p>
 <p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
 <div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads <code>.cuevik/config.json</code>, including the board's ids when the repo has a board. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 8.</p></div>
@@ -707,7 +733,7 @@ h2.pb{break-before:page;margin-top:0}
 </ul>
 <div class="keep k3"><h3 id="03-create-backlog">03-create-backlog</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> GitHub issues: epic and stories  ·  <strong>You:</strong> Approve the list</p></div>
 
-<p>Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write <code>docs/BACKLOG.md</code>, which is what <code>/cuevik-start:07-backlog</code> does once at setup.</p>
+<p>Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write <code>docs/BACKLOG.md</code>, which is what <code>/cuevik-start:08-backlog</code> does once at setup.</p>
 <ul>
 <li><strong>The idea becomes a story.</strong> Its title becomes <code>PRD-NNN: &lt;Title&gt; (&lt;Priority&gt;)</code> and the <code>idea</code> label is removed. Epics and stories share the labels <code>epic</code>, <code>story</code> and <code>priority:*</code> with <code>cuevik-start</code>.</li>
 <li><strong>Finding the epic.</strong> In order: the parent of existing stories in the same PRD section, then an <code>epic</code> issue citing that section, then <code>docs/BACKLOG.md</code>, then a new epic. If several candidates fit it asks, and it never moves a story to another parent without your yes.</li>
@@ -764,7 +790,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
   or only a review, with the reason.</li>
 </ul>
 <p>What a change to each document flags, from the default lineage:</p>
-<div class="tbl short"><table>
+<div class="tbl"><table>
 <thead>
 <tr>
 <th>When you change</th>
@@ -778,19 +804,23 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 <tr>
 <td><code>docs/PRODUCT.md</code></td>
-<td><code>CONTRIBUTING.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 <tr>
 <td class="nw"><code>docs/PRD.md</code></td>
-<td><code>CONTRIBUTING.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 <tr>
 <td><code>docs/ARCHITECTURE.md</code></td>
-<td><code>CONTRIBUTING.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 <tr>
 <td><code>docs/TECH-STACK.md</code></td>
-<td><code>CONTRIBUTING.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>CONTRIBUTING.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+</tr>
+<tr>
+<td><code>docs/TEST-STRATEGY.md</code></td>
+<td><code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 <tr>
 <td><code>docs/AI-TOOL-GUIDE.md</code></td>
@@ -850,25 +880,31 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
-<td><code>/cuevik-start:05-ai-tool-guide</code></td>
+<td><code>/cuevik-start:05-test-strategy</code></td>
+<td>Test Strategy</td>
+<td>Sets the test levels, coverage target, environments, NFR verification, quality owners and defect handling.</td>
+<td class="nw"><span class="tag available">Available</span></td>
+</tr>
+<tr>
+<td><code>/cuevik-start:06-ai-tool-guide</code></td>
 <td>AI Tool Guide</td>
 <td>Sets the rules for AI coding assistants and generates the files each one reads.</td>
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
-<td><code>/cuevik-start:06-readme</code></td>
+<td><code>/cuevik-start:07-readme</code></td>
 <td class="nw">README</td>
 <td>Replaces the boilerplate README with the project's real entry point.</td>
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
-<td><code>/cuevik-start:07-backlog</code></td>
+<td><code>/cuevik-start:08-backlog</code></td>
 <td>Initial Backlog</td>
 <td>Derives epics and stories from the product docs and files them as GitHub issues.</td>
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
-<td><code>/cuevik-start:08-finalize</code></td>
+<td><code>/cuevik-start:09-finalize</code></td>
 <td>Finalize Governance</td>
 <td>Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones.</td>
 <td class="nw"><span class="tag available">Available</span></td>
@@ -889,6 +925,12 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>/cuevik-start:express</code></td>
 <td class="nw">Express</td>
 <td>The lean path for an MVP or spike: governance, a lean product concept and PRD, and the backlog, in one session and one PR.</td>
+<td class="nw"><span class="tag available">Available</span></td>
+</tr>
+<tr>
+<td><code>/cuevik-start:migrate</code></td>
+<td class="nw">Migrate</td>
+<td>Brings an older repo's <code>.cuevik/</code> files up to the current versions and step ids in one reviewed PR.</td>
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
 <tr>
@@ -953,7 +995,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 </tbody>
 </table></div>
-<div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The nine numbered <code>cuevik-start</code> steps are not repeated here: see section 5. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
+<div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The ten numbered <code>cuevik-start</code> steps are not repeated here: see section 5. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
 
 <div class="tbl"><table>
 <thead>
@@ -986,6 +1028,13 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td class="nw"><code>main</code></td>
 <td>Governance files, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>, issues</td>
 <td>Interviews, approve, review and merge</td>
+</tr>
+<tr>
+<td><code>/cuevik-start:migrate</code></td>
+<td class="nw"><code>init/migrate</code></td>
+<td class="nw"><code>main</code></td>
+<td>The two <code>.cuevik/</code> files</td>
+<td>Approve, review and merge</td>
 </tr>
 <tr>
 <td><code class="wrap">/<wbr/>cuevik-ship:01-brainstorm</code></td>
@@ -1062,7 +1111,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <hr/>
 <div class="keep k2"><h2 id="9-who-owns-which-document"><span class="num">9</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
 
-<div class="tbl short"><table>
+<div class="tbl"><table>
 <thead>
 <tr>
 <th>Document</th>
@@ -1103,22 +1152,28 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code></td>
 </tr>
 <tr>
+<td><code>docs/TEST-STRATEGY.md</code></td>
+<td class="nw">Architect</td>
+<td>Architect, Product Owner</td>
+<td><code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code></td>
+</tr>
+<tr>
 <td><code>docs/AI-TOOL-GUIDE.md</code></td>
 <td class="nw">Architect</td>
 <td class="nw">Architect</td>
-<td><code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code></td>
+<td><code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code></td>
 </tr>
 <tr>
 <td class="nw"><code>README.md</code></td>
 <td class="nw">Architect</td>
 <td class="nw">Architect</td>
-<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code></td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code></td>
 </tr>
 <tr>
 <td><code>docs/BACKLOG.md</code></td>
 <td>Product Owner</td>
 <td>Product Owner</td>
-<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
+<td><code>docs/PRODUCT.md</code>, <code>docs/PRD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/TECH-STACK.md</code>, <code>docs/TEST-STRATEGY.md</code>, <code>docs/AI-TOOL-GUIDE.md</code>, <code>README.md</code></td>
 </tr>
 </tbody>
 </table></div>
@@ -1194,11 +1249,11 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>.cuevik/</code> is already on <code>main</code>. To add or repair the board, open a PR that edits <code>.cuevik/config.json</code>: add <code>project</code> and set <code>boardState</code> (and <code>missing</code> for a partial board).</td>
 </tr>
 <tr>
-<td><code>.cuevik/config.json is schemaVersion 2</code></td>
-<td>The config predates the optional board. Open a PR that sets <code>"schemaVersion": 3</code> and adds <code>"boardState": "configured"</code>, leaving the rest as it is. <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop until it is merged.</td>
+<td><code>.cuevik/config.json is schemaVersion &lt;n&gt;</code></td>
+<td>The config is older than the current contract (before the optional board, or before the steps were renumbered). Run <code>/cuevik-start:migrate</code> and merge its PR. <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop until then.</td>
 </tr>
 <tr>
-<td>A <code>00-bootstrap</code> PR, or an Express PR, is already open</td>
+<td>A <code>00-bootstrap</code>, Express or migration PR is already open</td>
 <td>Merge it, or close it and delete its branch, then re-run.</td>
 </tr>
 <tr>
@@ -1224,13 +1279,14 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <ul>
 <li><strong>GitHub only,</strong> and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.</li>
 <li><strong>Approval is process-enforced.</strong> GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.</li>
-<li><strong>Built, not yet run live:</strong> <code>cuevik-start</code> steps <code>03</code> to <code>08</code>, <code>cleanup</code> and <code>express</code>, and every <code>cuevik-ship</code> and <code>cuevik-docs</code> command. Only <code>00</code> to <code>02</code> and <code>status</code> have been run end to end on a real repo, so expect fixes after first use.</li>
+<li><strong>Built, not yet run live:</strong> <code>cuevik-start</code> steps <code>03</code> to <code>09</code>, <code>cleanup</code>, <code>express</code> and <code>migrate</code>, and every <code>cuevik-ship</code> and <code>cuevik-docs</code> command. Only <code>00</code> to <code>02</code> and <code>status</code> have been run end to end on a real repo, so expect fixes after first use.</li>
 <li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying another user's template board.</li>
 <li><strong>Board copies:</strong> bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).</li>
 <li><strong>Not yet verified:</strong> creating sub-issue and blocked-by links from a cloud session, which <code>/cuevik-ship:03-create-backlog</code> relies on.</li>
 <li><strong>Plugin settings:</strong> in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. <code>cuevik-ship</code>'s worktree-folder setting uses the same mechanism and is untested.</li>
 <li><strong>Labels, not issue types.</strong> GitHub issue types are not used, because user-owned repos do not have them.</li>
 <li><strong><code>docs/BACKLOG.md</code> is a snapshot.</strong> After setup, GitHub is the backlog.</li>
+<li><strong>Older repos need <code>/cuevik-start:migrate</code>.</strong> A repo set up before the optional board or before the test strategy step was added has the old config version and step ids; <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.</li>
 </ul>
 <hr/>
 <div class="keep k2"><h2 id="version-history">Version history</h2><div class="tbl short"><table>

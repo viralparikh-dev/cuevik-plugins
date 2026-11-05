@@ -1,7 +1,7 @@
 # Board adapter
 
 Every GitHub Projects (v2) call in cuevik-start is in this file. `00-bootstrap`, the runner (§7)
-and `07-backlog` call an operation by its name and run no `gh project` or Projects GraphQL command
+and `08-backlog` call an operation by its name and run no `gh project` or Projects GraphQL command
 of their own. The board is optional (`.cuevik/config.json` `boardState`), and a board failure must
 never stop initiation: this file says how each failure is classified, and the caller decides what
 that means.
@@ -26,7 +26,7 @@ What a caller does with a result:
   them into `.cuevik/config.json` as `boardState` and `missing` (bootstrap §F) and into the PR body.
   It never stops on a board result. A STOP in bootstrap is for the repo, `CONTRIBUTING.md`,
   `.cuevik/`, the initiation issues, or the operator's own choice.
-- **A step** (runner §7, `07-backlog`) reports a `degraded` or `unavailable` result in its PR body
+- **A step** (runner §7, `08-backlog`) reports a `degraded` or `unavailable` result in its PR body
   and carries on. Never create fields or options.
 - **`boardState: none`:** a caller makes no call at all and says nothing.
 
@@ -34,11 +34,11 @@ What a caller does with a result:
 
 | Operation | Used by |
 | --- | --- |
-| `board.read` | bootstrap §D and §E.5; runner §7; `07-backlog` |
+| `board.read` | bootstrap §D and §E.5; runner §7; `08-backlog` |
 | `board.create` | bootstrap §E.1 |
 | `board.link` | bootstrap §E.2 |
-| `board.addItem` | bootstrap §E.4; `07-backlog` |
-| `board.setField` | bootstrap §E.4; runner §7; `07-backlog` |
+| `board.addItem` | bootstrap §E.4; `08-backlog` |
+| `board.setField` | bootstrap §E.4; runner §7; `08-backlog` |
 | `board.workflows` | bootstrap §E.5 |
 
 ### board.read

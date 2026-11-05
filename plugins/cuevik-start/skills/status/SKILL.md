@@ -1,6 +1,6 @@
 ---
 name: status
-description: Shows where project initiation stands. A progress line, then for each cuevik-start step (00–08) whether the step's init/<id> PR is merged, open, only a branch, or not started, read from git and GitHub, with the initiation issues on the board cross-checked, then the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
+description: Shows where project initiation stands. A progress line, then for each cuevik-start step (00–09) whether the step's init/<id> PR is merged, open, only a branch, or not started, read from git and GitHub, with the initiation issues on the board cross-checked, then the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
 disable-model-invocation: true
 ---
 
@@ -49,15 +49,18 @@ Read the branches once:
 
 Then, for each step:
 
-1. **PR.** `gh pr list --head <branch> --base main --state all --json number,state,title,url`.
-   This is the same query runner §1 check 4 uses to gate the next step. Take the newest `MERGED`
-   PR if there is one, else the `OPEN` one, else the newest `CLOSED` one, else none.
+1. **PR.** `gh pr list --head <branch> --base main --state all --json number,state,title,url`,
+   for the step's `branch` and for each `init/<alias>` of its `aliases`: a repo initiated before a
+   renumbering has the merged PR on the old branch. This is the same lookup runner §1 check 4 uses
+   to gate the next step. Take the newest `MERGED` PR among them if there is one, else the `OPEN`
+   one, else the newest `CLOSED` one, else none. The branch statuses below (`⊙ branch`, branch
+   left) count an alias branch too.
 2. **File check** on `<sha>`. `git cat-file -e <sha>:<path>` exit 0 means the file is there.
 
    | Step | Passes when |
    | --- | --- |
    | `bootstrap: true` | `.cuevik/config.json` and `.cuevik/lineage.json` are both there (runner §1 check 3) |
-   | `08-finalize` | `CONTRIBUTING.md` is there and `git show <sha>:CONTRIBUTING.md` has no `INITIATION-ONLY` text |
+   | `09-finalize` | `CONTRIBUTING.md` is there and `git show <sha>:CONTRIBUTING.md` has no `INITIATION-ONLY` text |
    | any other `replacesExisting: true` step | no file check: its output is on `main` before it runs |
    | every other step | the primary output is there |
 
@@ -80,7 +83,7 @@ Then, for each step:
    one, else the newest `CLOSED` one. For each step in `covers` whose own PR query (1) found
    nothing, that Express PR is the step's PR, and Detail starts `express PR #n`. Everything else
    in 1–3 applies as written. The rows of the steps not in `covers` are not affected: a repo run
-   through the lane shows `00`, `01`, `02`, `07` as `✓ merged` and the rest as `— not started`.
+   through the lane shows `00`, `01`, `02`, `08` as `✓ merged` and the rest as `— not started`.
 
 ## 3. Initiation issues
 
@@ -89,9 +92,8 @@ stays the source of truth: this section never changes a row's Status or the Next
 `**Check:**` lines where GitHub's issues disagree with the rows, and one `**Board:**` line (step 5).
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
-   silently. `schemaVersion` 2: one Check line, `.cuevik/config.json is schemaVersion 2. Open a PR
-   on it that sets "schemaVersion": 3 and adds "boardState": "configured" (leave project and
-   initiation as they are), merge it, then re-run.`, then go on. No `initiation` key: one Check
+   silently. `schemaVersion` below 4: one Check line, `.cuevik/config.json is schemaVersion <n>. Run
+   /cuevik-start:migrate, merge its PR, then re-run.`, then go on. No `initiation` key: one Check
    line, `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`,
    then skip the rest.
 2. `gh issue list --label initiation --state all --limit 100 --json number,state`, once.
@@ -104,7 +106,8 @@ stays the source of truth: this section never changes a row's Status or the Next
    | `#n` open, row `✓ merged` | `story #n (<id>) is still open, though PR #m merged` |
 
    A step without `bootstrap: true` that has no entry in `initiation.stories`: `no story for <id>
-   in .cuevik/config.json`.
+   in .cuevik/config.json`, unless its row is `— not started` (a repo migrated after the step was
+   added has no story for it).
 4. The epic `initiation.epic`: not in the list, closed while any row is not `✓ merged`, or open
    while every row is `✓ merged` — one Check line saying which.
 5. The board, from `boardState`. `none` is a valid state, not a mismatch, so it is a `**Board:**`
@@ -121,7 +124,7 @@ stays the source of truth: this section never changes a row's Status or the Next
 ```markdown
 ## Initiation status — <owner>/<repo> (origin/main @ <short sha>)
 
-`█░░░░░░░░ 1/9 · next: 01-product-concept`
+`█░░░░░░░░░ 1/10 · next: 01-product-concept`
 
 | Step | Output | Status | Detail |
 | --- | --- | --- | --- |
@@ -149,7 +152,7 @@ disagreement from §3. Then print the `**Board:**` line from §3 step 5, if ther
   the last step: `merge PR #n (<id>); initiation is then complete.`
 - `⊙ branch`: `/cuevik-start:<id> in a new session. Branch <branch> exists; the runner asks
   whether to reuse or delete it.`
-- `— not started`: `/cuevik-start:<id> in a new session.` For `08-finalize`, add `It strips the
+- `— not started`: `/cuevik-start:<id> in a new session.` For `09-finalize`, add `It strips the
   INITIATION-ONLY block from CONTRIBUTING.md; the last step.` When the row is `03-architecture`
   and the Express lane has a merged PR (§2): `Express lane complete (express PR #n). To graduate,
   /cuevik-start:03-architecture in a new session; optional.`

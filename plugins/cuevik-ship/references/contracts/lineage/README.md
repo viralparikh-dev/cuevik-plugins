@@ -18,10 +18,11 @@ From the default lineage:
 
 | Changed | Downstream (derived) |
 |---|---|
-| `docs/PRODUCT.md` | PRD, ARCHITECTURE, TECH-STACK, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
-| `docs/PRD.md` | ARCHITECTURE, TECH-STACK, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
-| `docs/ARCHITECTURE.md` | TECH-STACK, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
-| `docs/TECH-STACK.md` | AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
+| `docs/PRODUCT.md` | PRD, ARCHITECTURE, TECH-STACK, TEST-STRATEGY, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
+| `docs/PRD.md` | ARCHITECTURE, TECH-STACK, TEST-STRATEGY, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
+| `docs/ARCHITECTURE.md` | TECH-STACK, TEST-STRATEGY, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
+| `docs/TECH-STACK.md` | TEST-STRATEGY, AI-TOOL-GUIDE, README, BACKLOG, CONTRIBUTING |
+| `docs/TEST-STRATEGY.md` | AI-TOOL-GUIDE, README, BACKLOG |
 | `docs/AI-TOOL-GUIDE.md` | README, BACKLOG |
 | `README.md` | BACKLOG |
 | `docs/BACKLOG.md`, `CONTRIBUTING.md` | none |
@@ -29,14 +30,16 @@ From the default lineage:
 ## Choices in the default
 
 - Upstream links are broad on purpose: a PRD or ARCHITECTURE change also flags README.
-- `CONTRIBUTING.md` is written by three steps (`00` governance, `04` tooling layer, `08` finalize).
+- `CONTRIBUTING.md` is written by three steps (`00` governance, `04` tooling layer, `09` finalize).
   Its upstream is `docs/TECH-STACK.md`, because the tooling layer is written from it. The PRD and
-  ARCHITECTURE are TECH-STACK's inputs, not CONTRIBUTING's, and `08-finalize` needs BACKLOG merged
+  ARCHITECTURE are TECH-STACK's inputs, not CONTRIBUTING's, and `09-finalize` needs BACKLOG merged
   only as a run gate, not as a content source.
+- `docs/TEST-STRATEGY.md` feeds the AI tool guide, README and BACKLOG, following the same pattern:
+  each later document is downstream of the earlier ones. README only links to it.
 - `docs/BACKLOG.md` is `frozen`: GitHub is the backlog after initiation. Consumers skip it
   when flagging downstream updates.
 - Tool adapters (`CLAUDE.md`, `.github/copilot-instructions.md`) are not listed. They are
-  conditional outputs of `05-ai-tool-guide`, not source-of-truth documents.
+  conditional outputs of `06-ai-tool-guide`, not source-of-truth documents.
 - `owner` and `reviewers` are roles, not GitHub handles.
 
 ## Consumers

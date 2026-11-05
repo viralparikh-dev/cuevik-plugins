@@ -127,10 +127,10 @@ After `TECH-STACK.md` is approved, run the `steps.yml` special action: append th
   operator does not know yet (no code exists at initiation) is written as
   `Not set yet: <what is missing>`, never guessed, and listed in the PR body under
   **Commands not set yet**. A hook not wanted: `None`.
-- These commands are not run in this step: the repo has no code yet. `06-readme` reuses them.
+- These commands are not run in this step: the repo has no code yet. `07-readme` reuses them.
 - Show the diff of `CONTRIBUTING.md` and ask `Approve the tooling layer?` (`Yes` / `No`).
 
-The `TOOLING-LAYER` markers let `08-finalize` and `/cuevik-docs:update` find the layer; never
+The `TOOLING-LAYER` markers let `09-finalize` and `/cuevik-docs:update` find the layer; never
 remove them.
 
 ## PR body

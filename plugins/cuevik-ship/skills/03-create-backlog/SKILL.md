@@ -32,7 +32,7 @@ Arguments: `$ARGUMENTS`
   not grouped by section, and a range silently includes or skips the wrong ones.
 - **Empty:** **STOP** and ask.
 
-## Conventions (shared with `/cuevik-start:07-backlog`)
+## Conventions (shared with `/cuevik-start:08-backlog`)
 
 - Labels only: `epic`; `story` plus one of `priority:must`, `priority:should`, `priority:could`.
   Never on an `initiation` issue, and `initiation` issues are never candidates.
@@ -71,7 +71,7 @@ Arguments: `$ARGUMENTS`
 ## 2. Read
 
 For each ID, from `origin/main:docs/PRD.md`: its section, title, priority (NFRs have none: ask the
-operator, as `07-backlog` does), requirement text, §8 criterion, and prerequisites (the
+operator, as `08-backlog` does), requirement text, §8 criterion, and prerequisites (the
 ratification record's `prerequisites`, plus any named in its text or §10).
 
 Then GitHub (never `initiation` issues):
@@ -127,7 +127,7 @@ yes). Nothing is written before it.
 Epics first, then prerequisites, then the rest, so every link has a target:
 
 ```sh
-gh label create <name> --color <hex> --description "<text>"     # each missing label (07-backlog colours)
+gh label create <name> --color <hex> --description "<text>"     # each missing label (08-backlog colours)
 gh issue create --label epic --title "<title>" --body-file <tmp>/epic.md
 gh issue create --label story --label priority:<p> --title "<title>" --body-file <tmp>/story.md
 gh api repos/<owner>/<repo>/issues/<n> --jq .id                   # the REST id the links need

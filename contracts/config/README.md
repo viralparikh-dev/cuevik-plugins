@@ -56,7 +56,7 @@ order.
 `Epic: Project Initiation` epic and one `INIT-<NN>: <title>` story per step after `00-bootstrap`
 (its own story cannot exist before it runs), keyed by step id. The issues are filed whatever the
 `boardState`, and are added to the board when there is one. They carry only the `initiation` label,
-never `epic` or `story`, so `cuevik-start:07-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic
+never `epic` or `story`, so `cuevik-start:08-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic
 lookup never pick them up. The merged PR stays the source of truth for a step; the issues only
 mirror it.
 
@@ -71,15 +71,29 @@ gh project field-list <number> --owner <owner> --format json \
 Both need the `read:project` token scope. A recreated board gets new ids: re-read them, never guess.
 The `initiation` numbers are the ones `gh issue create` printed when `00-bootstrap` filed them.
 
-## Migrating from schemaVersion 2
+## Migrating from an older schemaVersion
 
-Version 3 added `boardState`. Version 2 configs are not accepted: `cuevik-start` and `cuevik-ship`
-stop on one and print this edit. Every version 2 config has a `project`, so the migration is the
-same for all of them. Open a PR on `.cuevik/config.json` that:
+Version 3 added `boardState`. Version 4 renamed four step ids, which are the keys of
+`initiation.stories`, when the test strategy step was inserted. Older configs are not accepted:
+`cuevik-start` and `cuevik-ship` stop on one and say so.
 
-1. sets `"schemaVersion": 3`;
-2. adds `"boardState": "configured"`;
-3. leaves `project` and `initiation` as they are.
+Bring a repo current with `/cuevik-start:migrate`. It opens one PR that edits both
+`.cuevik/config.json` and `.cuevik/lineage.json`. By hand, open a PR that does this to
+`.cuevik/config.json`:
+
+1. set `"schemaVersion": 4`;
+2. for a version 2 config, add `"boardState": "configured"` (every version 2 config has a
+   `project`, so the value is the same for all of them);
+3. rename these keys in `initiation.stories`: `05-ai-tool-guide` to `06-ai-tool-guide`,
+   `06-readme` to `07-readme`, `07-backlog` to `08-backlog`, `08-finalize` to `09-finalize`;
+4. leave everything else as it is;
+
+and this to `.cuevik/lineage.json`, in the same PR:
+
+1. rename the same four ids in every `steps` array;
+2. add the `docs/TEST-STRATEGY.md` entry from the default lineage (`lineage.example.json`);
+3. insert `docs/TEST-STRATEGY.md` right after `docs/TECH-STACK.md` in the `upstream` of
+   `docs/AI-TOOL-GUIDE.md`, `README.md` and `docs/BACKLOG.md`.
 
 Merge it, then re-run the step.
 

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "boardState": "configured",
   "project": {
     "owner": "example-org",
@@ -21,10 +21,11 @@
       "02-product-requirements": 4,
       "03-architecture": 5,
       "04-tech-stack": 6,
-      "05-ai-tool-guide": 7,
-      "06-readme": 8,
-      "07-backlog": 9,
-      "08-finalize": 10
+      "05-test-strategy": 7,
+      "06-ai-tool-guide": 8,
+      "07-readme": 9,
+      "08-backlog": 10,
+      "09-finalize": 11
     }
   }
 }

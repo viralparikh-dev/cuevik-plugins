@@ -10,7 +10,7 @@ Claude Code plugins that take a software project from an empty folder to deliver
 
 ### Cuevik Start
 
-Set a project up the governed way. Nine guided steps take an empty repository to an approved product concept, requirements, architecture, tech stack, AI coding rules, README and backlog.
+Set a project up the governed way. Ten guided steps take an empty repository to an approved product concept, requirements, architecture, tech stack, test strategy, AI coding rules, README and backlog.
 
 ### Cuevik Ship
 
@@ -50,13 +50,15 @@ Every command below is available. A command not yet built would be tagged **Plan
 | `/cuevik-start:02-product-requirements` | Turns the concept into testable requirements. | Available |
 | `/cuevik-start:03-architecture` | Designs how the system fits together, and why. | Available |
 | `/cuevik-start:04-tech-stack` | Chooses and locks the technologies to be used. | Available |
-| `/cuevik-start:05-ai-tool-guide` | Sets the rules AI coding assistants must follow. | Available |
-| `/cuevik-start:06-readme` | Writes the project's front page, ready to share. | Available |
-| `/cuevik-start:07-backlog` | Breaks the requirements into a prioritised backlog. | Available |
-| `/cuevik-start:08-finalize` | Hands over permanent rules and closes out setup. | Available |
+| `/cuevik-start:05-test-strategy` | Sets how the product will be tested and who owns quality. | Available |
+| `/cuevik-start:06-ai-tool-guide` | Sets the rules AI coding assistants must follow. | Available |
+| `/cuevik-start:07-readme` | Writes the project's front page, ready to share. | Available |
+| `/cuevik-start:08-backlog` | Breaks the requirements into a prioritised backlog. | Available |
+| `/cuevik-start:09-finalize` | Hands over permanent rules and closes out setup. | Available |
 | `/cuevik-start:status` | Shows how far project setup has got. | Available |
 | `/cuevik-start:cleanup` | Tidies up after setup is complete. | Available |
 | `/cuevik-start:express` | The lean path for an MVP or spike: working rules, a lean concept and requirements, and a backlog in one session. | Available |
+| `/cuevik-start:migrate` | Brings an older project up to date with the current plugin versions. | Available |
 
 ### Cuevik Ship
 

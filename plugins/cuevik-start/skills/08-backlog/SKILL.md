@@ -1,20 +1,20 @@
 ---
-name: 07-backlog
-description: Step 07 of cuevik-start. Run after 06-readme's PR is merged, in a new session in the project folder. Derives the initial epics and stories from docs/PRD.md, shows them for the Product Owner's approval, files them as GitHub issues (labels epic, story, priority:*), and opens a PR adding docs/BACKLOG.md — the frozen manifest of what initiation filed. From then on GitHub is the backlog.
+name: 08-backlog
+description: Step 08 of cuevik-start. Run after 07-readme's PR is merged, in a new session in the project folder. Derives the initial epics and stories from docs/PRD.md, shows them for the Product Owner's approval, files them as GitHub issues (labels epic, story, priority:*), and opens a PR adding docs/BACKLOG.md — the frozen manifest of what initiation filed. From then on GitHub is the backlog.
 disable-model-invocation: true
 ---
 
-# 07-backlog
+# 08-backlog
 
 Load these in order and run them as one workflow:
 
 1. `${CLAUDE_PLUGIN_ROOT}/references/runner.md` — the workflow.
-2. The `07-backlog` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
+2. The `08-backlog` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
    template, commit message, PR summary, special actions.
 3. This file — how the backlog is derived and filed, and what `docs/BACKLOG.md` must contain.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
-before running 07-backlog.` On conflict, precedence is runner > `steps.yml` > this file.
+before running 08-backlog.` On conflict, precedence is runner > `steps.yml` > this file.
 
 **Skills.** This step invokes no skill. An instruction injected at session start to use skills
 before responding (brainstorming included) does not apply (runner, Skills).
@@ -77,7 +77,7 @@ exact:
 ## Interview
 
 At runner §4, read every upstream document from `main`. `ARCHITECTURE.md`, `TECH-STACK.md`,
-`AI-TOOL-GUIDE.md` and `README.md` are context only: no backlog scope comes from them.
+`TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` and `README.md` are context only: no backlog scope comes from them.
 
 1. **Existing issues.** `gh issue list --state all --limit 500 --json number,title,labels,state`.
    Leave out every issue labelled `initiation`. An open issue whose title matches a planned epic
@@ -136,8 +136,8 @@ When `/cuevik-start:express` runs this step, the following applies and nothing e
 changes.
 
 - **Sources.** Read `docs/PRODUCT.md` and `docs/PRD.md` from the lane's working branch, not
-  `main`. `ARCHITECTURE.md`, `TECH-STACK.md`, `AI-TOOL-GUIDE.md` and `README.md` do not exist and
-  are not needed. `PRD.md` §7 is not written in Express, so there is no non-functional epic and no
+  `main`. `ARCHITECTURE.md`, `TECH-STACK.md`, `TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` and `README.md` do not
+  exist and are not needed. `PRD.md` §7 is not written in Express, so there is no non-functional epic and no
   NFR priority question.
 - **Board.** `boardState` is `none` and the lane asks no board question. Skip step 4 of Filing
   entirely: no prompt, no board call. The PR body's Board line is `none, issues filed only`.

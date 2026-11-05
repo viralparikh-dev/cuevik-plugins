@@ -12,7 +12,7 @@ Three plugins with one rule: every document and change reaches `main` through a 
 
 | Plugin | Use it to | Commands |
 |---|---|---|
-| `cuevik-start` | Start a project the governed way | `00`–`08`, `express`, `status`, `cleanup` |
+| `cuevik-start` | Start a project the governed way | `00`–`09`, `express`, `migrate`, `status`, `cleanup` |
 | `cuevik-ship` | Deliver one issue at a time, from idea to code PR | `01`–`07`, `cleanup` |
 | `cuevik-docs` | Audit and update source-of-truth documents | `audit`, `update` |
 
@@ -83,15 +83,17 @@ flowchart TB
     M1["01 · Product Concept<br/>01-product-concept"]
     M2["02 · Requirements<br/>02-product-requirements"]
     S3_1["Product Owner co-reviews"]
-    M7["07 · Initial Backlog<br/>07-backlog"]
+    S5_1["Product Owner co-reviews"]
+    M8["08 · Initial Backlog<br/>08-backlog"]
   end
   subgraph AR["Architect"]
     M0["00 · Bootstrap<br/>00-bootstrap"]
     M3["03 · Architecture<br/>03-architecture"]
     M4["04 · Tech Stack<br/>04-tech-stack"]
-    M5["05 · AI Tool Guide<br/>05-ai-tool-guide"]
-    M6["06 · README<br/>06-readme"]
-    M8["08 · Finalize Governance<br/>08-finalize"]
+    M5["05 · Test Strategy<br/>05-test-strategy"]
+    M6["06 · AI Tool Guide<br/>06-ai-tool-guide"]
+    M7["07 · README<br/>07-readme"]
+    M9["09 · Finalize Governance<br/>09-finalize"]
   end
   subgraph GH["GitHub"]
     S0_0["PR → main"]
@@ -103,6 +105,7 @@ flowchart TB
     S6_0["PR → main"]
     S7_0["PR → main"]
     S8_0["PR → main"]
+    S9_0["PR → main"]
   end
   M0 -.- S0_0
   M0 --> M1
@@ -116,12 +119,15 @@ flowchart TB
   M4 -.- S4_0
   M4 --> M5
   M5 -.- S5_0
+  M5 -.- S5_1
   M5 --> M6
   M6 -.- S6_0
   M6 --> M7
   M7 -.- S7_0
   M7 --> M8
   M8 -.- S8_0
+  M8 --> M9
+  M9 -.- S9_0
 ```
 
 <!-- /gen:flow-start -->
@@ -224,7 +230,7 @@ flowchart TB
 
 ## 5. cuevik-start: set up a project
 
-Nine steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, `express` does the work of four of them in one session and one PR; it is described last in this section.
+Ten steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, `express` does the work of four of them in one session and one PR; it is described last in this section.
 
 Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` records whether the project has a board and, if so, its ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
 
@@ -243,7 +249,7 @@ Connects or creates the GitHub repo and, if you want one, a project board, then 
 - **Remote changes.** Approved together with one yes: create the board and link it to the repo (when you chose a board), turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then, when there is a board, it checks its seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including `Auto-add to project` with this repo in its filter. You may skip them; the board is then recorded as `partial`.
 - **Initiation issues.** An `Epic: Project Initiation` epic and one story per later step, such as `INIT-01: Product Concept`, labelled `initiation`, assigned to you, linked as sub-issues of the epic. With a board they are also added to it, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields; on a board with no sprints yet, `Sprint-00` is created and they all go in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the `epic` or `story` labels, so the real backlog never picks them up.
 - **The PR.** Opens `init/00-bootstrap` with `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json` and `.markdownlint.json`. An existing `.markdownlint.json` is kept. An existing `CONTRIBUTING.md` keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, `chore: initialize repository`, on `main` and pushes it. That is the only commit bootstrap makes on `main`.
-- **The governance text** covers the review flow, Conventional Commits and the rule never to push to `main`. It also carries the initiation-only branching table and the self-review checklist, which `08-finalize` removes.
+- **The governance text** covers the review flow, Conventional Commits and the rule never to push to `main`. It also carries the initiation-only branching table and the self-review checklist, which `09-finalize` removes.
 - **It stops, and says what to fix,** if `gh` is not signed in, the default branch is not `main`, you lack admin rights on the repo, the repo is already bootstrapped, or a `00-bootstrap` PR is already open.
 
 Review the PR:
@@ -302,7 +308,7 @@ Every significant decision is written as **Context, Decision, Alternatives rejec
 
 <!-- gen:step-04-tech-stack -->
 
-**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-ai-tool-guide`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`  ·  **Writes:** `docs/TECH-STACK.md`, `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:05-test-strategy`
 
 <!-- /gen:step-04-tech-stack -->
 
@@ -310,47 +316,59 @@ Locks the approved technologies and the trade-offs behind them. Claude starts fr
 
 It then appends a tooling layer (versions; install, run, test, lint and build commands; hooks) to the end of `CONTRIBUTING.md` between `TOOLING-LAYER` markers, writing `Not set yet` for any command not known before the code exists, using only technologies approved in `TECH-STACK.md` and leaving the governance layer from `00-bootstrap` untouched. The Architect blocks the PR if a technology choice has no justification against the alternatives.
 
-### 05-ai-tool-guide
+### 05-test-strategy
 
-<!-- gen:step-05-ai-tool-guide -->
+<!-- gen:step-05-test-strategy -->
 
-**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `.claude/settings.json`  ·  **Then:** `/cuevik-start:06-readme`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect, Product Owner  ·  **Reads:** `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`  ·  **Writes:** `docs/TEST-STRATEGY.md`  ·  **Then:** `/cuevik-start:06-ai-tool-guide`
 
-<!-- /gen:step-05-ai-tool-guide -->
+<!-- /gen:step-05-test-strategy -->
+
+Sets how the product will be verified. Claude reads the PRD, the architecture and the tech stack, summarizes what needs verifying, and interviews the Architect one section at a time. The result is `docs/TEST-STRATEGY.md` with six sections: Test Levels, Coverage Target, Test Environment & Data, NFR Verification, Quality Ownership, Defect Management.
+
+Every number, the coverage target above all, comes from you: with no coverage target the step cannot finish. NFR pass thresholds are copied from the PRD, never invented, and no test tool is named that `TECH-STACK.md` does not list. The Architect owns it and the Product Owner co-reviews, checking that every Must requirement maps to a test level. The AI tool guide, the README and the backlog are built after it and can refer to it.
+
+### 06-ai-tool-guide
+
+<!-- gen:step-06-ai-tool-guide -->
+
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`  ·  **Writes:** `docs/AI-TOOL-GUIDE.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `.claude/settings.json`  ·  **Then:** `/cuevik-start:07-readme`
+
+<!-- /gen:step-06-ai-tool-guide -->
 
 Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes `docs/AI-TOOL-GUIDE.md` and only the adapter files for those tools (`CLAUDE.md`, `.github/copilot-instructions.md`). The shared rules live in the guide; each adapter points to it and holds only tool-specific settings. If the team uses Claude Code, it also writes `.claude/settings.json` with the plugins you pick for the team (for example `superpowers` and `code-review`), so everyone who opens the repo is offered the same ones. Tools that are not plugins, such as graphify, are listed in the guide as a manual prerequisite.
 
 The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.
 
-### 06-readme
+### 07-readme
 
-<!-- gen:step-06-readme -->
+<!-- gen:step-07-readme -->
 
-**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:07-backlog`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`  ·  **Writes:** `README.md`  ·  **Then:** `/cuevik-start:08-backlog`
 
-<!-- /gen:step-06-readme -->
+<!-- /gen:step-07-readme -->
 
 Replaces the repo's boilerplate README with the project's real entry point, built from the documents before it: Project Overview, Key Concepts, Prerequisites, Environment Setup, Install & Run, Run Tests, Project Structure, Further Reading. Leftover placeholder text is removed. If application code already exists, every command in the README is run before it is committed; if not (docs-first), Environment Setup is written as the intended setup and marked pending and unverified until the app is scaffolded, while prerequisites, install and test show pointers to `TECH-STACK.md` and `CONTRIBUTING.md` instead of copied versions or commands. You confirm which mode applies.
 
-### 07-backlog
+### 08-backlog
 
-<!-- gen:step-07-backlog -->
+<!-- gen:step-08-backlog -->
 
-**Status:** Available  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md`  ·  **Writes:** `docs/BACKLOG.md`  ·  **Then:** `/cuevik-start:08-finalize`
+**Status:** Available  ·  **Owner:** Product Owner  ·  **Reviewers:** Product Owner  ·  **Reads:** `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md`  ·  **Writes:** `docs/BACKLOG.md`  ·  **Then:** `/cuevik-start:09-finalize`
 
-<!-- /gen:step-07-backlog -->
+<!-- /gen:step-08-backlog -->
 
 Derives epics and stories from the PRD (one epic per capability section, one story per requirement, titled `PRD-NNN: <Title> (<Priority>)`), asks you for the priority of each non-functional requirement, shows them, and writes nothing until you approve. It then creates the GitHub issues one at a time, labelled `epic`, `story` and `priority:*`, links each story to its epic as a sub-issue, adds them to the board when the repo has one, and records the initial backlog in `docs/BACKLOG.md`: Summary, Epics, Stories, Out-of-Scope Notes.
 
 After setup, GitHub is the backlog. `docs/BACKLOG.md` is a frozen point-in-time snapshot and the issues are authoritative. Issues are always filed. If the repo has no board you can pause to set one up (a PR on `.cuevik/config.json`) and re-run, which reuses the issues already filed, or continue without one.
 
-### 08-finalize
+### 09-finalize
 
-<!-- gen:step-08-finalize -->
+<!-- gen:step-09-finalize -->
 
 **Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** `docs/TECH-STACK.md`  ·  **Writes:** `CONTRIBUTING.md`  ·  **Then:** `/cuevik-start:cleanup`
 
-<!-- /gen:step-08-finalize -->
+<!-- /gen:step-09-finalize -->
 
 Ends initiation. It reads `CONTRIBUTING.md` from `main`, removes the fenced `INITIATION-ONLY` block (the branching table and the self-review checklist), keeps the permanent governance and the tooling layer exactly as they are, and puts a short development-phase stub where the block was. It does not write a full development policy: the team expands the stub later with `/cuevik-docs:update`. If the markers are missing it stops rather than guess which lines to delete. Its PR also closes the initiation epic.
 
@@ -368,7 +386,7 @@ Initiation is complete when this PR is merged.
 
 Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.
 
-It starts with a progress line, one cell per step, such as `██░░░░░░░ 2/9 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a `Board:` line saying so and how to add or repair it. For a repo set up with `express`, the four steps it covered show as merged by the Express PR.
+It starts with a progress line, one cell per step, such as `██░░░░░░░░ 2/10 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a `Board:` line saying so and how to add or repair it. For a repo set up with `express`, the four steps it covered show as merged by the Express PR.
 
 ### cleanup
 
@@ -378,7 +396,7 @@ It starts with a progress line, one cell per step, such as `██░░░░�
 
 <!-- /gen:cmd-cuevik-start-cleanup -->
 
-Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once `08-finalize` is merged it also records the End date of the last story and of the initiation epic on the board, if the repo has one. Run it any time, typically after `08-finalize` merges. GitHub has already deleted the remote branches.
+Deletes the local `init/*` branches whose PR is merged. It skips and reports any that are not merged, or that have local commits the PR never got, and lists what it will delete and asks first. Once `09-finalize` is merged it also records the End date of the last story and of the initiation epic on the board, if the repo has one. Run it any time, typically after `09-finalize` merges. GitHub has already deleted the remote branches.
 
 ### express
 
@@ -388,17 +406,29 @@ Deletes the local `init/*` branches whose PR is merged. It skips and reports any
 
 <!-- /gen:cmd-cuevik-start-express -->
 
-The lean path for an MVP or spike. Run it instead of the nine steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch `init/express`, it does the work of `00`, `01`, `02` and `07`:
+The lean path for an MVP or spike. Run it instead of the ten steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch `init/express`, it does the work of `00`, `01`, `02` and `08`:
 
 - **A pitch, if you have one.** It asks first for an optional one-paragraph pitch. With one, `01` drafts a strawman in which every statement traces to the pitch; without, it interviews you as usual.
-- **Bootstrap without a board.** The repo, `CONTRIBUTING.md` (the permanent rules plus a short initiation block that holds only the self-review checklist), `.cuevik/config.json` (`boardState` `none`), the default `.cuevik/lineage.json`, `.markdownlint.json`, and the initiation issues: an epic and one story per step `01` to `08`.
+- **Bootstrap without a board.** The repo, `CONTRIBUTING.md` (the permanent rules plus a short initiation block that holds only the self-review checklist), `.cuevik/config.json` (`boardState` `none`), the default `.cuevik/lineage.json`, `.markdownlint.json`, and the initiation issues: an epic and one story per step `01` to `09`.
 - **A lean `PRODUCT.md` and `PRD.md`.** `PRODUCT.md` fills Overview, Target Users, Features, Scope and Success Criteria. `PRD.md` fills Overview, Features / Capabilities, Functional Requirements, Acceptance Criteria and Out of Scope. Every other heading stays, with one line saying it is not covered in the Express lane. The writing rules are the same as in the full steps.
-- **The backlog.** `07` files the epics and stories and writes `docs/BACKLOG.md`, with no question about a board.
-- **What it skips.** `03` to `06` and `08`: no `ARCHITECTURE.md`, `TECH-STACK.md`, `AI-TOOL-GUIDE.md` or `README.md`.
+- **The backlog.** `08` files the epics and stories and writes `docs/BACKLOG.md`, with no question about a board.
+- **What it skips.** `03` to `07` and `09`: no `ARCHITECTURE.md`, `TECH-STACK.md`, `TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` or `README.md`.
 
-The PR has four commits (bootstrap, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for `01`, `02` and `07`; the epic and the other stories stay open.
+The PR has four commits (bootstrap, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for `01`, `02` and `08`; the epic and the other stories stay open.
 
 To graduate later, run `/cuevik-start:03-architecture` and the steps after it as usual. The merged Express PR counts as the PR of the steps it covered, and `/cuevik-docs:update` deepens the lean documents.
+
+### migrate
+
+<!-- gen:cmd-cuevik-start-migrate -->
+
+**Status:** Available  ·  **Branch:** `init/migrate`  ·  **PR to:** `main`  ·  **Writes:** The two `.cuevik/` files  ·  **You:** Approve, review and merge
+
+<!-- /gen:cmd-cuevik-start-migrate -->
+
+Brings an older repo up to date. Run it when a step or `cuevik-ship` stops with `.cuevik/config.json is schemaVersion <n>`. It reads `.cuevik/config.json` and `.cuevik/lineage.json` from `main` and, after showing the exact edits and getting your yes, opens one PR from `init/migrate` that sets the config to version 4 (adding `boardState` to a version 2 config), renames the stories' keys to the current step ids, renames the step ids in the lineage, and adds the `docs/TEST-STRATEGY.md` entry with its upstream links.
+
+Nothing else changes: no issue is filed, `CONTRIBUTING.md` is not touched (its initiation-only table keeps the old ids until `09-finalize`), and it never merges. A repo that is already current gets `Nothing to migrate.` Merge the PR, then re-run the step you wanted. A migrated repo has no initiation story for `05-test-strategy`, so `status` lists that step as not started until you run it.
 
 To revise a document after its step is merged, use `/cuevik-docs:update <document>` instead of re-running the step.
 
@@ -458,7 +488,7 @@ Checks the approved idea against `docs/PRODUCT.md` and `docs/PRD.md`, and ratifi
 
 <!-- /gen:cmd-cuevik-ship-03-create-backlog -->
 
-Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write `docs/BACKLOG.md`, which is what `/cuevik-start:07-backlog` does once at setup.
+Turns the ratified requirements into GitHub issues. It writes to GitHub only; it does not write `docs/BACKLOG.md`, which is what `/cuevik-start:08-backlog` does once at setup.
 
 - **The idea becomes a story.** Its title becomes `PRD-NNN: <Title> (<Priority>)` and the `idea` label is removed. Epics and stories share the labels `epic`, `story` and `priority:*` with `cuevik-start`.
 - **Finding the epic.** In order: the parent of existing stories in the same PRD section, then an `epic` issue citing that section, then `docs/BACKLOG.md`, then a new epic. If several candidates fit it asks, and it never moves a story to another parent without your yes.
@@ -571,10 +601,11 @@ What a change to each document flags, from the default lineage:
 | When you change | It flags for review |
 |---|---|
 | `CONTRIBUTING.md` | nothing |
-| `docs/PRODUCT.md` | `CONTRIBUTING.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
-| `docs/PRD.md` | `CONTRIBUTING.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
-| `docs/ARCHITECTURE.md` | `CONTRIBUTING.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
-| `docs/TECH-STACK.md` | `CONTRIBUTING.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/PRODUCT.md` | `CONTRIBUTING.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/PRD.md` | `CONTRIBUTING.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/ARCHITECTURE.md` | `CONTRIBUTING.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/TECH-STACK.md` | `CONTRIBUTING.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/TEST-STRATEGY.md` | `docs/AI-TOOL-GUIDE.md`, `README.md` |
 | `docs/AI-TOOL-GUIDE.md` | `README.md` |
 | `README.md` | nothing |
 | `docs/BACKLOG.md` | nothing |
@@ -594,13 +625,15 @@ What a change to each document flags, from the default lineage:
 | `/cuevik-start:02-product-requirements` | Requirements | Turns the concept into numbered, testable requirements (the PRD). | Available |
 | `/cuevik-start:03-architecture` | Architecture | Designs the system: components, data, integrations and the decisions behind them. | Available |
 | `/cuevik-start:04-tech-stack` | Tech Stack | Locks the approved technologies and the build, test and lint commands. | Available |
-| `/cuevik-start:05-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Available |
-| `/cuevik-start:06-readme` | README | Replaces the boilerplate README with the project's real entry point. | Available |
-| `/cuevik-start:07-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Available |
-| `/cuevik-start:08-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
+| `/cuevik-start:05-test-strategy` | Test Strategy | Sets the test levels, coverage target, environments, NFR verification, quality owners and defect handling. | Available |
+| `/cuevik-start:06-ai-tool-guide` | AI Tool Guide | Sets the rules for AI coding assistants and generates the files each one reads. | Available |
+| `/cuevik-start:07-readme` | README | Replaces the boilerplate README with the project's real entry point. | Available |
+| `/cuevik-start:08-backlog` | Initial Backlog | Derives epics and stories from the product docs and files them as GitHub issues. | Available |
+| `/cuevik-start:09-finalize` | Finalize Governance | Removes the initiation-only rules from CONTRIBUTING.md and hands over the permanent ones. | Available |
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
 | `/cuevik-start:express` | Express | The lean path for an MVP or spike: governance, a lean product concept and PRD, and the backlog, in one session and one PR. | Available |
+| `/cuevik-start:migrate` | Migrate | Brings an older repo's `.cuevik/` files up to the current versions and step ids in one reviewed PR. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
@@ -614,13 +647,14 @@ What a change to each document flags, from the default lineage:
 
 ### Branches and files (ship, docs and utility commands)
 
-The nine numbered `cuevik-start` steps are not repeated here: see section 5. In `cuevik-ship`, `<n>` is the issue number and `<slug>` its short name.
+The ten numbered `cuevik-start` steps are not repeated here: see section 5. In `cuevik-ship`, `<n>` is the issue number and `<slug>` its short name.
 
 | Command | Branch | PR to | Writes | You |
 |---|---|---|---|---|
 | `/cuevik-start:status` | — | — | Nothing (report only) | Read the report |
 | `/cuevik-start:cleanup` | — | — | Deletes merged local `init/*` branches | Confirm the list |
 | `/cuevik-start:express` | `init/express` | `main` | Governance files, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`, issues | Interviews, approve, review and merge |
+| `/cuevik-start:migrate` | `init/migrate` | `main` | The two `.cuevik/` files | Approve, review and merge |
 | `/cuevik-ship:01-brainstorm` | `ship/<n>-<slug>/01-brainstorm` | `ship/<n>-<slug>/issue` | GitHub issue and brainstorming folder | Approve or reject, then merge |
 | `/cuevik-ship:02-audit-prd` | `ship/<n>-<slug>/02-audit-prd` (cut from `main`) | `main` | `PRODUCT.md` and `PRD.md` changes | Review and merge |
 | `/cuevik-ship:03-create-backlog` | — | — | GitHub issues: epic and stories | Approve the list |
@@ -647,9 +681,10 @@ From the default lineage: who owns each document, who reviews a change to it, an
 | `docs/PRD.md` | Product Owner | Product Owner | `docs/PRODUCT.md` |
 | `docs/ARCHITECTURE.md` | Architect | Architect, Product Owner | `docs/PRD.md` |
 | `docs/TECH-STACK.md` | Architect | Architect | `docs/PRD.md`, `docs/ARCHITECTURE.md` |
-| `docs/AI-TOOL-GUIDE.md` | Architect | Architect | `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md` |
-| `README.md` | Architect | Architect | `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md` |
-| `docs/BACKLOG.md` | Product Owner | Product Owner | `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
+| `docs/TEST-STRATEGY.md` | Architect | Architect, Product Owner | `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md` |
+| `docs/AI-TOOL-GUIDE.md` | Architect | Architect | `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md` |
+| `README.md` | Architect | Architect | `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md` |
+| `docs/BACKLOG.md` | Product Owner | Product Owner | `docs/PRODUCT.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md`, `README.md` |
 
 <!-- /gen:doc-owners -->
 
@@ -676,8 +711,8 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `origin` is not on github.com | GitHub is the only supported host. |
 | The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting (and links a board, if you use one), so it needs admin rights. |
 | `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To add or repair the board, open a PR that edits `.cuevik/config.json`: add `project` and set `boardState` (and `missing` for a partial board). |
-| `.cuevik/config.json is schemaVersion 2` | The config predates the optional board. Open a PR that sets `"schemaVersion": 3` and adds `"boardState": "configured"`, leaving the rest as it is. `cuevik-start` (from `01`) and `cuevik-ship` stop until it is merged. |
-| A `00-bootstrap` PR, or an Express PR, is already open | Merge it, or close it and delete its branch, then re-run. |
+| `.cuevik/config.json is schemaVersion <n>` | The config is older than the current contract (before the optional board, or before the steps were renumbered). Run `/cuevik-start:migrate` and merge its PR. `cuevik-start` (from `01`) and `cuevik-ship` stop until then. |
+| A `00-bootstrap`, Express or migration PR is already open | Merge it, or close it and delete its branch, then re-run. |
 | The board needs a single-select field named `Status` | Add that field to the board, choose another board, or choose no board. |
 | The template board cannot be read | Name another template, choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
 | Linking the board fails | Bootstrap shows GitHub's error and goes on, recording the board as `partial` (missing `link`). It does not retry with another owner. Fix the link yourself, then update `.cuevik/config.json`. |
@@ -689,13 +724,14 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 - **GitHub only,** and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.
 - **Approval is process-enforced.** GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.
-- **Built, not yet run live:** `cuevik-start` steps `03` to `08`, `cleanup` and `express`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
+- **Built, not yet run live:** `cuevik-start` steps `03` to `09`, `cleanup`, `express` and `migrate`, and every `cuevik-ship` and `cuevik-docs` command. Only `00` to `02` and `status` have been run end to end on a real repo, so expect fixes after first use.
 - **Not yet tested:** linking a user-owned board to an organisation-owned repo, and copying another user's template board.
 - **Board copies:** bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).
 - **Not yet verified:** creating sub-issue and blocked-by links from a cloud session, which `/cuevik-ship:03-create-backlog` relies on.
 - **Plugin settings:** in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. `cuevik-ship`'s worktree-folder setting uses the same mechanism and is untested.
 - **Labels, not issue types.** GitHub issue types are not used, because user-owned repos do not have them.
 - **`docs/BACKLOG.md` is a snapshot.** After setup, GitHub is the backlog.
+- **Older repos need `/cuevik-start:migrate`.** A repo set up before the optional board or before the test strategy step was added has the old config version and step ids; `cuevik-start` (from `01`) and `cuevik-ship` stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.
 
 ---
 

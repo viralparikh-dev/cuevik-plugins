@@ -2,7 +2,7 @@
 
 `00-bootstrap` writes the content between the `BEGIN CONTENT` / `END CONTENT` markers below to
 the project's `CONTRIBUTING.md`, verbatim. It is fixed text, not a template: there is nothing to
-interview for, and `08-finalize` depends on the `INITIATION-ONLY` markers being exact.
+interview for, and `09-finalize` depends on the `INITIATION-ONLY` markers being exact.
 
 - No `CONTRIBUTING.md` on `main`: write the content as the whole file.
 - `CONTRIBUTING.md` already on `main`: keep the existing text verbatim and insert the content
@@ -12,7 +12,7 @@ interview for, and `08-finalize` depends on the `INITIATION-ONLY` markers being 
 Layers written later, never here:
 
 - **Tooling layer** — appended by `04-tech-stack` from `docs/TECH-STACK.md`.
-- **Development-phase stub** — `08-finalize` replaces the `INITIATION-ONLY` block with it.
+- **Development-phase stub** — `09-finalize` replaces the `INITIATION-ONLY` block with it.
 
 <!-- markdownlint-disable MD025 -->
 <!-- BEGIN CONTENT -->
@@ -39,7 +39,7 @@ one of `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`, `ci`.
 <!-- BEGIN INITIATION-ONLY -->
 ## Initiation branching and self-review gate
 
-Project initiation runs as nine `/cuevik-start` steps, one session and one PR per step.
+Project initiation runs as ten `/cuevik-start` steps, one session and one PR per step.
 
 ### Branch per step
 
@@ -50,10 +50,11 @@ Project initiation runs as nine `/cuevik-start` steps, one session and one PR pe
 | `02-product-requirements` | `init/02-product-requirements` | `docs/PRD.md` |
 | `03-architecture` | `init/03-architecture` | `docs/ARCHITECTURE.md` |
 | `04-tech-stack` | `init/04-tech-stack` | `docs/TECH-STACK.md`, `CONTRIBUTING.md` tooling layer |
-| `05-ai-tool-guide` | `init/05-ai-tool-guide` | `docs/AI-TOOL-GUIDE.md`, tool adapters |
-| `06-readme` | `init/06-readme` | `README.md` |
-| `07-backlog` | `init/07-backlog` | `docs/BACKLOG.md`, epic and story issues |
-| `08-finalize` | `init/08-finalize` | `CONTRIBUTING.md` (removes this block) |
+| `05-test-strategy` | `init/05-test-strategy` | `docs/TEST-STRATEGY.md` |
+| `06-ai-tool-guide` | `init/06-ai-tool-guide` | `docs/AI-TOOL-GUIDE.md`, tool adapters |
+| `07-readme` | `init/07-readme` | `README.md` |
+| `08-backlog` | `init/08-backlog` | `docs/BACKLOG.md`, epic and story issues |
+| `09-finalize` | `init/09-finalize` | `CONTRIBUTING.md` (removes this block) |
 
 - One branch per step, created from an up-to-date `main`.
 - `main` holds only merged, final documents.
@@ -77,7 +78,7 @@ this checklist is the approval. Complete it in the PR before merging any `init/*
 
 `/cuevik-start:express` writes the CONTENT text above with the whole `INITIATION-ONLY` block (both
 marker lines included) replaced by the text between the `BEGIN EXPRESS BLOCK` / `END EXPRESS
-BLOCK` markers below. The `INITIATION-ONLY` markers stay exact so `08-finalize`, `status` and
+BLOCK` markers below. The `INITIATION-ONLY` markers stay exact so `09-finalize`, `status` and
 `00-bootstrap`'s "already bootstrapped" check work on an Express repo unchanged. The self-review
 gate is the same text as in the block above: change one, change both.
 
