@@ -112,7 +112,8 @@ follow-up (`/cuevik-docs:update <document>`).
 
 Invoke `cuevik-docs:audit` with the Skill tool, no arguments: all three passes, whole corpus,
 read-only (never `fix`). Not optional for a small change: a requirement edit is the change most
-likely to leave `ARCHITECTURE.md` or `TECH-STACK.md` describing what the PRD no longer says.
+likely to leave `ARCHITECTURE.md`, `TECH-STACK.md` or `TEST-STRATEGY.md` describing what the PRD
+no longer says.
 Sort every finding:
 
 - **Caused by this change set** — propose the fix as a diff; on a yes, commit it on its own as in
