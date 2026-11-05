@@ -47,6 +47,9 @@ Read, from `origin/main`, never from memory:
 - `docs/TECH-STACK.md` — the approved technologies: nothing else may appear in the design.
 - `docs/AI-TOOL-GUIDE.md` — coding conventions, banned patterns, testing rules, decision
   escalation, off-limits boundaries.
+- `docs/TEST-STRATEGY.md` — the test levels, the coverage target and how each NFR is verified:
+  the spec's tests follow it. Not on `main` (a repo that has not run `05-test-strategy`, or an
+  Express repo): say so in one line and go on; it never blocks.
 - `README.md` Project Structure — where new files go.
 
 Then read the code the slice actually touches. A spec written from the documents alone describes
@@ -106,7 +109,10 @@ session.>
 ## 6. Tests
 
 <The behaviour from §1 that gets asserted, the failure and rejection paths, and the cases
-AI-TOOL-GUIDE.md's Testing Rules require here, or an explicit statement that none apply and why.>
+AI-TOOL-GUIDE.md's Testing Rules require here. When docs/TEST-STRATEGY.md exists: the level each
+§1 behaviour is tested at (its §1), the verification method for any NFR the slice touches (its
+§4), and the coverage target if it applies (its §2). Or an explicit statement that none apply and
+why.>
 
 ## 7. Downstream document changes
 
@@ -133,6 +139,8 @@ Read the file cold before showing it:
    move the disagreement to §7.
 5. **Stack** — any technology not in `TECH-STACK.md`: remove it or make it a §7 change and a §8
    trigger.
+6. **Tests** — when `docs/TEST-STRATEGY.md` exists, every §1 behaviour the spec adds is asserted
+   at a level it names, and any NFR the slice touches has its verification method in §6.
 
 Show it and ask `Approve spec.md?` (`Yes` / `No`). Only `Yes` sets `**Status:** Approved`.
 
