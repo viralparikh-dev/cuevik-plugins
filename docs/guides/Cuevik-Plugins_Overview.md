@@ -35,7 +35,7 @@ Owns what gets built: the product concept, the requirements and the backlog.
 
 ### Architect
 
-Owns how it gets built: the architecture, the technology choices, the AI coding rules, the README and the project's working rules.
+Owns how it gets built: the architecture, the technology choices, the test strategy, the AI coding rules, the README and the project's working rules.
 
 ## Every command
 

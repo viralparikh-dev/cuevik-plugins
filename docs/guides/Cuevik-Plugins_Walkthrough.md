@@ -338,7 +338,7 @@ Every number, the coverage target above all, comes from you: with no coverage ta
 
 Sets the rules AI coding assistants follow on this project. It asks which AI tools the team uses, then writes `docs/AI-TOOL-GUIDE.md` and only the adapter files for those tools (`CLAUDE.md`, `.github/copilot-instructions.md`). The shared rules live in the guide; each adapter points to it and holds only tool-specific settings. If the team uses Claude Code, it also writes `.claude/settings.json` with the plugins you pick for the team (for example `superpowers` and `code-review`), so everyone who opens the repo is offered the same ones. Tools that are not plugins, such as graphify, are listed in the guide as a manual prerequisite.
 
-The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions.
+The guide has ten sections: Project Context, Coding Conventions, Scope Boundaries, Banned Patterns, Testing Rules, Documentation Rules, Decision Escalation, Agent Behavior Rules, Off-Limits Boundaries, Workflow Conventions. The Testing Rules are consistent with the levels and coverage target in `TEST-STRATEGY.md`.
 
 ### 07-readme
 
@@ -386,7 +386,7 @@ Initiation is complete when this PR is merged.
 
 Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.
 
-It starts with a progress line, one cell per step, such as `██░░░░░░░░ 2/10 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a `Board:` line saying so and how to add or repair it. For a repo set up with `express`, the four steps it covered show as merged by the Express PR.
+It starts with a progress line, one cell per step, such as `██░░░░░░░░ 2/10 · next: 02-product-requirements`, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a `Board:` line saying so and how to add or repair it. If `.cuevik/config.json` is older than the current contract, it adds a line telling you to run `/cuevik-start:migrate`. For a repo set up with `express`, the four steps it covered show as merged by the Express PR.
 
 ### cleanup
 
@@ -514,7 +514,7 @@ States the problem and scope before any solution is proposed, in `intent.md` in 
 
 <!-- /gen:cmd-cuevik-ship-05-design-spec -->
 
-Writes `spec.md` in the work folder: behaviour, data, rules and tests. If a later step changes an earlier file, the issue's References are refreshed.
+Writes `spec.md` in the work folder: behaviour, data, rules and tests. When the project has a `docs/TEST-STRATEGY.md`, the tests follow its levels, its NFR verification methods and its coverage target; without one the step says so and carries on. If a later step changes an earlier file, the issue's References are refreshed.
 
 ### 06-build-plan
 
