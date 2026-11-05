@@ -1,6 +1,6 @@
 ---
 name: update
-description: Updates one source-of-truth document named in .cuevik/lineage.json (PRODUCT, PRD, ARCHITECTURE, TECH-STACK, AI-TOOL-GUIDE, README, CONTRIBUTING) through a reviewed PR to main, after its cuevik-start step has merged. The owner role drafts only the sections that changed, the lineage's reviewers approve, and the PR carries a checklist of every downstream document to review. Pass the document, e.g. /cuevik-docs:update docs/PRD.md.
+description: Updates one source-of-truth document named in .cuevik/lineage.json (PRODUCT, PRD, ARCHITECTURE, TECH-STACK, TEST-STRATEGY, AI-TOOL-GUIDE, README, CONTRIBUTING) through a reviewed PR to main, after its cuevik-start step has merged. The owner role drafts only the sections that changed, the lineage's reviewers approve, and the PR carries a checklist of every downstream document to review. Pass the document, e.g. /cuevik-docs:update docs/PRD.md.
 disable-model-invocation: true
 argument-hint: "[document]"
 ---

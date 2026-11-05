@@ -3,7 +3,7 @@
   "documents": [
     {
       "path": "CONTRIBUTING.md",
-      "steps": ["00-bootstrap", "04-tech-stack", "08-finalize"],
+      "steps": ["00-bootstrap", "04-tech-stack", "09-finalize"],
       "upstream": ["docs/TECH-STACK.md"],
       "owner": "Architect",
       "reviewers": ["Architect"]
@@ -37,23 +37,30 @@
       "reviewers": ["Architect"]
     },
     {
+      "path": "docs/TEST-STRATEGY.md",
+      "steps": ["05-test-strategy"],
+      "upstream": ["docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md"],
+      "owner": "Architect",
+      "reviewers": ["Architect", "Product Owner"]
+    },
+    {
       "path": "docs/AI-TOOL-GUIDE.md",
-      "steps": ["05-ai-tool-guide"],
-      "upstream": ["docs/ARCHITECTURE.md", "docs/TECH-STACK.md"],
+      "steps": ["06-ai-tool-guide"],
+      "upstream": ["docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/TEST-STRATEGY.md"],
       "owner": "Architect",
       "reviewers": ["Architect"]
     },
     {
       "path": "README.md",
-      "steps": ["06-readme"],
-      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/AI-TOOL-GUIDE.md"],
+      "steps": ["07-readme"],
+      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/TEST-STRATEGY.md", "docs/AI-TOOL-GUIDE.md"],
       "owner": "Architect",
       "reviewers": ["Architect"]
     },
     {
       "path": "docs/BACKLOG.md",
-      "steps": ["07-backlog"],
-      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/AI-TOOL-GUIDE.md", "README.md"],
+      "steps": ["08-backlog"],
+      "upstream": ["docs/PRODUCT.md", "docs/PRD.md", "docs/ARCHITECTURE.md", "docs/TECH-STACK.md", "docs/TEST-STRATEGY.md", "docs/AI-TOOL-GUIDE.md", "README.md"],
       "owner": "Product Owner",
       "reviewers": ["Product Owner"],
       "frozen": true

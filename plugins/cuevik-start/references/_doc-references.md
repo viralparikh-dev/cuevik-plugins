@@ -6,7 +6,7 @@ runner injects it into every generated cuevik-start document by replacing the
 `BEGIN INJECT` / `END INJECT` markers below. Edit the table here only — never
 copy it into a template or a generated document.
 
-The cuevik-start document set is fixed at seven docs. Adding, removing, or renaming
+The cuevik-start document set is fixed at eight docs. Adding, removing, or renaming
 a document is a deliberate change made here, and it propagates to every doc on
 the next generation.
 
@@ -19,7 +19,8 @@ the next generation.
 | 2 | PRD.md | Testable requirements |
 | 3 | ARCHITECTURE.md | System structure & design decisions |
 | 4 | TECH-STACK.md | Approved technologies & usage rules |
-| 5 | AI-TOOL-GUIDE.md | Rules & constraints for AI tools |
-| 6 | README.md | Setup, env config, how to run |
-| 7 | BACKLOG.md | Epics/stories manifest |
+| 5 | TEST-STRATEGY.md | Test levels, coverage and verification |
+| 6 | AI-TOOL-GUIDE.md | Rules & constraints for AI tools |
+| 7 | README.md | Setup, env config, how to run |
+| 8 | BACKLOG.md | Epics/stories manifest |
 <!-- END INJECT -->

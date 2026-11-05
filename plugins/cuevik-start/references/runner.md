@@ -1,6 +1,6 @@
 # cuevik-start Step Runner
 
-Use this runner for every numbered cuevik-start step (`00-bootstrap` … `08-finalize`) and, through
+Use this runner for every numbered cuevik-start step (`00-bootstrap` … `09-finalize`) and, through
 §8, for the Express lane. Each step's `SKILL.md` is a thin entry point; this file owns the shared
 workflow.
 
@@ -17,7 +17,7 @@ Run exactly one step per session.
 - Do not execute two step commands in the same session. The one exception is `03-architecture`
   followed by `04-tech-stack`: they are tightly coupled, so `04` MAY run in the same session as
   `03` (or in a later one), gated per §1 check 4. They stay two documents and two PRs.
-- The Express lane (§8) is the other exception: its skill runs `00`, `01`, `02` and `07` in one
+- The Express lane (§8) is the other exception: its skill runs `00`, `01`, `02` and `08` in one
   session and one PR.
 - At the start of every step session, run §1 preconditions 1–2 (clean working tree, refresh
   `main`) first, then follow `${CLAUDE_PLUGIN_ROOT}/skills/status/SKILL.md` so status reflects
@@ -80,7 +80,7 @@ type or paste (e.g. a link), ask it as one plain sentence in chat, with no optio
 operator's next message as the answer. `AskUserQuestion` cannot show a text box alone.
 
 **Open interview questions** in a step whose `SKILL.md` says so (`01-product-concept`,
-`02-product-requirements`, `03-architecture`, `04-tech-stack`) are asked the same way: one plain
+`02-product-requirements`, `03-architecture`, `04-tech-stack`, `05-test-strategy`) are asked the same way: one plain
 sentence in chat, no options.
 Confirmations and choices in that step still use `AskUserQuestion`.
 
@@ -137,21 +137,22 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    - Exit 0 for both: proceed, after reading `schemaVersion` from the config.
    - Non-zero for either: **STOP**. Tell the operator to run `/cuevik-start:00-bootstrap` and
      merge its PR first.
-   - `schemaVersion` is not `3` (a config from before `boardState`): **STOP**. Tell the operator:
-     `.cuevik/config.json is schemaVersion 2. Open a PR on it that sets "schemaVersion": 3 and adds
-     "boardState": "configured" (leave project and initiation as they are), merge it, then re-run.`
-     (Config contract README, "Migrating from schemaVersion 2".) `bootstrap: true` steps skip this:
-     they write the file.
+   - `schemaVersion` is below `4` (a config from before the current contract): **STOP**. Tell the
+     operator: `.cuevik/config.json is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR,
+     then re-run.` (Config contract README, "Migrating from an older schemaVersion", for the edit
+     by hand.) `bootstrap: true` steps skip this: they write the file.
 
 4. **Previous step merged** — take the step listed immediately before this one in `steps.yml` and
-   run `gh pr list --head <its branch> --base main --state merged --json number,url`.
+   run `gh pr list --head <its branch> --base main --state merged --json number,url`. Run it for
+   the step's `branch` and for each `init/<alias>` of its `aliases` in `steps.yml`: a repo initiated
+   before a renumbering has the merged PR on the old branch.
    Special case: for `04-tech-stack` only, the previous step (`03-architecture`) only needs to be
    **open or merged**. Also run `gh pr list --head <its branch> --base main --state open --json
    number,url`; a PR returned by either query passes. Every other step keeps the merged-only gate.
    Second special case, separate from that one: when the previous step is one the Express lane
    covers (`references/express.yml`, `covers`), a merged PR from the lane's `branch` also passes.
    Run `gh pr list --head <express branch> --base main --state merged --json number,url`. It is
-   what lets `03-architecture` follow an Express repo, whose `01`, `02` and `07` never had an
+   what lets `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had an
    `init/<id>` PR.
    - At least one PR returned: proceed. The self-review checklist in `CONTRIBUTING.md` was the
      approval.
@@ -175,7 +176,7 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    - Exit 0 (already on `main`): **STOP**. The step is already complete. Tell the operator the
      document is final and to run `/cuevik-docs:update <document>` to revise it instead of
      re-running the step. Do not branch or regenerate.
-   - `replacesExisting: true` (e.g. `06-readme`, which overwrites the repo's existing README):
+   - `replacesExisting: true` (e.g. `07-readme`, which overwrites the repo's existing README):
      skip this check — the file's presence on `main` is expected and is not proof the step ran.
      Rely on the §3 branch check and operator confirmation.
 
@@ -373,7 +374,7 @@ Report the updates in one line, e.g. `Board: #2 Working, Start date 2026-10-18.`
 ## 8. Express Lane
 
 `/cuevik-start:express` runs `00-bootstrap`, `01-product-concept`, `02-product-requirements` and
-`07-backlog` in one session, on one branch, as one PR. Its metadata is `references/express.yml`
+`08-backlog` in one session, on one branch, as one PR. Its metadata is `references/express.yml`
 (`branch`, `covers`, `closes`). The lane is not a numbered step: it has no `steps.yml` entry and
 only `skills/express/SKILL.md` uses this section. Each covered step still writes its own output
 from its own template, under its skill's **Express profile**. The table lists what the lane
@@ -382,20 +383,20 @@ replaces; every runner rule it does not mention applies as written.
 | Runner part | In the Express lane |
 | --- | --- |
 | §0 | One session for the four covered steps; any other step still needs its own. The status call is skipped: the repo is not bootstrapped yet. |
-| Inputs §3, §4 | The lane writes `.cuevik/lineage.json` and `.cuevik/config.json` itself, so owners and reviewers come from the default lineage it is about to write (as for `bootstrap: true`). Upstream documents for `02` and `07` are read from the working branch, not `main`. |
+| Inputs §3, §4 | The lane writes `.cuevik/lineage.json` and `.cuevik/config.json` itself, so owners and reviewers come from the default lineage it is about to write (as for `bootstrap: true`). Upstream documents for `02` and `08` are read from the working branch, not `main`. |
 | §1 | Checks 1 and 2 once, at the start. Checks 3, 4 and 5 do not apply. Check 6 runs for `docs/PRODUCT.md`, `docs/PRD.md` and `docs/BACKLOG.md`. Check 7: the preconditions of `00` (§C), the `superpowers` precondition of `01` and `02`, and no open PR from the lane's `branch`. |
-| §2 | One checks table, one plan, one approval. The plan lists the branch, the files, and the GitHub changes of `00` §E.3 and §E.4; it says `07`'s labels and issues are listed for approval at that part. |
+| §2 | One checks table, one plan, one approval. The plan lists the branch, the files, and the GitHub changes of `00` §E.3 and §E.4; it says `08`'s labels and issues are listed for approval at that part. |
 | §3 | One branch, the lane's `branch`, created after the §2 approval; the reuse-or-delete rule applies. |
 | §4 | The covered steps in the order of `covers`; each part follows its step's `SKILL.md`, Express profile included. In every header block, `Derived from` and `Downstream` list only documents that exist on the branch; the lineage file keeps the full lists. Each output is shown and approved before its commit. |
 | §5 | One commit per covered step, in order, each with that step's `commitMessage`. |
-| §6 | One push on approval and one PR to `main`. The title names the lane and its outputs. The body has the lane's `prSummary`, the `00` checklist as the Architect's group, the `01`, `02` and `07` checklists as the Product Owner's group (each with its Express profile changes), the Express block from `skills/express/SKILL.md`, and each covered step's PR-body lists once. It ends with `Closes #<story>` for each step in `closes`, one line each, from `initiation.stories`: never the epic, never another issue. Then the `finalReminder`. |
+| §6 | One push on approval and one PR to `main`. The title names the lane and its outputs. The body has the lane's `prSummary`, the `00` checklist as the Architect's group, the `01`, `02` and `08` checklists as the Product Owner's group (each with its Express profile changes), the Express block from `skills/express/SKILL.md`, and each covered step's PR-body lists once. It ends with `Closes #<story>` for each step in `closes`, one line each, from `initiation.stories`: never the epic, never another issue. Then the `finalReminder`. |
 | §7 | Not applicable: the lane writes `boardState` `none` and makes no board call. |
 
-**Graduation.** After the Express PR merges, the standard `03`–`06` run as usual: §1 check 4's
+**Graduation.** After the Express PR merges, the standard `03`–`07` run as usual: §1 check 4's
 second special case accepts the Express PR for `02`, the full lineage has their entries, and
-`initiation.stories` has their stories. `08-finalize` finds the `INITIATION-ONLY` markers it needs,
-because the Express variant of the block keeps them; like any `08` run it still needs its upstream
-documents, so it follows `04`. Standard `00`, `01`, `02` and `07` stop at their existing "already
+`initiation.stories` has their stories. `09-finalize` finds the `INITIATION-ONLY` markers it needs,
+because the Express variant of the block keeps them; like any `09` run it still needs its upstream
+documents, so it follows `04`. Standard `00`, `01`, `02` and `08` stop at their existing "already
 bootstrapped" and "already final" checks.
 
 ## Rules

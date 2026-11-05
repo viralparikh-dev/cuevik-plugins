@@ -11,9 +11,9 @@ Never hardcode an owner, repo, board number, field id or folder. Read them:
 | Worktree root | the plugin's `worktree_root` option (`references/branches.md`) |
 
 Read the two `.cuevik/` files from `origin/main`, never from a work branch. If one fails its
-contract's schema, **STOP** and say which rule fails. A config with `schemaVersion` 2 fails it:
-say `.cuevik/config.json is schemaVersion 2. Open a PR on it that sets "schemaVersion": 3 and adds
-"boardState": "configured" (leave project and initiation as they are), merge it, then re-run.`
+contract's schema, **STOP** and say which rule fails. A config below `schemaVersion` 4 fails it:
+say `.cuevik/config.json is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then
+re-run.`
 
 ## Board state
 

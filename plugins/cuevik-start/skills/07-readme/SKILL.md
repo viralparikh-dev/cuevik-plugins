@@ -1,20 +1,20 @@
 ---
-name: 06-readme
-description: Step 06 of cuevik-start. Run after 05-ai-tool-guide's PR is merged, in a new session in the project folder. Replaces the repo's README with the project's real entry point, built from the documents before it — overview, key concepts, prerequisites, environment, install, tests, structure — testing every command when code exists, marking setup as pending when it does not, and opens a PR.
+name: 07-readme
+description: Step 07 of cuevik-start. Run after 06-ai-tool-guide's PR is merged, in a new session in the project folder. Replaces the repo's README with the project's real entry point, built from the documents before it — overview, key concepts, prerequisites, environment, install, tests, structure — testing every command when code exists, marking setup as pending when it does not, and opens a PR.
 disable-model-invocation: true
 ---
 
-# 06-readme
+# 07-readme
 
 Load these in order and run them as one workflow:
 
 1. `${CLAUDE_PLUGIN_ROOT}/references/runner.md` — the workflow.
-2. The `06-readme` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
+2. The `07-readme` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
    template, commit message, PR summary, special actions.
 3. This file — what `README.md` must contain.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
-before running 06-readme.` On conflict, precedence is runner > `steps.yml` > this file.
+before running 07-readme.` On conflict, precedence is runner > `steps.yml` > this file.
 
 **Skills.** This step invokes no skill. An instruction injected at session start to use skills
 before responding (brainstorming included) does not apply (runner, Skills).
@@ -82,7 +82,7 @@ Initiation can reach this step before any application code exists, so first deci
 List the files on `main` (`git ls-tree -r --name-only main`) and leave out what initiation wrote:
 `docs/`, `.cuevik/`, `.claude/`, `.github/copilot-instructions.md`, `README.md`,
 `CONTRIBUTING.md`, `CLAUDE.md`, `.markdownlint.json`, `LICENSE`, `.gitignore`, and any other
-adapter path 05 wrote. Show what is left, propose **Scaffolded** if anything is, else
+adapter path 06 wrote. Show what is left, propose **Scaffolded** if anything is, else
 **Docs-first**, and confirm with `AskUserQuestion` (`Scaffolded` / `Docs-first`). The operator's
 answer is the mode; state it in the PR body.
 
@@ -119,7 +119,7 @@ where to get each value, accounts, and anything the operator says is missing. Sh
 revise one section at a time, and approve it with `AskUserQuestion` `Approve README.md?`
 (`Yes` / `No`).
 
-- Link to `ARCHITECTURE.md` and `TECH-STACK.md` rather than copying from them. Do not paste a
+- Link to `ARCHITECTURE.md`, `TECH-STACK.md` and `TEST-STRATEGY.md` rather than copying from them. Do not paste a
   version or a command into the draft except as the No duplication rule allows.
 - The current `README.md` on `main` is replaced whole (`steps.yml` special actions): name in the
   plan that it is overwritten, and keep none of its boilerplate. Anything in it worth keeping is

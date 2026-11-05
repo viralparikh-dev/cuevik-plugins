@@ -258,7 +258,7 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "boardState": "<configured | partial | none>",
     "missing": ["<link | items | fields | workflows>"],
     "project": {
@@ -323,7 +323,7 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
   copied from the template (with any differences), or blank; linked now or already linked. For
   `partial`: each `missing` part and why. For `none`: why (the operator chose no board, or the
   adapter's reason). `none` and `partial` end with: `Add or repair the board through a PR on
-  .cuevik/config.json (config contract README, "Adding or repairing a board"). 07 and status remind
+  .cuevik/config.json (config contract README, "Adding or repairing a board"). 08 and status remind
   you.`
 - Repo settings changed: auto-delete head branches.
 - Initiation issues: the epic and each story, by number, created now or reused; assignee. With a
@@ -339,7 +339,7 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `CONTRIBUTING.md` holds the governance layer verbatim, with both `INITIATION-ONLY` markers.
       In insert mode, the existing text is unchanged.
 - [ ] No stack-specific commands in `CONTRIBUTING.md`.
-- [ ] `.cuevik/config.json` has `schemaVersion` 3 and a `boardState` that matches what happened:
+- [ ] `.cuevik/config.json` has `schemaVersion` 4 and a `boardState` that matches what happened:
       `none` has neither `project` nor `missing`; `configured` has `project` and no `missing`;
       `partial` has `project` and a non-empty `missing`. The PR body says why for `none` and
       `partial`.

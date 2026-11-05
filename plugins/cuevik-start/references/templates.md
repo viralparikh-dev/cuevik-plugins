@@ -58,9 +58,10 @@ references table (see that template).
 | `PRD.template.md` | `skills/02-product-requirements/` | PRD.md | Full skeleton + TOC |
 | `ARCHITECTURE.template.md` | `skills/03-architecture/` | ARCHITECTURE.md | Full skeleton + TOC |
 | `TECH-STACK.template.md` | `skills/04-tech-stack/` | TECH-STACK.md | Full skeleton |
-| `README.template.md` | `skills/06-readme/` | README.md | Header-block exception |
-| `AI-TOOL-GUIDE.template.md` | `skills/05-ai-tool-guide/` | AI-TOOL-GUIDE.md | Main doc only; adapters excluded |
-| `BACKLOG.template.md` | `skills/07-backlog/` | BACKLOG.md | Manifest skeleton |
+| `TEST-STRATEGY.template.md` | `skills/05-test-strategy/` | TEST-STRATEGY.md | Full skeleton |
+| `README.template.md` | `skills/07-readme/` | README.md | Header-block exception |
+| `AI-TOOL-GUIDE.template.md` | `skills/06-ai-tool-guide/` | AI-TOOL-GUIDE.md | Main doc only; adapters excluded |
+| `BACKLOG.template.md` | `skills/08-backlog/` | BACKLOG.md | Manifest skeleton |
 
 `CONTRIBUTING.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` are not
 templated here — they are appended layers or tool config with preserved blocks,

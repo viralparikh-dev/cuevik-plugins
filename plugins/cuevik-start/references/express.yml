@@ -1,7 +1,7 @@
 # Express lane metadata for skills/express/SKILL.md (/cuevik-start:express).
 #
 # Kept out of steps.yml on purpose: status and build_docs treat every steps.yml entry as one of the
-# nine steps, with branch init/<id>. The lane runs four of those steps in one session and one PR;
+# ten steps, with branch init/<id>. The lane runs four of those steps in one session and one PR;
 # their outputs, templates, commit messages and story fields stay in their steps.yml entries and
 # are not restated here.
 #
@@ -18,16 +18,17 @@ express:
     - 00-bootstrap
     - 01-product-concept
     - 02-product-requirements
-    - 07-backlog
+    - 08-backlog
   closes:
     - 01-product-concept
     - 02-product-requirements
-    - 07-backlog
+    - 08-backlog
   notCovered:
     - 03-architecture
     - 04-tech-stack
-    - 05-ai-tool-guide
-    - 06-readme
-    - 08-finalize
+    - 05-test-strategy
+    - 06-ai-tool-guide
+    - 07-readme
+    - 09-finalize
   prSummary: "Summarize the governance baseline and .cuevik settings (boardState none), the product concept, the requirements, and the backlog filed; list which sections of PRODUCT.md and PRD.md were not covered and which steps the lane skipped; include the Architect and Product Owner reviewer checklists and the Express block."
   finalReminder: "The Express lane is final only when the Architect and the Product Owner approve and merge the PR. To graduate later, run /cuevik-start:03-architecture in a new session; to deepen a lean document, run /cuevik-docs:update."

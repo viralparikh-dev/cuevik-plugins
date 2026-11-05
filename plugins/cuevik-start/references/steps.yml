@@ -20,6 +20,9 @@
 #   storyPriority,      Priority and Size option names 00-bootstrap sets on this step's initiation
 #   storySize           story, when the board has those fields and options (bootstrap §E.4)
 #   storyEfforts        hours 00-bootstrap writes to the story's Efforts field, by size and complexity
+#   aliases             legacy ids of a renamed step. Merged PRs sit on the old init/<alias> branches and
+#                       cannot be renamed, so status and runner §1 check 4 look a step's PR up under its
+#                       branch and under each alias branch. Nothing else reads aliases
 #   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
 
 steps:
@@ -107,12 +110,26 @@ steps:
     specialActions:
       - "Append the tooling layer to CONTRIBUTING.md, between TOOLING-LAYER markers, using only technologies approved in TECH-STACK.md. Preserve the 00-bootstrap governance layer."
 
-  - id: 05-ai-tool-guide
-    title: AI Tool Guide
+  - id: 05-test-strategy
+    title: Test Strategy
     storyPriority: High
     storySize: MD
     storyEfforts: 6
-    branch: init/05-ai-tool-guide
+    branch: init/05-test-strategy
+    outputs:
+      - docs/TEST-STRATEGY.md
+    template: TEST-STRATEGY.template.md
+    commitMessage: "docs: add TEST-STRATEGY.md (05-test-strategy)"
+    prSummary: "Summarize the test levels, the coverage target and how each NFR is verified, and include the 05-test-strategy reviewer checklist."
+    finalReminder: "TEST-STRATEGY.md becomes final only when the Architect and Product Owner approve and merge the PR."
+
+  - id: 06-ai-tool-guide
+    title: AI Tool Guide
+    aliases: [05-ai-tool-guide]
+    storyPriority: High
+    storySize: MD
+    storyEfforts: 6
+    branch: init/06-ai-tool-guide
     outputs:
       - docs/AI-TOOL-GUIDE.md
       - CLAUDE.md
@@ -120,8 +137,8 @@ steps:
       - .claude/settings.json
     conditionalOutputs: true
     template: AI-TOOL-GUIDE.template.md
-    commitMessage: "docs: add AI-TOOL-GUIDE.md and tool adapters (05-ai-tool-guide)"
-    prSummary: "Summarize the AI rules, list the generated adapter files, and include the 05-ai-tool-guide reviewer checklist."
+    commitMessage: "docs: add AI-TOOL-GUIDE.md and tool adapters (06-ai-tool-guide)"
+    prSummary: "Summarize the AI rules, list the generated adapter files, and include the 06-ai-tool-guide reviewer checklist."
     finalReminder: "AI-TOOL-GUIDE.md and generated adapter files become final only when the Architect approves and merges the PR."
     specialActions:
       - "Ask which AI tools the team will use before generating adapters."
@@ -131,52 +148,55 @@ steps:
       - "Generate .github/copilot-instructions.md as the project's own Copilot rules only. The cuevik-start runner stays in the plugin and is never copied into the repo."
       - "When Claude Code is selected, write the team's plugins to .claude/settings.json (extraKnownMarketplaces + enabledPlugins), chosen with the operator; list manual prerequisites such as graphify in the guide."
 
-  - id: 06-readme
+  - id: 07-readme
     title: README
+    aliases: [06-readme]
     storyPriority: High
     storySize: SM
     storyEfforts: 3
-    branch: init/06-readme
+    branch: init/07-readme
     outputs:
       - README.md
     replacesExisting: true
     template: README.template.md
-    commitMessage: "docs: replace boilerplate README with project README (06-readme)"
-    prSummary: "Note that the boilerplate README is replaced and include the 06-readme reviewer checklist."
-    finalReminder: "README.md becomes final only when the Architect approves and merges the PR. Initiation is complete only after 08-finalize is merged."
+    commitMessage: "docs: replace boilerplate README with project README (07-readme)"
+    prSummary: "Note that the boilerplate README is replaced and include the 07-readme reviewer checklist."
+    finalReminder: "README.md becomes final only when the Architect approves and merges the PR. Initiation is complete only after 09-finalize is merged."
     specialActions:
       - "Replace the repo's current README with the generated project README."
       - "Remove any leftover placeholder or boilerplate content from README.md."
-      - "Scaffolded mode (application code on main): test every command included in README.md before committing. Docs-first mode: show pointers only for versions and commands, and mark Environment Setup Pending scaffold — unverified instead (skills/06-readme/SKILL.md, No duplication and Mode)."
+      - "Scaffolded mode (application code on main): test every command included in README.md before committing. Docs-first mode: show pointers only for versions and commands, and mark Environment Setup Pending scaffold — unverified instead (skills/07-readme/SKILL.md, No duplication and Mode)."
 
-  - id: 07-backlog
+  - id: 08-backlog
     title: Initial Backlog
+    aliases: [07-backlog]
     storyPriority: High
     storySize: MD
     storyEfforts: 8
-    branch: init/07-backlog
+    branch: init/08-backlog
     outputs:
       - docs/BACKLOG.md
     template: BACKLOG.template.md
-    commitMessage: "docs: add BACKLOG.md (07-backlog)"
-    prSummary: "State the epic count, story count, priority breakdown, and include the 07-backlog reviewer checklist."
-    finalReminder: "BACKLOG.md becomes final only when the Product Owner approves and merges the PR. Once merged, run /cuevik-start:08-finalize in a new session to finalize CONTRIBUTING.md."
+    commitMessage: "docs: add BACKLOG.md (08-backlog)"
+    prSummary: "State the epic count, story count, priority breakdown, and include the 08-backlog reviewer checklist."
+    finalReminder: "BACKLOG.md becomes final only when the Product Owner approves and merges the PR. Once merged, run /cuevik-start:09-finalize in a new session to finalize CONTRIBUTING.md."
     specialActions:
       - "Derive epics and stories from PRODUCT.md and PRD.md before creating GitHub issues."
       - "Present the derived backlog and wait for approval before any GitHub or file writes."
       - "Create GitHub issues one at a time with gh and capture their numbers."
 
-  - id: 08-finalize
+  - id: 09-finalize
     title: Finalize Governance
+    aliases: [08-finalize]
     storyPriority: High
     storySize: XS
     storyEfforts: 1
-    branch: init/08-finalize
+    branch: init/09-finalize
     outputs:
       - CONTRIBUTING.md
     replacesExisting: true    # CONTRIBUTING.md is already on main; this step transforms it
-    commitMessage: "docs: finalize CONTRIBUTING.md for the development phase (08-finalize)"
-    prSummary: "State that the init-only governance block was removed, the permanent core and tooling layer were preserved, and the development-phase stub was left for the team; include the advisory cuevik-docs:audit findings (read-only) and the 08-finalize reviewer checklist."
+    commitMessage: "docs: finalize CONTRIBUTING.md for the development phase (09-finalize)"
+    prSummary: "State that the init-only governance block was removed, the permanent core and tooling layer were preserved, and the development-phase stub was left for the team; include the advisory cuevik-docs:audit findings (read-only) and the 09-finalize reviewer checklist."
     finalReminder: "CONTRIBUTING.md becomes final for the development phase only when the Architect merges the PR. Initiation is complete once this is merged; run /cuevik-start:cleanup afterward."
     specialActions:
       - "Read CONTRIBUTING.md from main."

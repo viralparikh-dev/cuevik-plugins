@@ -9,7 +9,7 @@
     "$schema": { "type": "string" },
     "schemaVersion": {
       "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
-      "const": 3
+      "const": 4
     },
     "boardState": {
       "description": "Whether the repo has a GitHub Projects (v2) board the plugins use. `configured`: a board is recorded in `project` and everything bootstrap requires of it is done. `partial`: a board is recorded but a part is incomplete, listed in `missing`. `none`: no board is recorded (declined, or it could not be used); a valid state, not an error.",

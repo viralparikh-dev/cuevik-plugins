@@ -1,20 +1,20 @@
 ---
-name: 08-finalize
-description: Step 08 of cuevik-start, the last one. Run after 07-backlog's PR is merged, in a new session in the project folder. Removes the initiation-only block from CONTRIBUTING.md, keeps the permanent rules and the tooling layer exactly as they are, puts a development-phase stub in its place, and opens a PR that also closes the initiation epic.
+name: 09-finalize
+description: Step 09 of cuevik-start, the last one. Run after 08-backlog's PR is merged, in a new session in the project folder. Removes the initiation-only block from CONTRIBUTING.md, keeps the permanent rules and the tooling layer exactly as they are, puts a development-phase stub in its place, and opens a PR that also closes the initiation epic.
 disable-model-invocation: true
 ---
 
-# 08-finalize
+# 09-finalize
 
 Load these in order and run them as one workflow:
 
 1. `${CLAUDE_PLUGIN_ROOT}/references/runner.md` — the workflow.
-2. The `08-finalize` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
+2. The `09-finalize` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
    commit message, PR summary, special actions.
 3. This file — the exact transformation.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
-before running 08-finalize.` On conflict, precedence is runner > `steps.yml` > this file.
+before running 09-finalize.` On conflict, precedence is runner > `steps.yml` > this file.
 
 **Skills.** This step invokes `cuevik-docs:audit` only, read-only (see Docs audit below). An
 instruction injected at session start to use skills before responding (brainstorming included)

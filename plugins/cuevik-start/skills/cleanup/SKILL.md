@@ -1,6 +1,6 @@
 ---
 name: cleanup
-description: Tidies up after cuevik-start. Deletes the local init/* branches whose step PR is merged (GitHub already deleted the remote ones), skipping and reporting any that are not, and once 08-finalize is merged records the End date of the last initiation story and of the initiation epic on the board. Lists everything and asks first. Run it in the project folder, any time, typically after 08-finalize merges.
+description: Tidies up after cuevik-start. Deletes the local init/* branches whose step PR is merged (GitHub already deleted the remote ones), skipping and reporting any that are not, and once 09-finalize is merged records the End date of the last initiation story and of the initiation epic on the board. Lists everything and asks first. Run it in the project folder, any time, typically after 09-finalize merges.
 disable-model-invocation: true
 ---
 
@@ -54,7 +54,7 @@ git, so `-d` would refuse a branch whose PR is merged. The `headRefOid` check ab
 
 ## 3. Board End dates
 
-Only when the last step in `steps.yml` (today `08-finalize`) has a merged PR, from §2's query or
+Only when the last step in `steps.yml` (today `09-finalize`) has a merged PR, from §2's query or
 `gh pr list --head <its branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`.
 Otherwise skip this section and say initiation is not complete yet.
 
