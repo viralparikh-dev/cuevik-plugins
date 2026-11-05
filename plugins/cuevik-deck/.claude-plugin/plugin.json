@@ -1,7 +1,7 @@
 {
   "name": "cuevik-deck",
   "displayName": "Cuevik Deck",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Turn a Statement of Work into a project kickoff deck: a structured discovery questionnaire captures the engagement, technical landscape, agile ways of working, NFRs and governance, then renders a client-ready deck (PowerPoint, Google Slides or Claude Design Slides).",
   "author": {
     "name": "Viral Parikh"
