@@ -47,9 +47,10 @@ Before starting, load:
    A step with `bootstrap: true` runs before `.cuevik/lineage.json` exists. It takes its owner and
    reviewers from the default lineage it is about to write, and has no upstream documents.
 4. `.cuevik/config.json` from `main`: `git show main:.cuevik/config.json`. Its
-   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6), and
-   `boardState` says whether the board bookkeeping (§7) applies. A step with `bootstrap: true`
-   writes this file, so it has none of them.
+   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6, absent
+   on a `flat` repo), `boardState` says whether the board bookkeeping (§7) applies, and
+   `backlogModel` is `epic-grouped` or `flat`. A step with `bootstrap: true` writes this file, so
+   it has none of them.
 5. The role file for the owner, plus one per extra reviewer:
    - `Product Owner` → `${CLAUDE_PLUGIN_ROOT}/references/roles/product-owner.md`
    - `Architect` → `${CLAUDE_PLUGIN_ROOT}/references/roles/solution-architect.md`
@@ -137,7 +138,7 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    - Exit 0 for both: proceed, after reading `schemaVersion` from the config.
    - Non-zero for either: **STOP**. Tell the operator to run `/cuevik-start:00-bootstrap` and
      merge its PR first.
-   - `schemaVersion` is below `4` (a config from before the current contract): **STOP**. Tell the
+   - `schemaVersion` is below `5` (a config from before the current contract): **STOP**. Tell the
      operator: `.cuevik/config.json is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR,
      then re-run.` (Config contract README, "Migrating from an older schemaVersion", for the edit
      by hand.) `bootstrap: true` steps skip this: they write the file.

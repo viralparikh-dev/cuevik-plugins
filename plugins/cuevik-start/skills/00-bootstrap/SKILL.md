@@ -258,8 +258,9 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "boardState": "<configured | partial | none>",
+    "backlogModel": "epic-grouped",
     "missing": ["<link | items | fields | workflows>"],
     "project": {
       "owner": "<board-owner>",
@@ -283,6 +284,10 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
   - a board recorded and no `degraded` result: `configured`. Write `project`, not `missing`.
   - a board recorded and at least one `degraded` result: `partial`. Write `project`, and `missing`
     with each degraded part once (`link`, `items`, `fields`, `workflows`).
+
+  `backlogModel` is `epic-grouped` in the standard lane: `00-bootstrap` files the initiation epic
+  (§E.4) and `08-backlog` the backlog epics. The Express lane writes `flat` and files no epic (its
+  Express profile).
 
   `options` holds every option from §D.5, as read. `stories` has one entry per story from §E.4,
   keyed by step id. `initiation` is always written: the issues are filed whatever the state. No
@@ -308,11 +313,15 @@ the runner, `steps.yml`, templates, roles or contracts into the repo.
 ## Express profile
 
 `/cuevik-start:express` drives §A, §B, §C, §E.3, §E.4 and §F. It skips §D, §E.1, §E.2 and §E.5 and
-the board bullets of §E.4: the lane has no board, so the state is `none` without a question. In §F
-it writes `CONTRIBUTING.md` with the Express variant of the initiation-only block
-(`contributing-governance.md`, "Express variant") and `.cuevik/config.json` with `boardState`
-`none`. The branch, the commit and the PR (§G) belong to the lane, not to this step. The reviewer
-checklist applies with one change: its first line accepts the Express variant of the block.
+the board bullets of §E.4: the lane has no board, so `boardState` is `none` without a question. It
+also files **no epic**: skip the `Epic: Project Initiation` issue and the sub-issue links of §E.4,
+and file only the `INIT-*` stories, each given the `Task` issue type when the owner supports it
+(the lane's Issue types procedure in `skills/express/SKILL.md`). In §F it writes `CONTRIBUTING.md`
+with the Express variant of the initiation-only block (`contributing-governance.md`, "Express
+variant") and `.cuevik/config.json` with `boardState` `none`, `backlogModel` `flat`, and
+`initiation` holding `stories` only (no `epic`). The branch, the commit and the PR (§G) belong to
+the lane, not to this step. The reviewer checklist applies with two changes: its first line accepts
+the Express variant of the block, and no epic or sub-issue link is expected.
 
 ## G. PR
 
@@ -339,10 +348,10 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `CONTRIBUTING.md` holds the governance layer verbatim, with both `INITIATION-ONLY` markers.
       In insert mode, the existing text is unchanged.
 - [ ] No stack-specific commands in `CONTRIBUTING.md`.
-- [ ] `.cuevik/config.json` has `schemaVersion` 4 and a `boardState` that matches what happened:
-      `none` has neither `project` nor `missing`; `configured` has `project` and no `missing`;
-      `partial` has `project` and a non-empty `missing`. The PR body says why for `none` and
-      `partial`.
+- [ ] `.cuevik/config.json` has `schemaVersion` 5, `backlogModel` `epic-grouped`, and a
+      `boardState` that matches what happened: `none` has neither `project` nor `missing`;
+      `configured` has `project` and no `missing`; `partial` has `project` and a non-empty
+      `missing`. The PR body says why for `none` and `partial`.
 - [ ] With a board recorded, `project` names the board that is linked to this repo (unless
       `missing` lists `link`), and its ids were read from GitHub.
 - [ ] `.cuevik/lineage.json` matches the plugin's default lineage.

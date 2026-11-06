@@ -3,13 +3,17 @@
   "title": ".cuevik/config.json",
   "description": "Project facts for the cuevik plugins, committed in the project repo. Owner/repo come from the git remote; the worktree root is plugin userConfig. Neither belongs here.",
   "type": "object",
-  "required": ["schemaVersion", "boardState", "initiation"],
+  "required": ["schemaVersion", "boardState", "backlogModel", "initiation"],
   "additionalProperties": false,
   "properties": {
     "$schema": { "type": "string" },
     "schemaVersion": {
       "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
-      "const": 4
+      "const": 5
+    },
+    "backlogModel": {
+      "description": "How this repo's issues are organised. `epic-grouped`: epics are filed as GitHub issues and stories are their sub-issues (the standard lane). `flat`: no epic issues are filed; stories are distinguished by native GitHub issue type and carry no epic parent (the Express lane). Set once at bootstrap: the standard lane writes `epic-grouped`, Express writes `flat`.",
+      "enum": ["epic-grouped", "flat"]
     },
     "boardState": {
       "description": "Whether the repo has a GitHub Projects (v2) board the plugins use. `configured`: a board is recorded in `project` and everything bootstrap requires of it is done. `partial`: a board is recorded but a part is incomplete, listed in `missing`. `none`: no board is recorded (declined, or it could not be used); a valid state, not an error.",
@@ -67,11 +71,11 @@
     "initiation": {
       "description": "The issues that track cuevik-start's steps, written by 00-bootstrap and added to the board when there is one. Required in every `boardState`: the issues are filed without a board. All carry the `initiation` label and never `epic` or `story`, so backlog tooling never reads them. The runner puts `Closes #<story>` in each step's PR body; status cross-checks their state against the merged PRs.",
       "type": "object",
-      "required": ["epic", "stories"],
+      "required": ["stories"],
       "additionalProperties": false,
       "properties": {
         "epic": {
-          "description": "Issue number of the Initiation epic. The last step's PR closes it.",
+          "description": "Issue number of the Initiation epic. The last step's PR closes it. Present on an `epic-grouped` repo; absent on a `flat` repo, which files no epic issue.",
           "type": "integer",
           "minimum": 1
         },
@@ -97,6 +101,14 @@
     {
       "if": { "properties": { "boardState": { "const": "none" } }, "required": ["boardState"] },
       "then": { "not": { "anyOf": [{ "required": ["project"] }, { "required": ["missing"] }] } }
+    },
+    {
+      "if": { "properties": { "backlogModel": { "const": "epic-grouped" } }, "required": ["backlogModel"] },
+      "then": { "properties": { "initiation": { "required": ["epic"] } } }
+    },
+    {
+      "if": { "properties": { "backlogModel": { "const": "flat" } }, "required": ["backlogModel"] },
+      "then": { "properties": { "initiation": { "not": { "required": ["epic"] } } } }
     }
   ]
 }

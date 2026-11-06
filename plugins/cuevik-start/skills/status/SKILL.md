@@ -92,7 +92,7 @@ stays the source of truth: this section never changes a row's Status or the Next
 `**Check:**` lines where GitHub's issues disagree with the rows, and one `**Board:**` line (step 5).
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
-   silently. `schemaVersion` below 4: one Check line, `.cuevik/config.json is schemaVersion <n>. Run
+   silently. `schemaVersion` below 5: one Check line, `.cuevik/config.json is schemaVersion <n>. Run
    /cuevik-start:migrate, merge its PR, then re-run.`, then go on. No `initiation` key: one Check
    line, `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`,
    then skip the rest.
@@ -108,8 +108,9 @@ stays the source of truth: this section never changes a row's Status or the Next
    A step without `bootstrap: true` that has no entry in `initiation.stories`: `no story for <id>
    in .cuevik/config.json`, unless its row is `— not started` (a repo migrated after the step was
    added has no story for it).
-4. The epic `initiation.epic`: not in the list, closed while any row is not `✓ merged`, or open
-   while every row is `✓ merged` — one Check line saying which.
+4. The epic `initiation.epic` (only on an `epic-grouped` repo; a `flat` repo has no epic, so skip
+   this): not in the list, closed while any row is not `✓ merged`, or open while every row is
+   `✓ merged` — one Check line saying which.
 5. The board, from `boardState`. `none` is a valid state, not a mismatch, so it is a `**Board:**`
    line, not a Check line: `**Board:** none (issues only). To add one, open a PR on
    .cuevik/config.json (config contract README, "Adding or repairing a board").` In a repo with a

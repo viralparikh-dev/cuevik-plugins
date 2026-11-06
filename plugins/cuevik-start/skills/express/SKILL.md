@@ -1,6 +1,6 @@
 ---
 name: express
-description: The lean path for an MVP or spike, run instead of the ten steps. Run first, in the project folder. In one session and one PR it bootstraps the repo without a board, writes a lean docs/PRODUCT.md and docs/PRD.md, files the backlog issues and writes docs/BACKLOG.md. It skips architecture, tech stack, AI tool guide, README and finalize; the standard 03-06 can graduate the repo later.
+description: The lean path for an MVP or spike, run instead of the ten steps. Run first, in the project folder. In one session and one PR it bootstraps the repo without a board, writes a lean docs/PRODUCT.md and docs/PRD.md, files the initiation and backlog issues — no epics, typed Task/Feature where the org allows — and writes docs/BACKLOG.md. It skips architecture, tech stack, AI tool guide, README and finalize; the standard 03-06 can graduate the repo later.
 disable-model-invocation: true
 ---
 
@@ -31,7 +31,11 @@ Express is for an MVP or a spike. One session, one branch (`init/express`), one 
 `CONTRIBUTING.md`, `.cuevik/`, `.markdownlint.json`, `docs/PRODUCT.md`, `docs/PRD.md` and
 `docs/BACKLOG.md`, and files the initiation issues and the backlog issues. It writes no
 `ARCHITECTURE.md`, `TECH-STACK.md`, `TEST-STRATEGY.md`, `AI-TOOL-GUIDE.md` or `README.md`, runs no `09-finalize`, and
-makes no board call. The PRODUCT/PRD split is kept: two documents, two altitudes. Lean means fewer
+makes no board call. Its `.cuevik/config.json` records `backlogModel` `flat`: the lane files **no
+epic issues** (neither the initiation epic nor backlog epics) and instead gives each issue a native
+GitHub issue type — `Task` for the `INIT-*` issues, `Feature` for the `PRD-*` issues — when the
+repo's owner is an organisation that has those types (Issue types). Epics live only as logical rows
+in `docs/BACKLOG.md`. The PRODUCT/PRD split is kept: two documents, two altitudes. Lean means fewer
 sections, not looser rules: `_writing-rules.md` and every covered skill's rules apply to what is
 written.
 
@@ -71,15 +75,20 @@ Runner §2 as §8 describes. Rows of the checks table: the §B results. The plan
 branch, the seven files (`CONTRIBUTING.md`, the two `.cuevik/` files, `.markdownlint.json` and the
 three documents), and every GitHub change: `00-bootstrap` §E.3 (auto-delete head
 branches) and §E.4 (the label and every initiation issue title). Add one line: `08-backlog`'s
-labels and backlog issues are listed for approval when that part starts. Ask once: `Make these
-<N> changes on GitHub? For more details, review my Plan that I articulated above.` (`Yes, make
-all <N>` · `No, stop`).
+labels and backlog issues are listed for approval when that part starts. The plan also notes that
+no epic issues are filed, that `backlogModel` is `flat`, and that the `INIT-*` issues are typed
+`Task` and the `PRD-*` issues `Feature` when the owner supports issue types (Issue types). Ask
+once: `Make these <N> changes on GitHub? For more details, review my Plan that I articulated
+above.` (`Yes, make all <N>` · `No, stop`).
 
 ## D. Remote changes
 
-`00-bootstrap` §E.3 and §E.4, without the board bullets of §E.4 (Board, Fields, Efforts, Sprint):
-the lane has no board and asks about none. Report the epic and story numbers. A failure **STOPS**
-and reports what was done; a re-run reuses what exists (§E.4 reuses issues by exact title).
+`00-bootstrap` §E.3 and §E.4 under its Express profile: no board (skip the Board, Fields, Efforts
+and Sprint bullets — the lane has no board and asks about none) and no epic (skip the
+`Epic: Project Initiation` issue and the sub-issue links). File one `INIT-*` story per step with
+the `initiation` label and `@me`, and give each the `Task` issue type when the owner supports it
+(see Issue types below). Report the story numbers. A failure **STOPS** and reports what was done;
+a re-run reuses what exists (§E.4 reuses issues by exact title).
 
 ## E. Outputs
 
@@ -88,8 +97,9 @@ Create the branch (runner §3), then, in this order:
 1. **Bootstrap files** (`00-bootstrap` §F):
    - `CONTRIBUTING.md` in new or insert mode as §F says, from `contributing-governance.md`, but with
      the `INITIATION-ONLY` block replaced by the Express block (that file, "Express variant").
-   - `.cuevik/config.json`: `schemaVersion` 4, `boardState` `none`, and `initiation` from §D. No
-     `project`, no `missing`. It must satisfy the config schema.
+   - `.cuevik/config.json`: `schemaVersion` 5, `boardState` `none`, `backlogModel` `flat`, and
+     `initiation` from §D (its `stories` only — a `flat` repo has no `epic`). No `project`, no
+     `missing`. It must satisfy the config schema.
    - `.cuevik/lineage.json`: the byte copy §F says, the full default lineage.
    - `.markdownlint.json`, unless §C.6 kept the repo's own.
 
@@ -98,8 +108,9 @@ Create the branch (runner §3), then, in this order:
    `commitMessage`.
 3. **`02-product-requirements`** under its Express profile, reading `docs/PRODUCT.md` from the
    branch. Commit.
-4. **`08-backlog`** under its Express profile: derive, approve, file the issues, then write
-   `docs/BACKLOG.md`. Commit.
+4. **`08-backlog`** under its Express profile: derive, approve, file the `PRD-*` stories (no epic;
+   `Feature` type per Issue types), then write `docs/BACKLOG.md` with its Epics rows as logical
+   groupings only (Issue column `—`). Commit.
 
 Each commit is `git add <that step's outputs>` then `git commit` with that step's `commitMessage`
 from `steps.yml`.
@@ -111,7 +122,34 @@ and backlog (express)`. Body, in order: the `express.yml` `prSummary`; **Archite
 `00-bootstrap` reviewer checklist; **Product Owner** — the `01`, `02` and `08` reviewer
 checklists; **Express** — the block below; the lists the covered steps ask for (Deferred to the
 Architect, Proposed PRODUCT.md changes, NFRs without targets), once; `Board: none, issues filed
-only`; `Closes #<story>` for each step in `closes`.
+only`; the Issue types line (each type set, or `Issue types: not set (<reason>)`); `Closes
+#<story>` for each step in `closes`.
+
+## Issue types
+
+Express files no epics and instead gives each issue a native GitHub issue type. Resolve
+availability once, the first time issues are filed (bootstrap, §D), and reuse the result for the
+backlog part. Types are additive: the labels (`initiation`; `story` + `priority:*`) are unchanged.
+
+1. **Probe** the repo owner (`gh repo view <repo> --json owner --jq .owner.login`):
+   `gh api orgs/<owner>/issue-types --jq '[.[] | select(.is_enabled) | .name]'`. `Task` and
+   `Feature` both present → types are available.
+2. **Available** → create each issue with its type: `gh issue create … --type Task` for an
+   `INIT-*` issue, `--type Feature` for a `PRD-*` issue. A reused issue missing its type:
+   `gh issue edit <n> --type <Task|Feature>`.
+3. **Owner is an organisation but `Task`/`Feature` are missing** → ask once with `AskUserQuestion`:
+   `This organisation has no Task/Feature issue types. Add them?` (`Yes, add them` · `No, file
+   untyped`). This is an org-wide, persistent change, so the question is the approval.
+   - `Yes` → create the missing ones
+     (`gh api -X POST orgs/<owner>/issue-types -f name=Task -F is_enabled=true`, and the same for
+     `Feature`), then type the issues as in step 2. A create that fails on scope or permission:
+     say so and file untyped.
+   - `No` → file untyped.
+4. **Owner is a user, not an organisation** (the probe returns 404): issue types are an
+   organisation-only feature and cannot be enabled on a personal account. Say so once and file
+   untyped. Do not ask.
+5. **Untyped** (declined or unavailable): file the issues with their labels only, and record in the
+   PR body `Issue types: not set (<reason>); labels carry the data.`
 
 ## Reviewer checklist
 
@@ -125,15 +163,21 @@ Express block:
 
 - [ ] One branch, `init/express`, with four commits in the order bootstrap, PRODUCT, PRD, BACKLOG,
       each carrying the covered step's commit message.
-- [ ] `.cuevik/config.json` has `schemaVersion` 4, `boardState` `none`, no `project` and no
-      `missing`; `.cuevik/lineage.json` is byte-identical to the default lineage; `initiation`
-      matches the `initiation`-labelled issues (the epic and one story per step `01`–`09`).
+- [ ] `.cuevik/config.json` has `schemaVersion` 5, `boardState` `none`, `backlogModel` `flat`, no
+      `project` and no `missing`; `.cuevik/lineage.json` is byte-identical to the default lineage;
+      `initiation` has `stories` only (no `epic`) and matches the `initiation`-labelled issues (one
+      story per step `01`–`09`).
+- [ ] No epic issue was filed (neither an initiation epic nor a backlog epic) and no sub-issue link
+      was created. Epics appear only as logical rows in `docs/BACKLOG.md`, Issue column `—`.
+- [ ] `INIT-*` issues carry the `Task` type and `PRD-*` issues the `Feature` type where the owner
+      supports issue types; otherwise the PR body records `Issue types: not set (<reason>)`. The
+      labels (`initiation`; `story` + `priority:*`) are unchanged.
 - [ ] Every mandatory section of `PRODUCT.md` and `PRD.md` is filled. Every other heading is
       present, in template order, and holds only its Express stub line. No `[placeholder]` is left.
 - [ ] `docs/ARCHITECTURE.md`, `docs/TECH-STACK.md`, `docs/TEST-STRATEGY.md`, `docs/AI-TOOL-GUIDE.md` and
       `README.md` are not
       in the diff, and nothing in the documents invents a decision those steps own.
 - [ ] `CONTRIBUTING.md` has exactly one `INITIATION-ONLY` block, and it is the Express variant.
-- [ ] The PR closes the stories of `01`, `02` and `08`, and not the epic.
+- [ ] The PR closes the stories of `01`, `02` and `08` (there is no epic to leave open).
 - [ ] No board question was asked and no board call was made; the PR body says `Board: none,
       issues filed only`.

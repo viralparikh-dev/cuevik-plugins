@@ -88,6 +88,7 @@ tr{break-inside:avoid}
 td:first-child,td.nw{white-space:nowrap}
 td code{white-space:nowrap}
 td code.wrap,.cmds td code{white-space:normal;overflow-wrap:anywhere}
+.tbl.wide th,.tbl.wide td{padding-left:5px;padding-right:5px}  /* dense 5-column command tables: tighter sides to fit the portrait page box (vertical padding left to each page) */
 tr.grp td{background:var(--primary-muted);color:var(--primary-text);font-weight:600}
 
 .tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:var(--text-xs);font-weight:600;border:1px solid var(--border);white-space:nowrap}
@@ -139,7 +140,7 @@ h2.pb{break-before:page;margin-top:0}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
   figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.3.0, cuevik-ship 0.3.0, cuevik-docs 0.3.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all three plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.4.0, cuevik-ship 0.4.0, cuevik-docs 0.4.0, cuevik-deck 0.4.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
@@ -189,14 +190,18 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#update">update</a></li>
 </ul>
 </li>
-<li><a href="#8-command-reference">8. Command reference</a><ul>
+<li><a href="#8-cuevik-deck-a-kickoff-deck-from-a-statement-of-work">8. cuevik-deck: a kickoff deck from a Statement of Work</a><ul>
+<li><a href="#kickoff-meeting">kickoff-meeting</a></li>
+</ul>
+</li>
+<li><a href="#9-command-reference">9. Command reference</a><ul>
 <li><a href="#what-each-command-does">What each command does</a></li>
 <li><a href="#branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</a></li>
 </ul>
 </li>
-<li><a href="#9-who-owns-which-document">9. Who owns which document</a></li>
-<li><a href="#10-troubleshooting">10. Troubleshooting</a></li>
-<li><a href="#11-known-limits">11. Known limits</a></li>
+<li><a href="#10-who-owns-which-document">10. Who owns which document</a></li>
+<li><a href="#11-troubleshooting">11. Troubleshooting</a></li>
+<li><a href="#12-known-limits">12. Known limits</a></li>
 <li><a href="#version-history">Version history</a></li>
 </ul></nav><hr/>
 <div class="keep k2"><h2 id="1-what-you-get"><span class="num">1</span>What you get</h2><p>Three plugins with one rule: every document and change reaches <code>main</code> through a reviewed PR, and the next step will not run until the previous PR is merged.</p></div>
@@ -224,6 +229,11 @@ h2.pb{break-before:page;margin-top:0}
 <td class="nw"><code>cuevik-docs</code></td>
 <td>Audit and update source-of-truth documents</td>
 <td class="nw"><code>audit</code>, <code>update</code></td>
+</tr>
+<tr>
+<td class="nw"><code>cuevik-deck</code></td>
+<td>Turn a Statement of Work into a project kickoff deck</td>
+<td><code>kickoff-meeting</code></td>
 </tr>
 </tbody>
 </table></div>
@@ -686,12 +696,12 @@ h2.pb{break-before:page;margin-top:0}
 <p>The lean path for an MVP or spike. Run it instead of the ten steps, in the project folder of a repo that is not bootstrapped yet. In one session and one PR, from branch <code>init/express</code>, it does the work of <code>00</code>, <code>01</code>, <code>02</code> and <code>08</code>:</p>
 <ul>
 <li><strong>A pitch, if you have one.</strong> It asks first for an optional one-paragraph pitch. With one, <code>01</code> drafts a strawman in which every statement traces to the pitch; without, it interviews you as usual.</li>
-<li><strong>Bootstrap without a board.</strong> The repo, <code>CONTRIBUTING.md</code> (the permanent rules plus a short initiation block that holds only the self-review checklist), <code>.cuevik/config.json</code> (<code>boardState</code> <code>none</code>), the default <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>, and the initiation issues: an epic and one story per step <code>01</code> to <code>09</code>.</li>
+<li><strong>Bootstrap without a board.</strong> The repo, <code>CONTRIBUTING.md</code> (the permanent rules plus a short initiation block that holds only the self-review checklist), <code>.cuevik/config.json</code> (<code>boardState</code> <code>none</code>, <code>backlogModel</code> <code>flat</code>), the default <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>, and the initiation issues: one story per step <code>01</code> to <code>09</code>, each a <code>Task</code> where the org has issue types, and <strong>no epic</strong>.</li>
 <li><strong>A lean <code>PRODUCT.md</code> and <code>PRD.md</code>.</strong> <code>PRODUCT.md</code> fills Overview, Target Users, Features, Scope and Success Criteria. <code>PRD.md</code> fills Overview, Features / Capabilities, Functional Requirements, Acceptance Criteria and Out of Scope. Every other heading stays, with one line saying it is not covered in the Express lane. The writing rules are the same as in the full steps.</li>
-<li><strong>The backlog.</strong> <code>08</code> files the epics and stories and writes <code>docs/BACKLOG.md</code>, with no question about a board.</li>
+<li><strong>The backlog.</strong> <code>08</code> files the stories as <code>Feature</code>s (where the org has issue types) and writes <code>docs/BACKLOG.md</code>, with no epics filed as issues — they stay as logical rows in <code>BACKLOG.md</code> — and no question about a board.</li>
 <li><strong>What it skips.</strong> <code>03</code> to <code>07</code> and <code>09</code>: no <code>ARCHITECTURE.md</code>, <code>TECH-STACK.md</code>, <code>TEST-STRATEGY.md</code>, <code>AI-TOOL-GUIDE.md</code> or <code>README.md</code>.</li>
 </ul>
-<p>The PR has four commits (bootstrap, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for <code>01</code>, <code>02</code> and <code>08</code>; the epic and the other stories stay open.</p>
+<p>The PR has four commits (bootstrap, <code>PRODUCT.md</code>, <code>PRD.md</code>, <code>BACKLOG.md</code>) and both roles review it: the Architect for the governance files, the Product Owner for the three documents. It closes the stories for <code>01</code>, <code>02</code> and <code>08</code>; the other stories stay open (there is no epic).</p>
 <p>To graduate later, run <code>/cuevik-start:03-architecture</code> and the steps after it as usual. The merged Express PR counts as the PR of the steps it covered, and <code>/cuevik-docs:update</code> deepens the lean documents.</p>
 <div class="keep k3"><h3 id="migrate">migrate</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> <code>init/migrate</code>  ·  <strong>PR to:</strong> <code>main</code>  ·  <strong>Writes:</strong> The two <code>.cuevik/</code> files  ·  <strong>You:</strong> Approve, review and merge</p></div>
 
@@ -699,7 +709,7 @@ h2.pb{break-before:page;margin-top:0}
 <p>Nothing else changes: no issue is filed, <code>CONTRIBUTING.md</code> is not touched (its initiation-only table keeps the old ids until <code>09-finalize</code>), and it never merges. A repo that is already current gets <code>Nothing to migrate.</code> Merge the PR, then re-run the step you wanted. A migrated repo has no initiation story for <code>05-test-strategy</code>, so <code>status</code> lists that step as not started until you run it.</p>
 <p>To revise a document after its step is merged, use <code>/cuevik-docs:update &lt;document&gt;</code> instead of re-running the step.</p>
 <hr/>
-<div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads <code>.cuevik/config.json</code>, including the board's ids when the repo has a board. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 8.</p></div>
+<div class="keep k2"><h2 id="6-cuevik-ship-deliver-one-issue-at-a-time"><span class="num">6</span>cuevik-ship: deliver one issue at a time</h2><p>Takes one idea, or one existing issue, from brainstorm to a merged code PR: seven steps and a cleanup, one session and one PR each. Run it in a project that has been through <code>00-bootstrap</code>, because it reads <code>.cuevik/config.json</code>, including the board's ids when the repo has a board. Every command is <code>/cuevik-ship:&lt;name&gt;</code>. <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name. The line under each heading is generated from the branches-and-files table in section 9.</p></div>
 
 <h3 id="how-it-differs-from-cuevik-start">How it differs from cuevik-start</h3>
 <ul>
@@ -837,7 +847,13 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tbody>
 </table></div>
 <hr/>
-<div class="keep k2"><h2 id="8-command-reference"><span class="num">8</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
+<div class="keep k2"><h2 id="8-cuevik-deck-a-kickoff-deck-from-a-statement-of-work"><span class="num">8</span>cuevik-deck: a kickoff deck from a Statement of Work</h2><p>One command, standalone. Unlike the other plugins it needs no repository and opens no PR: it reads a Statement of Work, interviews you, and writes two files — a reviewed brief and a slide deck — to a folder you choose. Every command is <code>/cuevik-deck:&lt;name&gt;</code>.</p></div>
+
+<div class="keep k3"><h3 id="kickoff-meeting">kickoff-meeting</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> <code>KICKOFF-BRIEF.md</code> and the deck  ·  <strong>You:</strong> Answer the questionnaire, approve the brief</p></div>
+
+<p>Reads the SoW (a file or pasted text) and pulls out the engagement: objectives, deliverables, scope, timeline and commercial model. It then runs a structured questionnaire one section at a time, pre-filled from the SoW so you confirm or correct rather than answer from scratch: engagement and scope, technical landscape, agile ways of working, non-functional requirements (with measurable targets), governance and expectations, and risks. It assembles the answers into <code>KICKOFF-BRIEF.md</code> for your approval, then renders a client-ready deck — PowerPoint by default, or Google Slides or Claude Design Slides on request. Both files land in the folder you name; nothing is committed, and no number is invented for a requirement — an unanswered target is marked <code>[TBD]</code> to resolve before the kickoff.</p>
+<hr/>
+<div class="keep k2"><h2 id="9-command-reference"><span class="num">9</span>Command reference</h2><h3 id="what-each-command-does">What each command does</h3></div>
 
 <div class="tbl"><table>
 <thead>
@@ -993,11 +1009,17 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td>Updates one source-of-truth document through a reviewed PR, using its owner and reviewers from the lineage, and flags downstream documents.</td>
 <td class="nw"><span class="tag available">Available</span></td>
 </tr>
+<tr>
+<td><code>/cuevik-deck:kickoff-meeting</code></td>
+<td>Kickoff Meeting</td>
+<td>Turns a Statement of Work into a project kickoff deck via a discovery questionnaire and a reviewed brief.</td>
+<td class="nw"><span class="tag available">Available</span></td>
+</tr>
 </tbody>
 </table></div>
 <div class="keep k3"><h3 id="branches-and-files-ship-docs-and-utility-commands">Branches and files (ship, docs and utility commands)</h3><p>The ten numbered <code>cuevik-start</code> steps are not repeated here: see section 5. In <code>cuevik-ship</code>, <code>&lt;n&gt;</code> is the issue number and <code>&lt;slug&gt;</code> its short name.</p></div>
 
-<div class="tbl"><table>
+<div class="tbl wide"><table>
 <thead>
 <tr>
 <th>Command</th>
@@ -1106,10 +1128,17 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td>The document, via PR</td>
 <td>Review and merge</td>
 </tr>
+<tr>
+<td><code class="wrap">/<wbr/>cuevik-deck:kickoff-meeting</code></td>
+<td class="nw">—</td>
+<td class="nw">—</td>
+<td><code>KICKOFF-BRIEF.md</code> and the deck</td>
+<td>Answer the questionnaire, approve the brief</td>
+</tr>
 </tbody>
 </table></div>
 <hr/>
-<div class="keep k2"><h2 id="9-who-owns-which-document"><span class="num">9</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
+<div class="keep k2"><h2 id="10-who-owns-which-document"><span class="num">10</span>Who owns which document</h2><p>From the default lineage: who owns each document, who reviews a change to it, and what it is built from.</p></div>
 
 <div class="tbl"><table>
 <thead>
@@ -1178,7 +1207,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tbody>
 </table></div>
 <hr/>
-<div class="keep k2"><h2 id="10-troubleshooting"><span class="num">10</span>Troubleshooting</h2><p>A step stops with a message rather than guessing. Fix the cause and re-run it. <code>00-bootstrap</code> skips what it already did, so a re-run does not create anything twice.</p></div>
+<div class="keep k2"><h2 id="11-troubleshooting"><span class="num">11</span>Troubleshooting</h2><p>A step stops with a message rather than guessing. Fix the cause and re-run it. <code>00-bootstrap</code> skips what it already did, so a re-run does not create anything twice.</p></div>
 
 <div class="tbl"><table>
 <thead>
@@ -1250,7 +1279,7 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 <tr>
 <td><code>.cuevik/config.json is schemaVersion &lt;n&gt;</code></td>
-<td>The config is older than the current contract (before the optional board, or before the steps were renumbered). Run <code>/cuevik-start:migrate</code> and merge its PR. <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop until then.</td>
+<td>The config is older than the current contract (before the optional board, before the steps were renumbered, or before the backlog model was recorded). Run <code>/cuevik-start:migrate</code> and merge its PR. <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop until then.</td>
 </tr>
 <tr>
 <td>A <code>00-bootstrap</code>, Express or migration PR is already open</td>
@@ -1275,18 +1304,18 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tbody>
 </table></div>
 <hr/>
-<h2 id="11-known-limits"><span class="num">11</span>Known limits</h2>
+<h2 id="12-known-limits"><span class="num">12</span>Known limits</h2>
 <ul>
 <li><strong>GitHub only,</strong> and a local Claude Code session for anything that touches Projects. Cloud sessions cannot reach GitHub Projects.</li>
 <li><strong>Approval is process-enforced.</strong> GitHub does not let you approve your own PR, so for solo work the self-review checklist is the gate. Nothing in GitHub enforces it.</li>
-<li><strong>Built, not yet run live:</strong> <code>cuevik-start</code> steps <code>03</code> to <code>09</code>, <code>cleanup</code>, <code>express</code> and <code>migrate</code>, and every <code>cuevik-ship</code> and <code>cuevik-docs</code> command. Only <code>00</code> to <code>02</code> and <code>status</code> have been run end to end on a real repo, so expect fixes after first use.</li>
+<li><strong>Built, not yet run live:</strong> <code>cuevik-start</code> steps <code>03</code> to <code>09</code>, <code>cleanup</code>, <code>express</code> and <code>migrate</code>, and every <code>cuevik-ship</code>, <code>cuevik-docs</code> and <code>cuevik-deck</code> command. Only <code>00</code> to <code>02</code> and <code>status</code> have been run end to end on a real repo, so expect fixes after first use.</li>
 <li><strong>Not yet tested:</strong> linking a user-owned board to an organisation-owned repo, and copying another user's template board.</li>
 <li><strong>Board copies:</strong> bootstrap reports differences between a template board and its copy, but cannot see the settings inside each workflow (for example which Status "Item closed" sets).</li>
 <li><strong>Not yet verified:</strong> creating sub-issue and blocked-by links from a cloud session, which <code>/cuevik-ship:03-create-backlog</code> relies on.</li>
 <li><strong>Plugin settings:</strong> in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. <code>cuevik-ship</code>'s worktree-folder setting uses the same mechanism and is untested.</li>
-<li><strong>Labels, not issue types.</strong> GitHub issue types are not used, because user-owned repos do not have them.</li>
+<li><strong>Labels, plus issue types in the Express lane.</strong> The standard lane and <code>cuevik-ship</code> use labels only. The Express lane additionally gives its issues a native type (<code>Task</code> for <code>INIT-*</code>, <code>Feature</code> for <code>PRD-*</code>) when the repo's owner is an organisation that has issue types; a user-owned repo cannot, so it files them untyped.</li>
 <li><strong><code>docs/BACKLOG.md</code> is a snapshot.</strong> After setup, GitHub is the backlog.</li>
-<li><strong>Older repos need <code>/cuevik-start:migrate</code>.</strong> A repo set up before the optional board or before the test strategy step was added has the old config version and step ids; <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.</li>
+<li><strong>Older repos need <code>/cuevik-start:migrate</code>.</strong> A repo set up before the optional board, the test strategy step, or the backlog model was recorded has the old config version and step ids; <code>cuevik-start</code> (from <code>01</code>) and <code>cuevik-ship</code> stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.</li>
 </ul>
 <hr/>
 <div class="keep k2"><h2 id="version-history">Version history</h2><div class="tbl short"><table>
@@ -1298,6 +1327,11 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="nw">0.4.0</td>
+<td class="nw">2026-11-05</td>
+<td><code>cuevik-start</code> 0.4.0: the Express lane files no epic issues and gives its issues a native type (<code>Task</code> for <code>INIT-*</code>, <code>Feature</code> for <code>PRD-*</code>) where the organisation has issue types; config contract version 5 adds <code>backlogModel</code> (<code>epic-grouped</code> for the standard lane, <code>flat</code> for Express) — run <code>/cuevik-start:migrate</code> on older repos. <code>cuevik-ship</code>, <code>cuevik-docs</code> and <code>cuevik-deck</code> move to 0.4.0 so all plugins share one version</td>
+</tr>
 <tr>
 <td class="nw">0.3.0</td>
 <td class="nw">2026-11-05</td>

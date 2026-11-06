@@ -30,5 +30,5 @@ express:
     - 06-ai-tool-guide
     - 07-readme
     - 09-finalize
-  prSummary: "Summarize the governance baseline and .cuevik settings (boardState none), the product concept, the requirements, and the backlog filed; list which sections of PRODUCT.md and PRD.md were not covered and which steps the lane skipped; include the Architect and Product Owner reviewer checklists and the Express block."
+  prSummary: "Summarize the governance baseline and .cuevik settings (boardState none, backlogModel flat), the product concept, the requirements, and the backlog filed with no epic issues and the INIT/PRD issues typed Task/Feature where the org allows; list which sections of PRODUCT.md and PRD.md were not covered and which steps the lane skipped; include the Architect and Product Owner reviewer checklists and the Express block."
   finalReminder: "The Express lane is final only when the Architect and the Product Owner approve and merge the PR. To graduate later, run /cuevik-start:03-architecture in a new session; to deepen a lean document, run /cuevik-docs:update."
