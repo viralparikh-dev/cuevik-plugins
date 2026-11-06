@@ -7,7 +7,8 @@ work.
 
 - **Started:** 2026-11-05
 - **Scope:** the `cuevik-start` Express lane, plus a matching adaptation in `cuevik-ship`
-- **Status:** design proposed; awaiting maintainer approval. Nothing implemented.
+- **Status:** implemented 2026-11-06 — both PRs merged: cuevik-start `feat/express-no-epics` (#72)
+  and cuevik-ship `feat/ship-epicless` (#73).
 
 ## Files
 
