@@ -41,11 +41,12 @@ Run `gate.md` common preconditions 1–4, then decide which path this is:
 
 | Path | When | Gate | Branches |
 | --- | --- | --- | --- |
-| **A. After 03** | the issue has a `ship/<n>-*/issue` branch | the 04 row: References has `Epic:`, and no `idea` label | in the issue's worktree (this session must run there) |
+| **A. After 03** | the issue has a `ship/<n>-*/issue` branch | the 04 row: References has `Epic:`, and no `idea` label — on a `flat` repo (`config.md`), a `story` label instead of the `Epic:` line, and no `idea` label | in the issue's worktree (this session must run there) |
 | **B. New work item** | an open issue with no `ship/<n>-*` branch, not labelled `epic` or `idea` (a bug, a refactor, a split story, or a story filed at initiation) | none | 04 creates `.../issue` and the worktree |
 | **C. Free description** | text, not a number | none | as B, once the issue exists |
 
-- An `idea` issue with no `Epic:` line: **STOP** — it has not been through 02 and 03.
+- An `idea` issue with no `Epic:` line (on a `flat` repo, any issue still labelled `idea`):
+  **STOP** — it has not been through 02 and 03.
 - An `epic`: **STOP** — plan one of its stories.
 - Closed issue: **STOP**.
 - An `Approved` `intent.md` on the issue branch, or a merged `.../04-plan-intent` PR: **STOP**,

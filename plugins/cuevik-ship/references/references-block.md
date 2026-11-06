@@ -24,7 +24,9 @@ gate check and again when it opens its PR; operators do not edit between the mar
 
 - One line per thing that exists, in this order; a line appears once its file or PR exists and
   is never removed.
-- `Epic:` is written by `03-create-backlog` and is the signal `04-plan-intent` gates on.
+- `Epic:` is written by `03-create-backlog` and is the signal `04-plan-intent` gates on — on a
+  `flat` repo (`config.md`) there is no `Epic:` line, and `04-plan-intent` gates on the `story`
+  label instead.
 - `Docs PR:` is written by `02-audit-prd` when it opens the PR to `main`.
 - `Split from:` / `Split into:` are written by `03-create-backlog` on a split.
 
