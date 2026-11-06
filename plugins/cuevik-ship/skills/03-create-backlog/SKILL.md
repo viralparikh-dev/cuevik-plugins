@@ -1,6 +1,6 @@
 ---
 name: 03-create-backlog
-description: Step 03 of cuevik-ship. Run after 02-audit-prd's docs PR is merged. Files the ratified requirements as GitHub issues — turns the idea issue into its story (PRD-NNN title, story and priority labels), finds or creates each story's epic, splits the idea into several stories when it covers several requirements, links sub-issues and blocked-by — after you approve one table. Writes to GitHub only (not docs/BACKLOG.md), with no branch and no PR.
+description: Step 03 of cuevik-ship. Run after 02-audit-prd's docs PR is merged. Files the ratified requirements as GitHub issues — turns the idea issue into its story (PRD-NNN title, story and priority labels), finds or creates each story's epic (on a flat-backlog repo it files no epics and types the stories Feature instead), splits the idea into several stories when it covers several requirements, links sub-issues and blocked-by — after you approve one table. Writes to GitHub only (not docs/BACKLOG.md), with no branch and no PR.
 disable-model-invocation: true
 argument-hint: "<issue#> | PRD-NNN [PRD-NNN ...]"
 ---
@@ -23,6 +23,13 @@ before responding does not apply (process, Skills).
 a sub-issue of the epic for its PRD section, prerequisites linked as blocked-by. It writes no
 file and opens no PR; GitHub is the backlog after initiation, so `docs/BACKLOG.md` stays as it is.
 Every write is visible to the team, so nothing is written before the table is approved.
+
+**Backlog model.** Read `backlogModel` (`config.md`). Everything below describes `epic-grouped`.
+On a `flat` repo (the Express lane): file no epic and no sub-issue-to-epic link — skip epic
+resolution (§2 "Epic per ID"), the **New, new section** class (§3), and every epic write (§5); the
+References block omits `Epic:`, and `04-plan-intent` gates on the `story` label. Each story, new or
+converted, is typed `Feature` where the owner supports it (`config.md`, Issue types). `blocked_by`
+links and everything else are unchanged.
 
 Arguments: `$ARGUMENTS`
 
@@ -78,7 +85,7 @@ Then GitHub (never `initiation` issues):
 
 - **Existing story** per ID: `gh issue list --label story --state all --search "PRD-NNN in:title"
   --json number,title,state,body,url`, keeping only a title that starts exactly `PRD-NNN:`.
-- **Epic** per ID, in this order (D6):
+- **Epic** per ID (`epic-grouped` only — on a `flat` repo skip this, `config.md`), in this order (D6):
   1. the parent (`gh api repos/<owner>/<repo>/issues/<story>/parent`) of existing stories in the
      **same section**: exactly one → that epic; several → ask;
   2. else an `epic`-labelled issue whose body has `Source: docs/PRD.md §6 "<section title>"`;
@@ -96,8 +103,9 @@ Then GitHub (never `initiation` issues):
 Each ID is exactly one of:
 
 - **Convert** — the issue itself becomes the story for this ID.
-- **New** — no story: create one under the section's epic.
-- **New, new section** — no story and no epic: create the epic first.
+- **New** — no story: create one under the section's epic (`flat`: just create the story, no epic).
+- **New, new section** — no story and no epic: create the epic first (`epic-grouped` only; on a
+  `flat` repo this collapses into **New** — no epic is created).
 - **Changed, story open** — update its title and body to the PRD on `main`, and comment the docs
   PR link.
 - **Changed, story closed** — the shipped work no longer matches: propose reopening it or filing a
@@ -152,7 +160,9 @@ gh issue comment <n> --body "Requirement changed in <docs PR url>."
 
 Then refresh the References block of the issue: `Epic: #<e>` and, on a split,
 `Split into: #<a>, #<b>`. The `Epic:` line and the removed `idea` label are what
-`04-plan-intent` gates on (D10).
+`04-plan-intent` gates on (D10). On a `flat` repo there is no `Epic:` line (the block keeps only
+`Split into:` where it applies); the `story` label and the removed `idea` label are what
+`04-plan-intent` gates on instead (`config.md`).
 
 ## 6. Report
 
