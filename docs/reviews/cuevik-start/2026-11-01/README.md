@@ -16,11 +16,11 @@ Record of the Senior Product Owner + Enterprise Product Architect usage review o
 |---|---|---|
 | `01-prompt.md` | The reusable review prompt — copy into a session to re-run or adapt for another plugin | Keep |
 | `02-review.md` | Full review: evidence, scores, gaps, redundancy, verdict | Keep |
-| `03-action-items.md` | Live decision tracker from the section-by-section walkthrough | Ephemeral — git-ignored; delete once `04-plan.md` is final |
-| `04-plan.md` | Execution plan — Track A (autonomous) / Track B (design-gated) | Keep |
 | `design-board-optional.md` | Settled design for Task 8 (board optional): decisions, touch-list, implementation notes | Keep — decision record |
 | `design-express-lane.md` | Settled design for Task 9 (Express lane) | Keep — decision record |
 | `design-test-strategy-renumber.md` | Settled design for Task 10 (test strategy step, renumber, migrate) | Keep — decision record |
+
+> `04-plan.md` (execution plan) and the git-ignored `03-action-items.md` were removed after implementation — the plan was executed (PRs #54–#65). The review, prompt, and design records above hold the lasting rationale.
 
 ## Related PRs
 
