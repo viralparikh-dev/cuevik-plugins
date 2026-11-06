@@ -1,10 +1,15 @@
 # Design — Express: no epic issues, native GitHub issue types
 
-Status: **design approved 2026-11-05 (open questions resolved with the maintainer). Nothing
-implemented.** Implementation is two PRs from `main`, in order: `feat/express-no-epics`
-(cuevik-start, incl. the schema bump + migration) then `feat/ship-epicless` (cuevik-ship, which
-reads the new marker). Follow-on to the merged Express lane (`design-express-lane.md`) and
-board-optional (`design-board-optional.md`); it does not reopen either.
+Status: **implemented 2026-11-06 (design approved 2026-11-05; open questions resolved with the
+maintainer).** Shipped as two PRs from `main`, in order: `feat/express-no-epics` (cuevik-start,
+incl. the schema bump + migration, #72) then `feat/ship-epicless` (cuevik-ship, which reads the new
+marker, #73). Follow-on to the merged Express lane (`design-express-lane.md`) and board-optional
+(`design-board-optional.md`); it does not reopen either.
+
+Implementation notes (beyond the design below): all four plugins were aligned to `0.4.0` (deck
+moved `0.1.0`→`0.3.0` via #71, then to `0.4.0`), and PR1 also fixed a pre-existing docs-build
+overflow in the Walkthrough's command-summary table (a scoped `.tbl.wide` padding rule). The live
+Express run on a disposable Cuevik-org repo remains maintainer-run.
 
 ## Problem
 
