@@ -70,7 +70,7 @@ Then, for each step:
    | --- | --- | --- |
    | merged PR, file check passes or none | `✓ merged` | `PR #n` |
    | merged PR, file check fails | `⚠ mismatch` | `PR #n merged, but <what failed> on origin/main` |
-   | no merged PR, file check passes | `⚠ mismatch` | `<output> on origin/main without a merged <branch> PR; the next step's gate will refuse` |
+   | no merged PR, file check passes | `⚠ mismatch` | `<output> on origin/main without a merged <branch> PR; the next step's gate needs this step's PR open or merged` |
    | open PR | `⟳ PR open` | `PR #n — "<title>"` |
    | branch local or on GitHub | `⊙ branch` | `local`, `GitHub` or `local + GitHub`, plus `closed PR #n` if there is one |
    | none of the above | `— not started` | |
@@ -133,7 +133,7 @@ stays the source of truth: this section never changes a row's Status or the Next
 | 01-product-concept | docs/PRODUCT.md | ⟳ PR open | PR #4 — "docs: add PRODUCT.md (01-product-concept)" |
 | 02-product-requirements | docs/PRD.md | — not started | |
 
-**Next:** merge PR #4 (01-product-concept). /cuevik-start:02-product-requirements refuses to run until then.
+**Next:** merge PR #4 (01-product-concept) when it is ready. /cuevik-start:02-product-requirements may start now (one step ahead), but the main ruleset blocks it from merging until PR #4 merges.
 ```
 
 - Repo: `gh repo view --json nameWithOwner --jq .nameWithOwner`. Sha: `git rev-parse --short
@@ -149,8 +149,9 @@ disagreement from §3. Then print the `**Board:**` line from §3 step 5, if ther
 `**Next:**` line. It is decided by the first row in `steps.yml` order that is not `✓ merged`:
 
 - `⚠ mismatch`: `blocked — <id> does not add up (see Check).`
-- `⟳ PR open`: `merge PR #n (<id>). /cuevik-start:<next id> refuses to run until then.` If it is
-  the last step: `merge PR #n (<id>); initiation is then complete.`
+- `⟳ PR open`: `merge PR #n (<id>) when it is ready. /cuevik-start:<next id> may start now (one
+  step ahead), but the main ruleset blocks it from merging until PR #n merges.` If it is the last
+  step: `merge PR #n (<id>); initiation is then complete.`
 - `⊙ branch`: `/cuevik-start:<id> in a new session. Branch <branch> exists; the runner asks
   whether to reuse or delete it.`
 - `— not started`: `/cuevik-start:<id> in a new session.` For `09-finalize`, add `It strips the
