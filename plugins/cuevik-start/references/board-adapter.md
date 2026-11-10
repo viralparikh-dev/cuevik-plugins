@@ -39,6 +39,7 @@ What a caller does with a result:
 | `board.link` | bootstrap §E.2 |
 | `board.addItem` | bootstrap §E.4; `08-backlog` |
 | `board.setField` | bootstrap §E.4; runner §7; `08-backlog` |
+| `board.setMeta` | `01-product-concept` |
 | `board.workflows` | bootstrap §E.5 |
 
 ### board.read
@@ -183,6 +184,21 @@ gh api graphql -f o=<board-owner> -F n=<number> -f query='
 - Any sprint already there: create none and leave the items' Sprint empty. Later sprints
   follow the same name format: `Sprint-01`, `Sprint-02`, ….
 - No `Sprint` iteration field: skip and say so in the PR body.
+
+### board.setMeta
+
+Sets the board's short description and README in one call; the caller names both texts. The board
+is already proven present (a caller runs this only when `boardState` is not `none`), so there is no
+probe.
+
+`gh project edit <number> --owner <board-owner> --description "<short description>" --readme "<readme markdown>"`.
+
+Pass each text as a single `--flag` argument, in one `gh project edit` call, so a failure leaves the
+board unchanged rather than half-set. A successful edit is `ok`. A failed edit is `degraded`: the
+board is still usable, only its description/README was not set. Unlike the bootstrap parts
+(`link`, `items`, `fields`, `workflows`), this is **not** recorded in the config `missing` set — a
+step never writes `missing` — so the caller only shows the error and notes it in the PR body, then
+carries on.
 
 ### board.workflows
 
