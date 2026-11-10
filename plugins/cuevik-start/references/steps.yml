@@ -35,6 +35,7 @@ steps:
       - .cuevik/config.json
       - .cuevik/lineage.json
       - .markdownlint.json
+      - .github/workflows/cuevik-init-order.yml
     commitMessage: "docs: add repo governance baseline and .cuevik config (00-bootstrap)"
     prSummary: "Summarize the branching + self-review governance, the repo connected or created, the project board state (connected or created, or why there is none), the initiation issues filed, and the repo settings changed."
     finalReminder: "Repo governance becomes final only when the Architect merges the PR (self-review checklist complete). Then run /cuevik-start:01-product-concept in a new session."

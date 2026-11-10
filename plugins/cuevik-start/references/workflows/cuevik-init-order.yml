@@ -1,0 +1,71 @@
+name: cuevik-init-order
+
+# Enforces cuevik-start initiation merge order: a step's PR (head init/NN-*) cannot merge until
+# the previous step's PR has merged into main. Written verbatim by /cuevik-start:00-bootstrap to
+# .github/workflows/cuevik-init-order.yml; do not edit by hand. The repo's main ruleset lists the
+# "init-order" check as required with strict (up-to-date) policy, so a failing run blocks merge and
+# merging the previous step forces this branch to re-sync (which re-runs this check). Non-init PRs
+# and the one-PR Express lane (init/express) pass without a gate.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  init-order:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Previous step merged
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Predecessor branch for each init step. Empty = first step, no gate.
+          case "$HEAD_REF" in
+            init/00-bootstrap)            PRED="" ;;
+            init/01-product-concept)      PRED="init/00-bootstrap" ;;
+            init/02-product-requirements) PRED="init/01-product-concept" ;;
+            init/03-architecture)         PRED="init/02-product-requirements" ;;
+            init/04-tech-stack)           PRED="init/03-architecture" ;;
+            init/05-test-strategy)        PRED="init/04-tech-stack" ;;
+            init/06-ai-tool-guide)        PRED="init/05-test-strategy" ;;
+            init/07-readme)               PRED="init/06-ai-tool-guide" ;;
+            init/08-backlog)              PRED="init/07-readme" ;;
+            init/09-finalize)             PRED="init/08-backlog" ;;
+            *)
+              echo "Head '$HEAD_REF' is not a gated init/NN-* branch (normal PR or the Express lane). No order gate."
+              exit 0
+              ;;
+          esac
+
+          if [ -z "$PRED" ]; then
+            echo "First initiation step ($HEAD_REF) — no predecessor to gate on."
+            exit 0
+          fi
+
+          # The Express lane (init/express) runs 00, 01, 02 and 08 in one PR, so a merged lane PR
+          # satisfies a predecessor that is one of those steps (e.g. 03 following an Express repo).
+          CANDS="$PRED"
+          case "$PRED" in
+            init/00-bootstrap|init/01-product-concept|init/02-product-requirements|init/08-backlog)
+              CANDS="$PRED init/express" ;;
+          esac
+
+          for head in $CANDS; do
+            n=$(gh pr list --repo "$REPO" --head "$head" --base main --state merged --json number --jq 'length')
+            if [ "$n" != "0" ]; then
+              echo "Predecessor '$head' has a merged PR into main. Order gate passes."
+              exit 0
+            fi
+          done
+
+          echo "::error::Previous step not merged. '$HEAD_REF' cannot merge until a PR for one of: $CANDS has merged into main."
+          exit 1

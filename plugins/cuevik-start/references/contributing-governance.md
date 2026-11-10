@@ -58,7 +58,15 @@ Project initiation runs as ten `/cuevik-start` steps, one session and one PR per
 
 - One branch per step, created from an up-to-date `main`.
 - `main` holds only merged, final documents.
-- A step refuses to run until the previous step's PR is merged. An open PR does not count.
+- A step may **start** while the previous step's PR is still open — you can work one step ahead of
+  the review queue. You may not start more than one step ahead: every step before the previous one
+  must already be merged.
+- Merge order is enforced by the repo's `main` ruleset and the `init-order` status check: a step's
+  PR cannot merge until the previous step's PR has merged. The ruleset also requires each branch to
+  be up to date with `main` before merging.
+- Block and regenerate: if an upstream document changes on `main` after you branched (for example
+  the previous step's PR was revised in review), regenerate this step against the new version
+  before merging it. The up-to-date requirement surfaces the change; regenerating is your call.
 
 ### Self-review gate
 
@@ -68,7 +76,8 @@ this checklist is the approval. Complete it in the PR before merging any `init/*
 - [ ] At least a few hours, ideally a full day, have passed since writing the document
       (fresh-eyes pass).
 - [ ] The document covers every section its step requires.
-- [ ] No upstream document changed on `main` after this branch was created.
+- [ ] No upstream document changed on `main` after this branch was created. If one did, this
+      document was regenerated against the new version.
 - [ ] The change is in a PR. Nothing was pushed to `main` directly, apart from bootstrap's empty
       initial commit.
 <!-- END INITIATION-ONLY -->
@@ -98,7 +107,8 @@ this checklist is the approval. Complete it in the PR before merging any `init/*
 - [ ] At least a few hours, ideally a full day, have passed since writing the document
       (fresh-eyes pass).
 - [ ] The document covers every section its step requires.
-- [ ] No upstream document changed on `main` after this branch was created.
+- [ ] No upstream document changed on `main` after this branch was created. If one did, this
+      document was regenerated against the new version.
 - [ ] The change is in a PR. Nothing was pushed to `main` directly, apart from bootstrap's empty
       initial commit.
 <!-- END INITIATION-ONLY -->

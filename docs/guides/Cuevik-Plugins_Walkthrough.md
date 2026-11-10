@@ -239,7 +239,7 @@ Two small files describe the project to the plugins; `00-bootstrap` writes and c
 
 <!-- gen:step-00-bootstrap -->
 
-**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** —  ·  **Writes:** `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json`, `.markdownlint.json`  ·  **Then:** `/cuevik-start:01-product-concept`
+**Status:** Available  ·  **Owner:** Architect  ·  **Reviewers:** Architect  ·  **Reads:** —  ·  **Writes:** `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json`, `.markdownlint.json`, `.github/workflows/cuevik-init-order.yml`  ·  **Then:** `/cuevik-start:01-product-concept`
 
 <!-- /gen:step-00-bootstrap -->
 

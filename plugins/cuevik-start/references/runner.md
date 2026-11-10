@@ -143,32 +143,47 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
      then re-run.` (Config contract README, "Migrating from an older schemaVersion", for the edit
      by hand.) `bootstrap: true` steps skip this: they write the file.
 
-4. **Previous step merged** — take the step listed immediately before this one in `steps.yml` and
-   run `gh pr list --head <its branch> --base main --state merged --json number,url`. Run it for
-   the step's `branch` and for each `init/<alias>` of its `aliases` in `steps.yml`: a repo initiated
-   before a renumbering has the merged PR on the old branch.
-   Special case: for `04-tech-stack` only, the previous step (`03-architecture`) only needs to be
-   **open or merged**. Also run `gh pr list --head <its branch> --base main --state open --json
-   number,url`; a PR returned by either query passes. Every other step keeps the merged-only gate.
-   Second special case, separate from that one: when the previous step is one the Express lane
-   covers (`references/express.yml`, `covers`), a merged PR from the lane's `branch` also passes.
-   Run `gh pr list --head <express branch> --base main --state merged --json number,url`. It is
-   what lets `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had an
-   `init/<id>` PR.
-   - At least one PR returned: proceed. The self-review checklist in `CONTRIBUTING.md` was the
-     approval.
-   - None returned: **STOP**. Tell the operator which step's PR must be merged first, and that a
-     merely open PR does not count. (For `04-tech-stack`: that `03-architecture` must have an open
-     or merged PR.)
+4. **Previous step open or merged, earlier steps merged** — a step may start once its immediate
+   predecessor's PR is **open or merged**, provided every step before that predecessor is already
+   **merged**. This lets you work one step ahead of the review queue; the all-earlier-merged clamp
+   keeps you at most one step ahead. Merge order itself is enforced by the repo's `main` ruleset
+   and the `init-order` status check, not here (`CONTRIBUTING.md`).
+
+   The **predecessor** is the step listed immediately before this one in `steps.yml`. For any gate
+   query below, run it for the queried step's `branch`, for each `init/<alias>` of its `aliases` in
+   `steps.yml` (a repo initiated before a renumbering has the PR on the old branch), and — when the
+   Express lane covers that step (`references/express.yml`, `covers`) — for the lane's `branch`
+   (`init/express`). A PR from any of these satisfies the query.
+
+   - **Predecessor open or merged.** Run both
+     `gh pr list --head <branch> --base main --state merged --json number,url` and
+     `... --state open ...` for the predecessor.
+     - A PR returned by either: record whether it was **merged** or only **open**, then apply the
+       clamp below. The self-review checklist in `CONTRIBUTING.md` is the approval for a merged PR.
+     - None returned: **STOP**. Tell the operator that `<predecessor id>`'s PR must be open or
+       merged before this step can start.
+   - **Earlier-steps clamp.** Only when the predecessor passed on an **open** (not merged) PR: for
+     every step before the predecessor in `steps.yml`, run the merged query. (`00-bootstrap` is
+     already required on `main` by check 3, so in practice this bites from `02` onward.)
+     - Every one returns a merged PR: proceed.
+     - Any returns none: **STOP**. Tell the operator they can be at most one step ahead —
+       `<that step id>`'s PR must merge before starting this step while `<predecessor id>` is still
+       open.
+
+   `04-tech-stack` needs no special case now: its predecessor `03-architecture` is covered by the
+   open-or-merged rule like every other step. The Express-lane and alias lookups above are what let
+   `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had an `init/<id>` PR.
 
 5. **Upstream documents on `main`** — for every upstream document from Inputs §3, run
    `git show main:<document>`.
    - Exit 0 for every document: proceed.
    - Non-zero for any document: **STOP** and tell the operator which document is missing from
-     `main`. Exception: when check 4 passed on an open (unmerged) `03-architecture` PR, read
-     `docs/ARCHITECTURE.md` from that PR's branch instead: `git fetch origin <branch>` then
-     `git show origin/<branch>:docs/ARCHITECTURE.md`. Every other upstream document still comes
-     from `main`.
+     `main`. Exception: when check 4 passed on an **open** (unmerged) predecessor PR, read that
+     predecessor's **primary output** (the first entry of its `outputs` in `steps.yml`) from the
+     PR's branch instead of `main`: `git fetch origin <predecessor branch>` then
+     `git show origin/<predecessor branch>:<primary output>`. Every other upstream document still
+     comes from `main`; one missing there is a real STOP — it means an earlier step is unmerged, so
+     you are trying to run more than one step ahead.
    - Empty `upstream`: no upstream document is required.
 
 6. **Step not already finalized** — unless the step sets `replacesExisting: true`, run
@@ -193,7 +208,7 @@ do. Nothing is created, written or pushed before it.
    `Previous step (00-bootstrap) is merged | ✓`. Rows (N/A ones left out for `00-bootstrap`):
    - you are acting as the step's owner (its role);
    - the project's `.cuevik/` settings are on `main`;
-   - the previous step is merged (for `04-tech-stack`: `03-architecture` has an open or merged PR);
+   - the previous step's PR is open or merged, and every earlier step is merged (§1 check 4);
    - the documents this step reads are on `main`;
    - this step's document is not on `main` yet (or the step replaces it);
    - no uncommitted changes, and `main` is up to date;
@@ -240,7 +255,8 @@ Follow the step's `SKILL.md` exactly.
 Use these shared rules for every step:
 
 - Read every upstream document from `main` (`git show main:<document>`) and use it as source of
-  truth.
+  truth — except the one predecessor document §1 check 5 allows reading from its open PR branch
+  when you are working one step ahead.
 - Interview the operator for every section the step requires.
 - Ask one focused question at a time, with `AskUserQuestion` (Asking The Operator).
 - Ask as many focused questions as needed until every required section is complete and every
@@ -307,7 +323,10 @@ After approval:
    any other issue.
 
 End with the step's `finalReminder`: the output becomes final only when the reviewer gate approves
-and merges the PR, and the next step refuses to run until then.
+and merges the PR. The next step may *start* while this PR is open (§1 check 4, one step ahead),
+but the repo's `main` ruleset blocks it from *merging* until this PR merges and forces it to
+re-sync with `main` afterward — so if this document changes during review, regenerate the next
+step against the new version before merging it.
 
 ## 7. Board Bookkeeping
 
@@ -342,11 +361,11 @@ so in the PR body.
    `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
    (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
    it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
-   If the previous step has no merged PR yet (`04-tech-stack` started while `03-architecture` is
-   still open), skip its End date. Also set `End date` on any earlier story that has a merged PR
-   but an empty `End date`, so the date `03-architecture` merged is recorded by the step after
-   `04-tech-stack`. Both steps keep their own story, `Start date` and `Working` status; nothing
-   is shared.
+   If the previous step has no merged PR yet (you started this step while the previous one's PR is
+   still open, one step ahead), skip its End date. Also set `End date` on any earlier story that
+   has a merged PR but an empty `End date`, so a late-merged previous step's date is recorded by
+   the step after it. Each step keeps its own story, `Start date` and `Working` status; nothing is
+   shared.
 
 **After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
 line (§6) links the PR to the story, and the board's workflows do the rest:

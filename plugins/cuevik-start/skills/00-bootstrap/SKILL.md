@@ -1,6 +1,6 @@
 ---
 name: 00-bootstrap
-description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo, optionally connects or creates a project board, files the initiation epic and stories (on the board when there is one), turns on auto-delete head branches, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json and .markdownlint.json.
+description: Step 00 of cuevik-start. Run first, in the project folder. Connects or creates the GitHub repo, optionally connects or creates a project board, files the initiation epic and stories (on the board when there is one), turns on auto-delete head branches, adds the branch ruleset that enforces initiation merge order, and opens a PR adding the CONTRIBUTING.md governance layer, .cuevik/config.json, .cuevik/lineage.json, .markdownlint.json and the .github/workflows/cuevik-init-order.yml merge-order check.
 disable-model-invocation: true
 ---
 
@@ -239,10 +239,25 @@ failure **STOPS**.
    on a board created in §E.1; on an existing board only `Item closed`. Its result `degraded`
    (part `workflows`) when the operator picks `Skip workflows`; `Stop bootstrap` is the operator's
    own choice, so **STOP** and report what is on and what is not.
+6. **Branch ruleset on `main`.** Create the ruleset that enforces initiation merge order, unless it
+   already exists. First read the repo's rulesets:
+   `gh api repos/<repo>/rulesets --jq '.[] | select(.name=="cuevik-init-main") | .id'`.
+   - A line is returned: the ruleset is already there. Skip the create and say so in the PR body.
+   - Empty: create it from the plugin's payload (never copied into the repo):
+     `gh api repos/<repo>/rulesets --input ${CLAUDE_PLUGIN_ROOT}/references/ruleset-main.json`.
+
+   The payload protects `main`: a pull request is required (0 required approvals, so the solo author
+   can still merge), the `init-order` status check is required with strict (up-to-date) policy, and
+   direct push, deletion and force-push are blocked, with no bypass actors. That required check is
+   reported by `.github/workflows/cuevik-init-order.yml`, which this step commits (§F); a required
+   check that has not reported yet correctly leaves a PR waiting. This is not a board operation, so
+   a failed `gh api` create **STOPS** bootstrap (below). GitHub Actions must be enabled for the
+   check to report; it is on by default for new repos.
 
 Report each result. If a change that is not a board operation fails, **STOP** and report what was
-done and what was not. A re-run finds the board in the list, sees the link, skips the setting and
-reuses the `initiation` issues by title, so nothing is created twice.
+done and what was not. A re-run finds the board in the list, sees the link, skips the setting,
+reuses the `initiation` issues by title and finds the `cuevik-init-main` ruleset already present,
+so nothing is created twice.
 
 ## F. Outputs (on `init/00-bootstrap`)
 
@@ -307,13 +322,21 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
   }
   ```
 
+- **`.github/workflows/cuevik-init-order.yml`** — a byte-for-byte copy of
+  `${CLAUDE_PLUGIN_ROOT}/references/workflows/cuevik-init-order.yml` (copy the file; do not retype
+  it). It is the `init-order` status check the §E.6 ruleset requires: on each `init/NN-*` PR it
+  fails until the previous step's PR has merged into `main`.
+
 Do not add stack-specific commands to `CONTRIBUTING.md`; `04-tech-stack` appends them. Never copy
 the runner, `steps.yml`, templates, roles or contracts into the repo.
 
 ## Express profile
 
-`/cuevik-start:express` drives §A, §B, §C, §E.3, §E.4 and §F. It skips §D, §E.1, §E.2 and §E.5 and
-the board bullets of §E.4: the lane has no board, so `boardState` is `none` without a question. It
+`/cuevik-start:express` drives §A, §B, §C, §E.3, §E.4, §E.6 and §F. It skips §D, §E.1, §E.2 and
+§E.5 and the board bullets of §E.4: the lane has no board, so `boardState` is `none` without a
+question. It still sets up the §E.6 ruleset and writes the §F workflow: the lane's own `init/express`
+PR is not an `init/NN-*` branch, so the `init-order` check passes it ungated, and the ruleset then
+governs any standard step that graduates the repo later (`03-architecture` onward). It
 also files **no epic**: skip the `Epic: Project Initiation` issue and the sub-issue links of §E.4,
 and file only the `INIT-*` stories, each given the `Task` issue type when the owner supports it
 (the lane's Issue types procedure in `skills/express/SKILL.md`). In §F it writes `CONTRIBUTING.md`
@@ -341,6 +364,9 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - Board workflows (with a board): which of the seven (§E.5) are on, and that `Auto-add to project`
   filters this repo with `is:issue,pr is:open label:bug`.
 - `CONTRIBUTING.md` new or insert mode; `.markdownlint.json` written or kept.
+- Branch ruleset `cuevik-init-main` created on `main` (or already present), and the
+  `.github/workflows/cuevik-init-order.yml` merge-order check it requires. Note that GitHub Actions
+  must be enabled for the `init-order` check to report.
 - The reviewer checklist below, and the self-review gate from `CONTRIBUTING.md`.
 
 ## Reviewer checklist
@@ -359,6 +385,10 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
       story per step after 00, each a sub-issue of the epic, and on the board when there is one
       (unless `missing` lists `items`). No `epic` or `story` label on any of them.
 - [ ] `gh repo view --json deleteBranchOnMerge` returns `true`.
+- [ ] `.github/workflows/cuevik-init-order.yml` matches the plugin's workflow byte for byte.
+- [ ] The `cuevik-init-main` ruleset is active on `main` (pull request required, `init-order`
+      required with strict policy, no bypass actors), or the PR body says it already existed; GitHub
+      Actions is enabled so the `init-order` check can report.
 - [ ] With a board recorded, its required workflows (§E.5) are on, or `missing` lists `workflows`;
       `Auto-add to project` names this repo.
 - [ ] No plugin machinery (runner, registry, templates, roles, contracts) is in the diff.
