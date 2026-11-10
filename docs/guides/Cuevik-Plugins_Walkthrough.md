@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.4.0, cuevik-ship 0.4.0, cuevik-docs 0.4.0, cuevik-deck 0.4.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.5.1, cuevik-ship 0.5.0, cuevik-docs 0.5.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -758,6 +758,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 | Version | Date | Change |
 |---|---|---|
+| 0.5.0 | 2026-11-10 | `cuevik-start` 0.5.1: initiation steps can run one step ahead — start the next step while the previous step's PR is still open — with merge order, the up-to-date requirement and drift enforced by a `main` branch ruleset and an `init-order` status check that `00-bootstrap` now sets up. `cuevik-ship`, `cuevik-docs` and `cuevik-deck` move to 0.5.0 so all plugins share one version |
 | 0.4.0 | 2026-11-05 | `cuevik-start` 0.4.0: the Express lane files no epic issues and gives its issues a native type (`Task` for `INIT-*`, `Feature` for `PRD-*`) where the organisation has issue types; config contract version 5 adds `backlogModel` (`epic-grouped` for the standard lane, `flat` for Express) — run `/cuevik-start:migrate` on older repos. `cuevik-ship`, `cuevik-docs` and `cuevik-deck` move to 0.4.0 so all plugins share one version |
 | 0.3.0 | 2026-11-05 | `cuevik-start`: new `05-test-strategy` step (the old `05` to `08` are now `06` to `09`), the `express` and `migrate` commands, an optional project board. Config contract version 4: run `/cuevik-start:migrate` on older repos. `cuevik-ship` and `cuevik-docs` follow the new contract; the ship design step uses the test strategy |
 | 0.2.1 | 2026-10-28 | `cuevik-ship` 0.2.1: fixes `03-create-backlog` frontmatter that did not parse |
