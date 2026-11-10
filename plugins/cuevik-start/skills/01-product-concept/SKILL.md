@@ -180,12 +180,14 @@ front page. This is a board write, so runner §7's gate governs it: read `boardS
   call and add no board line to the PR body.
 - **`configured` or `partial`:** call `board.setMeta`
   (`${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`) once, with:
-  - **short description** = the **Objective** from §1 Overview, verbatim. If GitHub rejects it for
-    length, trim to fit without adding anything the Objective does not say.
+  - **short description** = a one-line distillation of the **Objective** from §1 Overview: one
+    plain sentence capturing the outcome, drawn only from the Objective and adding nothing it does
+    not say.
   - **README** = the **Description** from §1 Overview, verbatim.
 
-  Invent nothing: both are the `docs/PRODUCT.md` prose as written. A failed call never stops the
-  step (runner §7): report it in the PR body and carry on.
+  Invent nothing: the README is the `docs/PRODUCT.md` prose as written, and the short description
+  says only what the Objective says. A failed call never stops the step (runner §7): report it in
+  the PR body and carry on.
 
 Report the result in the PR body: `Board: short description + README set from PRODUCT.md`, or the
 `degraded` reason when the call failed.
@@ -216,8 +218,9 @@ Before approving the PR, verify every item. An unchecked item is a reason to req
 - [ ] Anti-patterns are approach/behaviour guardrails, not feature exclusions (those belong in
       Scope).
 - [ ] Nothing in this document dictates implementation, architecture, or tech choices.
-- [ ] When the repo has a board, its short description is the PRODUCT.md Objective and its README is
-      the PRODUCT.md Description, both verbatim; or the PR body records why the board call was
-      skipped or degraded. No board repo (`boardState none`): N/A.
+- [ ] When the repo has a board, its short description is a one-line distillation of the PRODUCT.md
+      Objective (one sentence, nothing not in the Objective) and its README is the PRODUCT.md
+      Description verbatim; or the PR body records why the board call was skipped or degraded. No
+      board repo (`boardState none`): N/A.
 - [ ] If the operator gave a pitch, every statement in the document traces to the pitch or to the
       operator's confirmed answers; no strawman claim was kept without confirmation.
