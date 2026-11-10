@@ -162,17 +162,43 @@ changes. The lane asks for the optional pitch itself, before anything else; do n
 - **Skipped sections stay.** Sections 6 and 7 keep their headings, in template order, and hold
   exactly one line and nothing else: `Not covered in the Express lane. Add it with /cuevik-docs:update
   docs/PRODUCT.md.`
+- **Board metadata:** not applicable. Express is `boardState none`, so the Board metadata section
+  is skipped — the lane makes no board call.
 - **Unchanged:** the interview rules, the pitch handling, the Product Owner challenge sequence, no
   guessed numbers, no technology in the document, the approval of the draft.
 - **Checklist.** "All seven sections in order" means: sections 1–5 filled, sections 6 and 7 holding
   only the line above. The Key Assumptions and Anti-Patterns lines do not apply. Every other line
   applies as written.
 
+## Board metadata
+
+After the draft is approved and committed (runner §5), carry the product concept onto the board's
+front page. This is a board write, so runner §7's gate governs it: read `boardState` from
+`.cuevik/config.json`.
+
+- **`none`** (every Express repo, and any standard repo with no board): skip silently. Make no
+  call and add no board line to the PR body.
+- **`configured` or `partial`:** call `board.setMeta`
+  (`${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`) once, with:
+  - **short description** = a one-line distillation of the **Objective** from §1 Overview: one
+    plain sentence capturing the outcome, drawn only from the Objective and adding nothing it does
+    not say.
+  - **README** = the **Description** from §1 Overview, verbatim.
+
+  Invent nothing: the README is the `docs/PRODUCT.md` prose as written, and the short description
+  says only what the Objective says. A failed call never stops the step (runner §7): report it in
+  the PR body and carry on.
+
+Report the result in the PR body: `Board: short description + README set from PRODUCT.md`, or the
+`degraded` reason when the call failed.
+
 ## PR body
 
 Follow runner §6. Besides the `prSummary` and the reviewer checklist below, add a **Deferred to
 the Architect** list: each technical point the operator raised during the interview, one line
 each, for `03-architecture` and `04-tech-stack` to pick up. Write `None` when there were none.
+When the repo has a board, add the board line from **Board metadata**; with `boardState` `none`,
+omit it.
 
 ## Reviewer checklist
 
@@ -192,5 +218,9 @@ Before approving the PR, verify every item. An unchecked item is a reason to req
 - [ ] Anti-patterns are approach/behaviour guardrails, not feature exclusions (those belong in
       Scope).
 - [ ] Nothing in this document dictates implementation, architecture, or tech choices.
+- [ ] When the repo has a board, its short description is a one-line distillation of the PRODUCT.md
+      Objective (one sentence, nothing not in the Objective) and its README is the PRODUCT.md
+      Description verbatim; or the PR body records why the board call was skipped or degraded. No
+      board repo (`boardState none`): N/A.
 - [ ] If the operator gave a pitch, every statement in the document traces to the pitch or to the
       operator's confirmed answers; no strawman claim was kept without confirmation.
