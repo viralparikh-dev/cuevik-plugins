@@ -65,6 +65,8 @@ steps:
     finalReminder: "PRODUCT.md becomes final only when the Product Owner approves and merges the PR."
     specialPreconditions:
       - "The superpowers plugin (superpowers@claude-plugins-official) is installed and enabled: the interview runs its brainstorming skill (skills/01-product-concept/SKILL.md, Precondition)."
+    specialActions:
+      - "When the repo has a board (boardState not none), set the board's short description to a one-line distillation of the PRODUCT.md Objective and its README to the PRODUCT.md Description verbatim, via board-adapter board.setMeta (skills/01-product-concept/SKILL.md, Board metadata). A failed board call never stops the step; report it in the PR body."
 
   - id: 02-product-requirements
     title: Product Requirements Document
