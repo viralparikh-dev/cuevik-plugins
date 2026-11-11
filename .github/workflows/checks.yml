@@ -43,6 +43,9 @@ jobs:
       - name: SKILL.md frontmatter parses
         run: python scripts/check-frontmatter.py
 
+      - name: Merge-order workflow matches the step registry
+        run: python scripts/check-init-order.py
+
       # Claude Code detects a plugin update by its version: a change merged without a bump never
       # reaches installed users. Pull requests only: a push to main has no base to compare with.
       - name: Changed plugins bump their version
