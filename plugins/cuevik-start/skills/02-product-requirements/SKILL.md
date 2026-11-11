@@ -1,6 +1,6 @@
 ---
 name: 02-product-requirements
-description: Step 02 of cuevik-start. Run after 01-product-concept's PR is merged, in a new session in the project folder. Brainstorms each section with the Product Owner (needs superpowers:brainstorming), attacks every requirement before it is approved, and opens a PR adding docs/PRD.md — numbered, testable requirements derived from docs/PRODUCT.md. No technical choices.
+description: Step 02 of cuevik-start. Run once 01-product-concept's PR is open or merged, in a new session in the project folder. Brainstorms each section with the Product Owner (needs superpowers:brainstorming), attacks every requirement before it is approved, and opens a PR adding docs/PRD.md — numbered, testable requirements derived from docs/PRODUCT.md. No technical choices.
 disable-model-invocation: true
 ---
 

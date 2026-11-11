@@ -1,6 +1,6 @@
 ---
 name: 06-ai-tool-guide
-description: Step 06 of cuevik-start. Run after 05-test-strategy's PR is merged, in a new session in the project folder. Asks which AI coding tools the team uses, then opens a PR adding docs/AI-TOOL-GUIDE.md (the one set of rules every AI tool follows), a thin adapter per tool (CLAUDE.md, .github/copilot-instructions.md, others on request) and, for Claude Code, the team's plugins in .claude/settings.json.
+description: Step 06 of cuevik-start. Run once 05-test-strategy's PR is open or merged, in a new session in the project folder. Asks which AI coding tools the team uses, then opens a PR adding docs/AI-TOOL-GUIDE.md (the one set of rules every AI tool follows), a thin adapter per tool (CLAUDE.md, .github/copilot-instructions.md, others on request) and, for Claude Code, the team's plugins in .claude/settings.json.
 disable-model-invocation: true
 ---
 

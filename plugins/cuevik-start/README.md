@@ -21,7 +21,7 @@ Start a project the governed way: ten steps (`00`–`09`) from an empty repo to 
 | `/cuevik-start:cleanup` | Deletes merged local `init/*` branches |
 | `/cuevik-start:migrate` | A PR that brings an older repo's `.cuevik/` files up to the current versions and step ids |
 
-Run one step per session, in order. Each step needs the previous step's PR merged. `express` is the exception: one session, one PR, for the work of `00`, `01`, `02` and `08`.
+Run one step per session, in order. Each step needs the previous step's PR open or merged, and every earlier step's PR merged. `express` is the exception: one session, one PR, for the work of `00`, `01`, `02` and `08`.
 
 ## Install
 

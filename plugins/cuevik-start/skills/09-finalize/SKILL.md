@@ -1,6 +1,6 @@
 ---
 name: 09-finalize
-description: Step 09 of cuevik-start, the last one. Run after 08-backlog's PR is merged, in a new session in the project folder. Removes the initiation-only block from CONTRIBUTING.md, keeps the permanent rules and the tooling layer exactly as they are, puts a development-phase stub in its place, and opens a PR that also closes the initiation epic.
+description: Step 09 of cuevik-start, the last one. Run once 08-backlog's PR is open or merged, in a new session in the project folder. Removes the initiation-only block from CONTRIBUTING.md, keeps the permanent rules and the tooling layer exactly as they are, puts a development-phase stub in its place, and opens a PR that also closes the initiation epic.
 disable-model-invocation: true
 ---
 

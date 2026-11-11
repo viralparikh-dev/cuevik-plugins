@@ -413,7 +413,7 @@ replaces; every runner rule it does not mention applies as written.
 | §7 | Not applicable: the lane writes `boardState` `none` and makes no board call. |
 
 **Graduation.** After the Express PR merges, the standard `03`–`07` run as usual: §1 check 4's
-second special case accepts the Express PR for `02`, the full lineage has their entries, and
+Express-lane lookup accepts the Express PR for `02`, the full lineage has their entries, and
 `initiation.stories` has their stories. `09-finalize` finds the `INITIATION-ONLY` markers it needs,
 because the Express variant of the block keeps them; like any `09` run it still needs its upstream
 documents, so it follows `04`. Standard `00`, `01`, `02` and `08` stop at their existing "already

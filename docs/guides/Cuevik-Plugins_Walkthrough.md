@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.5.1, cuevik-ship 0.5.0, cuevik-docs 0.5.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.5.2, cuevik-ship 0.5.0, cuevik-docs 0.5.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -8,7 +8,7 @@ Claude drafts each step, you approve it. This guide covers all four plugins: how
 
 ## 1. What you get
 
-Three plugins with one rule: every document and change reaches `main` through a reviewed PR, and the next step will not run until the previous PR is merged.
+Three plugins with one rule: every document and change reaches `main` through a reviewed PR, and a step's PR cannot merge until the previous step's PR has merged.
 
 | Plugin | Use it to | Commands |
 |---|---|---|
@@ -50,7 +50,7 @@ Run commands in your project folder (the repo root), in a new Claude Code sessio
 
 - **One step, one session.** Run one step per session. Ask for a second step in the same session and it tells you to start a new one. The one exception is `express`, which does the work of four steps in one session.
 - **One PR per step.** A step works on its own branch (`init/<name>` in `cuevik-start`), commits there, and opens a PR to `main` once you approve. It never commits to `main`.
-- **Merged means final.** A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.
+- **Merged means final.** A document counts only when its PR is merged. In `cuevik-start` the next step can start while the previous step's PR is still open, one step ahead at most: every earlier PR must be merged, and the next step's PR cannot merge until the previous one has.
 - **Nothing happens without a yes.** Before it creates a branch, writes files, files issues or pushes, a step shows a checklist of what it verified and waits for your explicit `yes`.
 - **One question at a time, fixed structure.** Claude interviews you for each section with pick-or-type questions, offers only drafts it can trace to an earlier document or answer, never assumes an answer, and fills a template, so every project gets the same sections in the same order, with no placeholders left.
 - **Owners and reviewers.** Every document has an owner role and reviewer roles. Claude acts as the owner while it drafts, and each reviewer applies their own checklist at PR review. These are roles, not GitHub accounts.
@@ -60,7 +60,7 @@ Run commands in your project folder (the repo root), in a new Claude Code sessio
 ### What happens inside a step
 
 1. You start the command in a fresh session, in the project folder.
-2. It checks the ground: clean working tree, `main` up to date, the previous step's PR merged, upstream documents on `main`, and this step's output not already final.
+2. It checks the ground: clean working tree, `main` up to date, the previous step's PR open or merged and every earlier one merged, upstream documents on `main`, and this step's output not already final.
 3. It shows the checklist, waits for your `yes`, then creates the step's branch from `main`.
 4. It interviews you, drafts, and revises until you approve, then commits on the branch.
 5. On your approval it pushes and opens the PR, with a summary and the reviewer checklist.
@@ -445,7 +445,7 @@ Takes one idea, or one existing issue, from brainstorm to a merged code PR: seve
 - **One rule.** Files under `docs/ship/<n>-<slug>/` go to the issue's own branch, `ship/<n>-<slug>/issue`. Everything else goes to `main`. `docs/ship/` never reaches `main`.
 - **The issue branch** holds only that folder and is never merged. `01-brainstorm` creates it, or `04-plan-intent` does for an issue that has none, such as a bug fix or a split story.
 - **Where each step goes.** Steps 01, 04, 05 and 06 work on a branch under `ship/<n>-<slug>/` and their PRs go back into the issue branch. Steps 02 and 07 are cut from `main` and their PRs go to `main`. Step 03 writes to GitHub only: no branch, no PR.
-- **Merged means final,** as in `cuevik-start`: each step checks that the previous step's PR is merged before it does anything.
+- **Merged means final.** Each step checks that the previous step's PR is merged before it does anything. Unlike `cuevik-start`, an open PR does not count.
 - **References.** The issue description carries a `## References` section between `<!-- cuevik-ship:references -->` markers: links to the issue's files, never file content. Every command refreshes it, so do not edit between the markers.
 - **Labels only.** `idea`, `epic`, `story` and `priority:*`. GitHub issue types are not used, because user-owned repos do not have them.
 
@@ -720,7 +720,8 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `Uncommitted changes detected` | A step starts from a clean working tree. Commit or stash, then re-run. |
 | `Could not fast-forward main` | Local `main` has diverged, or there is no network. Fix the pull error, then re-run. |
 | Run `/cuevik-start:00-bootstrap` and merge its PR first | `.cuevik/config.json` or `.cuevik/lineage.json` is not on `main` yet. |
-| The previous step's PR must be merged first | The message names the step. Merge that PR (an open PR does not count), then re-run. |
+| The previous step's PR must be open or merged first | The message names the step. Run that step and open its PR, then re-run. |
+| You can be at most one step ahead | The previous step's PR is still open and an earlier step's PR is not merged. The message names it. Merge that PR, then re-run. |
 | A document is missing from `main` | An upstream document is not merged yet. Merge the step that writes it first. |
 | The step is already complete | Its output is already final on `main`. Revise it with `/cuevik-docs:update`. |
 | The step's branch already exists | A closed, unmerged PR leaves its branch behind. The step asks you to reuse it or delete it (after a `yes`); it never picks another name. |

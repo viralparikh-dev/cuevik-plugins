@@ -1,6 +1,6 @@
 ---
 name: 05-test-strategy
-description: Step 05 of cuevik-start. Run after 04-tech-stack's PR is merged, in a new session in the project folder. Interviews the Architect on how the product will be verified and opens a PR adding docs/TEST-STRATEGY.md — test levels, a coverage target, test environments and data, how each NFR is verified, who owns quality, and how defects are handled. No test code and no tool choices.
+description: Step 05 of cuevik-start. Run once 04-tech-stack's PR is open or merged, in a new session in the project folder. Interviews the Architect on how the product will be verified and opens a PR adding docs/TEST-STRATEGY.md — test levels, a coverage target, test environments and data, how each NFR is verified, who owns quality, and how defects are handled. No test code and no tool choices.
 disable-model-invocation: true
 ---
 
