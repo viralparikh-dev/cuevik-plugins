@@ -38,7 +38,7 @@ CI enforces the bump on every pull request (`scripts/check-version-bump.py`): Cl
 
 The repository git tag (`vX.Y.Z`) marks a repo-wide release milestone — the state of the whole marketplace at a point in time — not an assertion that every plugin is at that number. The Version column in the plugin table above lists each plugin's current `plugin.json` version.
 
-Cutting a release: bump only the plugins whose behaviour changed, update the Version column in the plugin table to match, then tag the repo.
+Cutting a release: the plugins are already bumped, one pull request at a time. Check that the Version column in the plugin table and the guides match each `plugin.json` (`python docs/guides/build_docs.py --release`), then tag the repo.
 
 ## License
 

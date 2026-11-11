@@ -140,7 +140,7 @@ h2.pb{break-before:page;margin-top:0}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
   figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.4.0, cuevik-ship 0.4.0, cuevik-docs 0.4.0, cuevik-deck 0.4.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.5.2, cuevik-ship 0.5.0, cuevik-docs 0.5.0, cuevik-deck 0.5.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
@@ -204,7 +204,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><a href="#12-known-limits">12. Known limits</a></li>
 <li><a href="#version-history">Version history</a></li>
 </ul></nav><hr/>
-<div class="keep k2"><h2 id="1-what-you-get"><span class="num">1</span>What you get</h2><p>Three plugins with one rule: every document and change reaches <code>main</code> through a reviewed PR, and the next step will not run until the previous PR is merged.</p></div>
+<div class="keep k2"><h2 id="1-what-you-get"><span class="num">1</span>What you get</h2><p>Three plugins with one rule: every document and change reaches <code>main</code> through a reviewed PR, and a step's PR cannot merge until the previous step's PR has merged.</p></div>
 
 <div class="tbl short"><table>
 <thead>
@@ -261,7 +261,7 @@ h2.pb{break-before:page;margin-top:0}
 <ul>
 <li><strong>One step, one session.</strong> Run one step per session. Ask for a second step in the same session and it tells you to start a new one. The one exception is <code>express</code>, which does the work of four steps in one session.</li>
 <li><strong>One PR per step.</strong> A step works on its own branch (<code>init/&lt;name&gt;</code> in <code>cuevik-start</code>), commits there, and opens a PR to <code>main</code> once you approve. It never commits to <code>main</code>.</li>
-<li><strong>Merged means final.</strong> A document counts only when its PR is merged. The next step refuses to run until the previous PR is merged. An open PR does not count.</li>
+<li><strong>Merged means final.</strong> A document counts only when its PR is merged. In <code>cuevik-start</code> the next step can start while the previous step's PR is still open, one step ahead at most: every earlier PR must be merged, and the next step's PR cannot merge until the previous one has.</li>
 <li><strong>Nothing happens without a yes.</strong> Before it creates a branch, writes files, files issues or pushes, a step shows a checklist of what it verified and waits for your explicit <code>yes</code>.</li>
 <li><strong>One question at a time, fixed structure.</strong> Claude interviews you for each section with pick-or-type questions, offers only drafts it can trace to an earlier document or answer, never assumes an answer, and fills a template, so every project gets the same sections in the same order, with no placeholders left.</li>
 <li><strong>Owners and reviewers.</strong> Every document has an owner role and reviewer roles. Claude acts as the owner while it drafts, and each reviewer applies their own checklist at PR review. These are roles, not GitHub accounts.</li>
@@ -271,7 +271,7 @@ h2.pb{break-before:page;margin-top:0}
 <h3 id="what-happens-inside-a-step">What happens inside a step</h3>
 <ol>
 <li>You start the command in a fresh session, in the project folder.</li>
-<li>It checks the ground: clean working tree, <code>main</code> up to date, the previous step's PR merged, upstream documents on <code>main</code>, and this step's output not already final.</li>
+<li>It checks the ground: clean working tree, <code>main</code> up to date, the previous step's PR open or merged and every earlier one merged, upstream documents on <code>main</code>, and this step's output not already final.</li>
 <li>It shows the checklist, waits for your <code>yes</code>, then creates the step's branch from <code>main</code>.</li>
 <li>It interviews you, drafts, and revises until you approve, then commits on the branch.</li>
 <li>On your approval it pushes and opens the PR, with a summary and the reviewer checklist.</li>
@@ -319,7 +319,7 @@ h2.pb{break-before:page;margin-top:0}
 <text class="pill-t" text-anchor="middle" x="321.5" y="81">STEP 00</text>
 <text class="ttl" x="294" y="108">Bootstrap</text>
 <text class="mono" x="294" y="123">00-bootstrap</text>
-<text class="note" x="294" y="137">CONTRIBUTING.md + 3 more</text>
+<text class="note" x="294" y="137">CONTRIBUTING.md + 4 more</text>
 <rect class="tg tg-a" height="16" rx="8" width="57" x="427" y="70"></rect>
 <text class="tg-t a" text-anchor="middle" x="455.5" y="81">Available</text>
 <rect class="dash" height="50" rx="10" width="216" x="534" y="86"></rect>
@@ -619,7 +619,7 @@ h2.pb{break-before:page;margin-top:0}
 <div class="keep k2"><h2 id="5-cuevik-start-set-up-a-project"><span class="num">5</span>cuevik-start: set up a project</h2><p>Ten steps, run in order, one session and one PR each. Each step reads the documents before it from <code>main</code>, so the order matters. Every command is <code>/cuevik-start:&lt;name&gt;</code> and runs on branch <code>init/&lt;name&gt;</code>. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, <code>express</code> does the work of four of them in one session and one PR; it is described last in this section.</p></div>
 
 <p>Two small files describe the project to the plugins; <code>00-bootstrap</code> writes and commits both. <code>.cuevik/config.json</code> records whether the project has a board and, if so, its ids, so steps can add issues and move cards. <code>.cuevik/lineage.json</code> holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.</p>
-<div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
+<div class="keep k3"><h3 id="00-bootstrap">00-bootstrap</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Owner:</strong> Architect  ·  <strong>Reviewers:</strong> Architect  ·  <strong>Reads:</strong> —  ·  <strong>Writes:</strong> <code>CONTRIBUTING.md</code>, <code>.cuevik/config.json</code>, <code>.cuevik/lineage.json</code>, <code>.markdownlint.json</code>, <code>.github/workflows/cuevik-init-order.yml</code>  ·  <strong>Then:</strong> <code>/cuevik-start:01-product-concept</code></p></div>
 
 <p>Connects or creates the GitHub repo and, if you want one, a project board, then lands the governance baseline. Run it first, in the project folder. It is the only step that creates things outside your repo, so it shows its checks, lists every change with its commands, and asks once to make them all.</p>
 <ul>
@@ -717,7 +717,7 @@ h2.pb{break-before:page;margin-top:0}
 <li><strong>One rule.</strong> Files under <code>docs/ship/&lt;n&gt;-&lt;slug&gt;/</code> go to the issue's own branch, <code>ship/&lt;n&gt;-&lt;slug&gt;/issue</code>. Everything else goes to <code>main</code>. <code>docs/ship/</code> never reaches <code>main</code>.</li>
 <li><strong>The issue branch</strong> holds only that folder and is never merged. <code>01-brainstorm</code> creates it, or <code>04-plan-intent</code> does for an issue that has none, such as a bug fix or a split story.</li>
 <li><strong>Where each step goes.</strong> Steps 01, 04, 05 and 06 work on a branch under <code>ship/&lt;n&gt;-&lt;slug&gt;/</code> and their PRs go back into the issue branch. Steps 02 and 07 are cut from <code>main</code> and their PRs go to <code>main</code>. Step 03 writes to GitHub only: no branch, no PR.</li>
-<li><strong>Merged means final,</strong> as in <code>cuevik-start</code>: each step checks that the previous step's PR is merged before it does anything.</li>
+<li><strong>Merged means final.</strong> Each step checks that the previous step's PR is merged before it does anything. Unlike <code>cuevik-start</code>, an open PR does not count.</li>
 <li><strong>References.</strong> The issue description carries a <code>## References</code> section between <code>&lt;!-- cuevik-ship:references --&gt;</code> markers: links to the issue's files, never file content. Every command refreshes it, so do not edit between the markers.</li>
 <li><strong>Labels only.</strong> <code>idea</code>, <code>epic</code>, <code>story</code> and <code>priority:*</code>. GitHub issue types are not used, because user-owned repos do not have them.</li>
 </ul>
@@ -1238,8 +1238,12 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td><code>.cuevik/config.json</code> or <code>.cuevik/lineage.json</code> is not on <code>main</code> yet.</td>
 </tr>
 <tr>
-<td>The previous step's PR must be merged first</td>
-<td>The message names the step. Merge that PR (an open PR does not count), then re-run.</td>
+<td>The previous step's PR must be open or merged first</td>
+<td>The message names the step. Run that step and open its PR, then re-run.</td>
+</tr>
+<tr>
+<td>You can be at most one step ahead</td>
+<td>The previous step's PR is still open and an earlier step's PR is not merged. The message names it. Merge that PR, then re-run.</td>
 </tr>
 <tr>
 <td>A document is missing from <code>main</code></td>
@@ -1327,6 +1331,11 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="nw">0.5.0</td>
+<td class="nw">2026-11-10</td>
+<td><code>cuevik-start</code> 0.5.1: initiation steps can run one step ahead — start the next step while the previous step's PR is still open — with merge order, the up-to-date requirement and drift enforced by a <code>main</code> branch ruleset and an <code>init-order</code> status check that <code>00-bootstrap</code> now sets up. <code>cuevik-ship</code>, <code>cuevik-docs</code> and <code>cuevik-deck</code> move to 0.5.0 so all plugins share one version</td>
+</tr>
 <tr>
 <td class="nw">0.4.0</td>
 <td class="nw">2026-11-05</td>
