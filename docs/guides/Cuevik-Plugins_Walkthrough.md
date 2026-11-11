@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.5.2, cuevik-ship 0.5.0, cuevik-docs 0.5.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.6.0, cuevik-ship 0.6.0, cuevik-docs 0.6.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -231,7 +231,7 @@ flowchart TB
 
 ## 5. cuevik-start: set up a project
 
-Ten steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<name>` and runs on branch `init/<name>`. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, `express` does the work of four of them in one session and one PR; it is described last in this section.
+Ten steps, run in order, one session and one PR each. Each step reads the documents before it from `main`, so the order matters. Every command is `/cuevik-start:<NN>-<name>` and runs on branch `init/<name>`: `/cuevik-start:03-architecture` works on `init/architecture`. The number only shows the order; branches, and everything else a repo keeps about a step, use the name alone, so they stay valid if the steps are ever renumbered. The line under each heading is generated from the plugin's own step registry and lineage. For an MVP or spike, `express` does the work of four of them in one session and one PR; it is described last in this section.
 
 Two small files describe the project to the plugins; `00-bootstrap` writes and commits both. `.cuevik/config.json` records whether the project has a board and, if so, its ids, so steps can add issues and move cards. `.cuevik/lineage.json` holds who owns and reviews each document and what it is built from. Everything else is your documents: the plugins never copy their own files into your repo.
 
@@ -249,7 +249,7 @@ Connects or creates the GitHub repo and, if you want one, a project board, then 
 - **Board (optional).** Asks who owns the project board (the repo's owner by default), lists that owner's open boards, and lets you pick one, create a new one, or use no board. A new board starts from one of three choices: the Cuevik template (recommended), your own template (pick one of your boards or paste its link), or a blank board. If the template cannot be read, it asks again. A blank board gets only GitHub's default Status options (`Todo`, `In Progress`, `Done`). The board needs a single-select field named `Status`; without one it is not used. If bootstrap cannot reach Projects (no `project` scope, or a cloud session) it goes on without a board. A board problem never stops bootstrap: the result is recorded in `.cuevik/config.json` as `configured`, `partial` (with what is missing) or `none`, and reported in the PR.
 - **Remote changes.** Approved together with one yes: create the board and link it to the repo (when you chose a board), turn on auto-delete for merged PR branches, so GitHub removes each PR's branch when it merges, and file the initiation issues. Then, when there is a board, it checks its seven workflows are on and walks you through turning on any that are off (GitHub offers no way to do this for you), including `Auto-add to project` with this repo in its filter. You may skip them; the board is then recorded as `partial`.
 - **Initiation issues.** An `Epic: Project Initiation` epic and one story per later step, such as `INIT-01: Product Concept`, labelled `initiation`, assigned to you, linked as sub-issues of the epic. With a board they are also added to it, with Item Type (Epic or Story), Priority, Size and Efforts (hours) set when the board has those fields; on a board with no sprints yet, `Sprint-00` is created and they all go in it. Each step's PR closes its story when it merges, and the last step closes the epic, so the board shows how far setup has got. They never carry the `epic` or `story` labels, so the real backlog never picks them up.
-- **The PR.** Opens `init/00-bootstrap` with `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json` and `.markdownlint.json`. An existing `.markdownlint.json` is kept. An existing `CONTRIBUTING.md` keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, `chore: initialize repository`, on `main` and pushes it. That is the only commit bootstrap makes on `main`.
+- **The PR.** Opens `init/bootstrap` with `CONTRIBUTING.md`, `.cuevik/config.json`, `.cuevik/lineage.json` and `.markdownlint.json`. An existing `.markdownlint.json` is kept. An existing `CONTRIBUTING.md` keeps its text: the governance text is inserted after its first heading and you see the diff first. If the repo has no commit yet, it first makes one empty commit, `chore: initialize repository`, on `main` and pushes it. That is the only commit bootstrap makes on `main`.
 - **The governance text** covers the review flow, Conventional Commits and the rule never to push to `main`. It also carries the initiation-only branching table and the self-review checklist, which `09-finalize` removes.
 - **It stops, and says what to fix,** if `gh` is not signed in, the default branch is not `main`, you lack admin rights on the repo, the repo is already bootstrapped, or a `00-bootstrap` PR is already open.
 
@@ -423,13 +423,13 @@ To graduate later, run `/cuevik-start:03-architecture` and the steps after it as
 
 <!-- gen:cmd-cuevik-start-migrate -->
 
-**Status:** Available  ·  **Branch:** `init/migrate`  ·  **PR to:** `main`  ·  **Writes:** The two `.cuevik/` files  ·  **You:** Approve, review and merge
+**Status:** Available  ·  **Branch:** `init/migrate`  ·  **PR to:** `main`  ·  **Writes:** The two `.cuevik/` files, and the merge-order workflow if the repo has one  ·  **You:** Approve, review and merge
 
 <!-- /gen:cmd-cuevik-start-migrate -->
 
-Brings an older repo up to date. Run it when a step or `cuevik-ship` stops with `.cuevik/config.json is schemaVersion <n>`. It reads `.cuevik/config.json` and `.cuevik/lineage.json` from `main` and, after showing the exact edits and getting your yes, opens one PR from `init/migrate` that sets the config to version 4 (adding `boardState` to a version 2 config), renames the stories' keys to the current step ids, renames the step ids in the lineage, and adds the `docs/TEST-STRATEGY.md` entry with its upstream links.
+Brings an older repo up to date. Run it when a step, `cuevik-ship` or `cuevik-docs` stops with `.cuevik/config.json is schemaVersion <n>` (or the same for `.cuevik/lineage.json`). It reads `.cuevik/config.json` and `.cuevik/lineage.json` from `main` and, after showing the exact edits and getting your yes, opens one PR from `init/migrate` that sets the config to version 6 and the lineage to version 2: it renames the stories' keys and the lineage's steps from numbered ids to step names (`04-tech-stack` becomes `tech-stack`), and adds whatever an older file lacks (`boardState`, `backlogModel`, the `docs/TEST-STRATEGY.md` entry with its upstream links). If the repo has the merge-order workflow, it replaces it with the current one.
 
-Nothing else changes: no issue is filed, `CONTRIBUTING.md` is not touched (its initiation-only table keeps the old ids until `09-finalize`), and it never merges. A repo that is already current gets `Nothing to migrate.` Merge the PR, then re-run the step you wanted. A migrated repo has no initiation story for `05-test-strategy`, so `status` lists that step as not started until you run it.
+Nothing else changes: no issue is filed, `CONTRIBUTING.md` is not touched (its initiation-only table keeps the old branch names until `09-finalize`), and it never merges. PRs already merged or open on the old numbered branches still count; the steps still to run use `init/<name>`. A repo that is already current gets `Nothing to migrate.` Merge the PR, then re-run the step you wanted. A repo migrated from before the test strategy step has no initiation story for `05-test-strategy`, so `status` lists that step as not started until you run it.
 
 To revise a document after its step is merged, use `/cuevik-docs:update <document>` instead of re-running the step.
 
@@ -650,7 +650,7 @@ Reads the SoW (a file or pasted text) and pulls out the engagement: objectives, 
 | `/cuevik-start:status` | Status | Shows how far initiation has got, from what is merged on GitHub. Read-only. | Available |
 | `/cuevik-start:cleanup` | Clean up | Deletes local `init/*` branches whose PR is merged, after listing them for your confirmation. | Available |
 | `/cuevik-start:express` | Express | The lean path for an MVP or spike: governance, a lean product concept and PRD, and the backlog, in one session and one PR. | Available |
-| `/cuevik-start:migrate` | Migrate | Brings an older repo's `.cuevik/` files up to the current versions and step ids in one reviewed PR. | Available |
+| `/cuevik-start:migrate` | Migrate | Brings an older repo's `.cuevik/` files up to the current contract versions in one reviewed PR. | Available |
 | `/cuevik-ship:01-brainstorm` | Brainstorm | Takes an idea or an existing issue, checks it is not a duplicate, and explores it until you can approve or reject it. | Available |
 | `/cuevik-ship:02-audit-prd` | Audit PRD | Checks the approved idea against the product docs and ratifies it into new or changed requirements. | Available |
 | `/cuevik-ship:03-create-backlog` | Create Backlog | Files the requirements as an epic and stories on GitHub, splitting the idea when it covers several. | Available |
@@ -672,7 +672,7 @@ The ten numbered `cuevik-start` steps are not repeated here: see section 5. In `
 | `/cuevik-start:status` | — | — | Nothing (report only) | Read the report |
 | `/cuevik-start:cleanup` | — | — | Deletes merged local `init/*` branches | Confirm the list |
 | `/cuevik-start:express` | `init/express` | `main` | Governance files, `PRODUCT.md`, `PRD.md`, `BACKLOG.md`, issues | Interviews, approve, review and merge |
-| `/cuevik-start:migrate` | `init/migrate` | `main` | The two `.cuevik/` files | Approve, review and merge |
+| `/cuevik-start:migrate` | `init/migrate` | `main` | The two `.cuevik/` files, and the merge-order workflow if the repo has one | Approve, review and merge |
 | `/cuevik-ship:01-brainstorm` | `ship/<n>-<slug>/01-brainstorm` | `ship/<n>-<slug>/issue` | GitHub issue and brainstorming folder | Approve or reject, then merge |
 | `/cuevik-ship:02-audit-prd` | `ship/<n>-<slug>/02-audit-prd` (cut from `main`) | `main` | `PRODUCT.md` and `PRD.md` changes | Review and merge |
 | `/cuevik-ship:03-create-backlog` | — | — | GitHub issues: epic and stories | Approve the list |
@@ -731,7 +731,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | `origin` is not on github.com | GitHub is the only supported host. |
 | The default branch is not `main`, or you lack admin rights | Every step uses `main`. Bootstrap changes a repo setting (and links a board, if you use one), so it needs admin rights. |
 | `This repo is already bootstrapped` | `.cuevik/` is already on `main`. To add or repair the board, open a PR that edits `.cuevik/config.json`: add `project` and set `boardState` (and `missing` for a partial board). |
-| `.cuevik/config.json is schemaVersion <n>` | The config is older than the current contract (before the optional board, before the steps were renumbered, or before the backlog model was recorded). Run `/cuevik-start:migrate` and merge its PR. `cuevik-start` (from `01`) and `cuevik-ship` stop until then. |
+| `.cuevik/config.json is schemaVersion <n>` | The file (or `.cuevik/lineage.json`, named the same way) is older than the current contract (before the optional board, before the steps were renumbered, before the backlog model was recorded, or before steps were stored by name). Run `/cuevik-start:migrate` and merge its PR. `cuevik-start` (from `01`), `cuevik-ship` and `/cuevik-docs:update` stop until then. |
 | A `00-bootstrap`, Express or migration PR is already open | Merge it, or close it and delete its branch, then re-run. |
 | The board needs a single-select field named `Status` | Add that field to the board, choose another board, or choose no board. |
 | The template board cannot be read | Name another template, choose an existing board, or a blank one. A blank board gets only `Todo`, `In Progress` and `Done`. |
@@ -751,7 +751,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 - **Plugin settings:** in one sandbox test a plugin setting reached a skill unsubstituted, cause unknown, so bootstrap asks for the template board instead. `cuevik-ship`'s worktree-folder setting uses the same mechanism and is untested.
 - **Labels, plus issue types in the Express lane.** The standard lane and `cuevik-ship` use labels only. The Express lane additionally gives its issues a native type (`Task` for `INIT-*`, `Feature` for `PRD-*`) when the repo's owner is an organisation that has issue types; a user-owned repo cannot, so it files them untyped.
 - **`docs/BACKLOG.md` is a snapshot.** After setup, GitHub is the backlog.
-- **Older repos need `/cuevik-start:migrate`.** A repo set up before the optional board, the test strategy step, or the backlog model was recorded has the old config version and step ids; `cuevik-start` (from `01`) and `cuevik-ship` stop on it until it is migrated. Merged PRs on the old step branches still count, through each step's alias.
+- **Older repos need `/cuevik-start:migrate`.** A repo set up before 0.6.0 stores its steps by numbered id and has older config and lineage versions; `cuevik-start` (from `01`), `cuevik-ship` and `/cuevik-docs:update` stop on it until it is migrated. PRs on the old numbered step branches still count, through each step's aliases.
 
 ---
 
@@ -759,6 +759,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 | Version | Date | Change |
 |---|---|---|
+| 0.6.0 | 2026-11-11 | `cuevik-start` 0.6.0: everything a repo keeps about a step is stored under the step's name instead of its number, so a later renumbering changes nothing in a repo. Branches are `init/<name>` (`init/tech-stack`), and the story keys in the config (contract version 6) and the `steps` in the lineage (contract version 2) drop the two-digit prefix. Commands keep their numbers. Run `/cuevik-start:migrate` on older repos: it renames the keys and replaces the merge-order workflow, and PRs on the old numbered branches still count. `cuevik-ship` and `cuevik-docs` move to 0.6.0 for the new contracts |
 | 0.5.0 | 2026-11-10 | `cuevik-start` 0.5.1: initiation steps can run one step ahead — start the next step while the previous step's PR is still open — with merge order, the up-to-date requirement and drift enforced by a `main` branch ruleset and an `init-order` status check that `00-bootstrap` now sets up. `cuevik-ship`, `cuevik-docs` and `cuevik-deck` move to 0.5.0 so all plugins share one version |
 | 0.4.0 | 2026-11-05 | `cuevik-start` 0.4.0: the Express lane files no epic issues and gives its issues a native type (`Task` for `INIT-*`, `Feature` for `PRD-*`) where the organisation has issue types; config contract version 5 adds `backlogModel` (`epic-grouped` for the standard lane, `flat` for Express) — run `/cuevik-start:migrate` on older repos. `cuevik-ship`, `cuevik-docs` and `cuevik-deck` move to 0.4.0 so all plugins share one version |
 | 0.3.0 | 2026-11-05 | `cuevik-start`: new `05-test-strategy` step (the old `05` to `08` are now `06` to `09`), the `express` and `migrate` commands, an optional project board. Config contract version 4: run `/cuevik-start:migrate` on older repos. `cuevik-ship` and `cuevik-docs` follow the new contract; the ship design step uses the test strategy |

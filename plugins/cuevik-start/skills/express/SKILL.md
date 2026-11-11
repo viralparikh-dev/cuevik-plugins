@@ -97,8 +97,9 @@ Create the branch (runner §3), then, in this order:
 1. **Bootstrap files** (`00-bootstrap` §F):
    - `CONTRIBUTING.md` in new or insert mode as §F says, from `contributing-governance.md`, but with
      the `INITIATION-ONLY` block replaced by the Express block (that file, "Express variant").
-   - `.cuevik/config.json`: `schemaVersion` 5, `boardState` `none`, `backlogModel` `flat`, and
-     `initiation` from §D (its `stories` only — a `flat` repo has no `epic`). No `project`, no
+   - `.cuevik/config.json`: `schemaVersion` 6, `boardState` `none`, `backlogModel` `flat`, and
+     `initiation` from §D (its `stories` only, keyed by step slug as §F says — a `flat` repo has
+     no `epic`). No `project`, no
      `missing`. It must satisfy the config schema.
    - `.cuevik/lineage.json`: the byte copy §F says, the full default lineage.
    - `.markdownlint.json`, unless §C.6 kept the repo's own.
@@ -163,7 +164,7 @@ Express block:
 
 - [ ] One branch, `init/express`, with four commits in the order bootstrap, PRODUCT, PRD, BACKLOG,
       each carrying the covered step's commit message.
-- [ ] `.cuevik/config.json` has `schemaVersion` 5, `boardState` `none`, `backlogModel` `flat`, no
+- [ ] `.cuevik/config.json` has `schemaVersion` 6, `boardState` `none`, `backlogModel` `flat`, no
       `project` and no `missing`; `.cuevik/lineage.json` is byte-identical to the default lineage;
       `initiation` has `stories` only (no `epic`) and matches the `initiation`-labelled issues (one
       story per step `01`–`09`).

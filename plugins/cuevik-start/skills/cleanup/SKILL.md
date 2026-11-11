@@ -55,14 +55,15 @@ git, so `-d` would refuse a branch whose PR is merged. The `headRefOid` check ab
 ## 3. Board End dates
 
 Only when the last step in `steps.yml` (today `09-finalize`) has a merged PR, from §2's query or
-`gh pr list --head <its branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`.
+`gh pr list --head <its branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
+(its `branch`, or an `init/<alias>` branch in a repo initiated before steps had slugs).
 Otherwise skip this section and say initiation is not complete yet.
 
 1. `git show origin/main:.cuevik/config.json` (or `main`, after a pull). `boardState` `none`: skip
    this section silently; there is no board to update. No `initiation` key: skip, and say
    initiation is not tracked in issues.
 2. The End date is the `YYYY-MM-DD` part of that `mergedAt`. It goes on two items:
-   `initiation.stories["<last step id>"]` and `initiation.epic`. (Every earlier story got its End
+   `initiation.stories["<last step's slug>"]` and `initiation.epic`. (Every earlier story got its End
    date when the next step started, runner §7.)
 3. Look them up as runner §7 says. An item already showing that End date needs no change. A missing
    field or item: skip and report.

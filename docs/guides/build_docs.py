@@ -323,8 +323,8 @@ def checks(walk, over, d, t1, t2, release):
         if given.count(".") == 2 and given != want:
             warn(f"{p}: guide says {given}, plugin.json is {want}")
 
-    if bad := [s["id"] for s in d["steps"] if s["branch"] != f"init/{s['id']}"]:
-        fail(f"steps.yml branch is no longer init/<id> for {bad}; update section 5 of the Walkthrough")
+    if bad := [s["id"] for s in d["steps"] if s["branch"] != f"init/{s['slug']}"]:
+        fail(f"steps.yml branch is no longer init/<slug> for {bad}; update section 5 of the Walkthrough")
     documented = set(t1)
     steps = {("cuevik-start", s["id"]) for s in d["steps"]}
     if gap := steps - documented:

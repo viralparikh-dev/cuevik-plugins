@@ -1,6 +1,6 @@
 name: cuevik-init-order
 
-# Enforces cuevik-start initiation merge order: a step's PR (head init/NN-*) cannot merge until
+# Enforces cuevik-start initiation merge order: a step's PR (head init/<step>) cannot merge until
 # the previous step's PR has merged into main. Written verbatim by /cuevik-start:00-bootstrap to
 # .github/workflows/cuevik-init-order.yml; do not edit by hand. The repo's main ruleset lists the
 # "init-order" check as required with strict (up-to-date) policy, so a failing run blocks merge and
@@ -28,35 +28,53 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Predecessor branch for each init step. Empty = first step, no gate.
-          case "$HEAD_REF" in
-            init/00-bootstrap)            PRED="" ;;
-            init/01-product-concept)      PRED="init/00-bootstrap" ;;
-            init/02-product-requirements) PRED="init/01-product-concept" ;;
-            init/03-architecture)         PRED="init/02-product-requirements" ;;
-            init/04-tech-stack)           PRED="init/03-architecture" ;;
-            init/05-test-strategy)        PRED="init/04-tech-stack" ;;
-            init/06-ai-tool-guide)        PRED="init/05-test-strategy" ;;
-            init/07-readme)               PRED="init/06-ai-tool-guide" ;;
-            init/08-backlog)              PRED="init/07-readme" ;;
-            init/09-finalize)             PRED="init/08-backlog" ;;
-            *)
-              echo "Head '$HEAD_REF' is not a gated init/NN-* branch (normal PR or the Express lane). No order gate."
-              exit 0
-              ;;
-          esac
+          # The steps in run order, one per line: the step's slug, then every older name it has
+          # had. A step's branch is init/<slug>; a repo initiated before steps had slugs has its
+          # PRs on init/<older name>, so both are accepted, as a head and as a predecessor.
+          STEPS="
+          bootstrap 00-bootstrap
+          product-concept 01-product-concept
+          product-requirements 02-product-requirements
+          architecture 03-architecture
+          tech-stack 04-tech-stack
+          test-strategy 05-test-strategy
+          ai-tool-guide 06-ai-tool-guide 05-ai-tool-guide
+          readme 07-readme 06-readme
+          backlog 08-backlog 07-backlog
+          finalize 09-finalize 08-finalize
+          "
+          # The Express lane (init/express) runs these steps in one PR, so a merged lane PR
+          # satisfies a predecessor that is one of them (e.g. architecture after an Express repo).
+          EXPRESS=" bootstrap product-concept product-requirements backlog "
 
-          if [ -z "$PRED" ]; then
+          # Find the head's step. PRED is the line of the step before it.
+          PRED=""
+          FOUND=""
+          FIRST="yes"
+          while read -r LINE; do
+            if [ -z "$LINE" ]; then continue; fi
+            for name in $LINE; do
+              if [ "$HEAD_REF" = "init/$name" ]; then FOUND="yes"; fi
+            done
+            if [ -n "$FOUND" ]; then break; fi
+            PRED="$LINE"
+            FIRST=""
+          done <<< "$STEPS"
+
+          if [ -z "$FOUND" ]; then
+            echo "Head '$HEAD_REF' is not a step's init/ branch (normal PR or the Express lane). No order gate."
+            exit 0
+          fi
+
+          if [ -n "$FIRST" ]; then
             echo "First initiation step ($HEAD_REF) — no predecessor to gate on."
             exit 0
           fi
 
-          # The Express lane (init/express) runs 00, 01, 02 and 08 in one PR, so a merged lane PR
-          # satisfies a predecessor that is one of those steps (e.g. 03 following an Express repo).
-          CANDS="$PRED"
-          case "$PRED" in
-            init/00-bootstrap|init/01-product-concept|init/02-product-requirements|init/08-backlog)
-              CANDS="$PRED init/express" ;;
+          CANDS=""
+          for name in $PRED; do CANDS="$CANDS init/$name"; done
+          case "$EXPRESS" in
+            *" ${PRED%% *} "*) CANDS="$CANDS init/express" ;;
           esac
 
           for head in $CANDS; do
@@ -67,5 +85,5 @@ jobs:
             fi
           done
 
-          echo "::error::Previous step not merged. '$HEAD_REF' cannot merge until a PR for one of: $CANDS has merged into main."
+          echo "::error::Previous step not merged. '$HEAD_REF' cannot merge until a PR for one of:$CANDS has merged into main."
           exit 1

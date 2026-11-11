@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "boardState": "configured",
   "backlogModel": "epic-grouped",
   "project": {
@@ -18,15 +18,15 @@
   "initiation": {
     "epic": 2,
     "stories": {
-      "01-product-concept": 3,
-      "02-product-requirements": 4,
-      "03-architecture": 5,
-      "04-tech-stack": 6,
-      "05-test-strategy": 7,
-      "06-ai-tool-guide": 8,
-      "07-readme": 9,
-      "08-backlog": 10,
-      "09-finalize": 11
+      "product-concept": 3,
+      "product-requirements": 4,
+      "architecture": 5,
+      "tech-stack": 6,
+      "test-strategy": 7,
+      "ai-tool-guide": 8,
+      "readme": 9,
+      "backlog": 10,
+      "finalize": 11
     }
   }
 }

@@ -1,7 +1,7 @@
 # Express lane metadata for skills/express/SKILL.md (/cuevik-start:express).
 #
 # Kept out of steps.yml on purpose: status and build_docs treat every steps.yml entry as one of the
-# ten steps, with branch init/<id>. The lane runs four of those steps in one session and one PR;
+# ten steps, with branch init/<slug>. The lane runs four of those steps in one session and one PR;
 # their outputs, templates, commit messages and story fields stay in their steps.yml entries and
 # are not restated here.
 #

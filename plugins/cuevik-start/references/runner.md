@@ -47,8 +47,9 @@ Before starting, load:
    A step with `bootstrap: true` runs before `.cuevik/lineage.json` exists. It takes its owner and
    reviewers from the default lineage it is about to write, and has no upstream documents.
 4. `.cuevik/config.json` from `main`: `git show main:.cuevik/config.json`. Its
-   `initiation.stories.<id>` is this step's story issue and `initiation.epic` the epic (§6, absent
-   on a `flat` repo), `boardState` says whether the board bookkeeping (§7) applies, and
+   `initiation.stories.<slug>` is this step's story issue, keyed by the step's `slug` in
+   `steps.yml`, never by its numbered id, and `initiation.epic` the epic (§6, absent on a `flat`
+   repo), `boardState` says whether the board bookkeeping (§7) applies, and
    `backlogModel` is `epic-grouped` or `flat`. A step with `bootstrap: true` writes this file, so
    it has none of them.
 5. The role file for the owner, plus one per extra reviewer:
@@ -135,13 +136,14 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 
 3. **Bootstrap on `main`** — run `git show main:.cuevik/lineage.json` and
    `git show main:.cuevik/config.json`.
-   - Exit 0 for both: proceed, after reading `schemaVersion` from the config.
+   - Exit 0 for both: proceed, after reading `schemaVersion` from each.
    - Non-zero for either: **STOP**. Tell the operator to run `/cuevik-start:00-bootstrap` and
      merge its PR first.
-   - `schemaVersion` is below `5` (a config from before the current contract): **STOP**. Tell the
-     operator: `.cuevik/config.json is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR,
-     then re-run.` (Config contract README, "Migrating from an older schemaVersion", for the edit
-     by hand.) `bootstrap: true` steps skip this: they write the file.
+   - The config's `schemaVersion` is below `6`, or the lineage's is below `2` (a file from before
+     the current contract, which keys steps by number): **STOP**. Tell the operator: `<file> is
+     schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then re-run.` (Config contract
+     README, "Migrating from an older schemaVersion", for the edit by hand.) `bootstrap: true`
+     steps skip this: they write the file.
 
 4. **Previous step open or merged, earlier steps merged** — a step may start once its immediate
    predecessor's PR is **open or merged**, provided every step before that predecessor is already
@@ -151,9 +153,9 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 
    The **predecessor** is the step listed immediately before this one in `steps.yml`. For any gate
    query below, run it for the queried step's `branch`, for each `init/<alias>` of its `aliases` in
-   `steps.yml` (a repo initiated before a renumbering has the PR on the old branch), and — when the
-   Express lane covers that step (`references/express.yml`, `covers`) — for the lane's `branch`
-   (`init/express`). A PR from any of these satisfies the query.
+   `steps.yml` (a repo initiated before steps had slugs has the PR on the old numbered branch), and
+   — when the Express lane covers that step (`references/express.yml`, `covers`) — for the lane's
+   `branch` (`init/express`). A PR from any of these satisfies the query.
 
    - **Predecessor open or merged.** Run both
      `gh pr list --head <branch> --base main --state merged --json number,url` and
@@ -172,7 +174,8 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
 
    `04-tech-stack` needs no special case now: its predecessor `03-architecture` is covered by the
    open-or-merged rule like every other step. The Express-lane and alias lookups above are what let
-   `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had an `init/<id>` PR.
+   `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had a PR on a branch of
+   their own.
 
 5. **Upstream documents on `main`** — for every upstream document from Inputs §3, run
    `git show main:<document>`.
@@ -181,9 +184,10 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
      `main`. Exception: when check 4 passed on an **open** (unmerged) predecessor PR, read that
      predecessor's **primary output** (the first entry of its `outputs` in `steps.yml`) from the
      PR's branch instead of `main`: `git fetch origin <predecessor branch>` then
-     `git show origin/<predecessor branch>:<primary output>`. Every other upstream document still
-     comes from `main`; one missing there is a real STOP — it means an earlier step is unmerged, so
-     you are trying to run more than one step ahead.
+     `git show origin/<predecessor branch>:<primary output>`, where `<predecessor branch>` is the
+     branch check 4 found the open PR on (an alias branch in a migrated repo). Every other upstream
+     document still comes from `main`; one missing there is a real STOP — it means an earlier step
+     is unmerged, so you are trying to run more than one step ahead.
    - Empty `upstream`: no upstream document is required.
 
 6. **Step not already finalized** — unless the step sets `replacesExisting: true`, run
@@ -220,7 +224,7 @@ do. Nothing is created, written or pushed before it.
    `none` (with the exact commands in a fenced `sh` block below it).
 3. **Approve.** Ask once, naming the count and pointing at the plan, e.g. `Make these 4 changes
    on GitHub? For more details, review my Plan that I articulated above.` or `Start 01 Product
-   Concept on branch init/01-product-concept? For more details, review my Plan that I articulated
+   Concept on branch init/product-concept? For more details, review my Plan that I articulated
    above.` Options: `Yes` (or `Yes, make
    all <N>`) and `No, stop` (description: the step cannot finish without them). Every change in
    the plan is required, so there is no per-change choice and no second confirmation.
@@ -359,13 +363,13 @@ so in the PR body.
    "first step", also repairs a board where an earlier step ran before this rule.
 3. The previous step's story, if it has one: `End date` = the date its PR merged, from
    `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
-   (the `YYYY-MM-DD` part). The PR merges on GitHub while no step runs, so the next step records
-   it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
-   If the previous step has no merged PR yet (you started this step while the previous one's PR is
-   still open, one step ahead), skip its End date. Also set `End date` on any earlier story that
-   has a merged PR but an empty `End date`, so a late-merged previous step's date is recorded by
-   the step after it. Each step keeps its own story, `Start date` and `Working` status; nothing is
-   shared.
+   (the `YYYY-MM-DD` part), `<previous branch>` being the branch §1 check 4 found that PR on. The PR
+   merges on GitHub while no step runs, so the next step records it. The last step's End date, and
+   the epic's, are set by `/cuevik-start:cleanup`. If the previous step has no merged PR yet (you
+   started this step while the previous one's PR is still open, one step ahead), skip its End date.
+   Also set `End date` on any earlier story that has a merged PR but an empty `End date`, so a
+   late-merged previous step's date is recorded by the step after it. Each step keeps its own story,
+   `Start date` and `Working` status; nothing is shared.
 
 **After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
 line (§6) links the PR to the story, and the board's workflows do the rest:

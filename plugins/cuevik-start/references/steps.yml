@@ -7,11 +7,15 @@
 #   - its owner and reviewers  = that same document's `owner` and `reviewers`
 #
 # Fields:
-#   id                  step id = skill name (/cuevik-start:<id>); order in this list is run order
+#   id                  step id = skill name (/cuevik-start:<id>); order in this list is run order.
+#                       Its two-digit prefix is for display: nothing a project repo keeps uses it
+#   slug                the step's permanent key: the id without its number. What a project repo keeps
+#                       is keyed by it: the branch, initiation.stories in .cuevik/config.json and
+#                       `steps` in .cuevik/lineage.json. Never change a slug; a renumbering changes ids only
 #   title               human title
 #   bootstrap           true only for 00-bootstrap: runs before .cuevik/ exists, so it has no
 #                       lineage, gate or upstream checks (runner §1)
-#   branch              working branch, always init/<id>
+#   branch              working branch, always init/<slug>
 #   outputs             files the step writes; the first is the primary output
 #   conditionalOutputs  true when some outputs are written only if the step's skill says so
 #   template            file in the step's own folder, skills/<id>/, that owns the primary output's
@@ -20,16 +24,19 @@
 #   storyPriority,      Priority and Size option names 00-bootstrap sets on this step's initiation
 #   storySize           story, when the board has those fields and options (bootstrap §E.4)
 #   storyEfforts        hours 00-bootstrap writes to the story's Efforts field, by size and complexity
-#   aliases             legacy ids of a renamed step. Merged PRs sit on the old init/<alias> branches and
-#                       cannot be renamed, so status and runner §1 check 4 look a step's PR up under its
-#                       branch and under each alias branch. Nothing else reads aliases
+#   aliases             legacy keys: the numbered ids the step was stored under before steps had slugs.
+#                       Merged PRs sit on the old init/<alias> branches and cannot be renamed, so status,
+#                       cleanup and the runner look a step's PR up under its branch and under each alias
+#                       branch, and migrate renames an alias key to the slug. Add none for a renumbering
 #   commitMessage, prSummary, finalReminder, specialPreconditions, specialActions: as named
 
 steps:
   - id: 00-bootstrap
+    slug: bootstrap
     title: Bootstrap
+    aliases: [00-bootstrap]
     bootstrap: true
-    branch: init/00-bootstrap
+    branch: init/bootstrap
     outputs:
       - CONTRIBUTING.md
       - .cuevik/config.json
@@ -53,11 +60,13 @@ steps:
       - "Never copy plugin machinery (runner, registry, templates, roles) into the repo."
 
   - id: 01-product-concept
+    slug: product-concept
     title: Product Concept
+    aliases: [01-product-concept]
     storyPriority: High
     storySize: SM
     storyEfforts: 4
-    branch: init/01-product-concept
+    branch: init/product-concept
     outputs:
       - docs/PRODUCT.md
     template: PRODUCT.template.md
@@ -70,11 +79,13 @@ steps:
       - "When the repo has a board (boardState not none), set the board's short description to a one-line distillation of the PRODUCT.md Objective and its README to the PRODUCT.md Description verbatim, via board-adapter board.setMeta (skills/01-product-concept/SKILL.md, Board metadata). A failed board call never stops the step; report it in the PR body."
 
   - id: 02-product-requirements
+    slug: product-requirements
     title: Product Requirements Document
+    aliases: [02-product-requirements]
     storyPriority: High
     storySize: LG
     storyEfforts: 12
-    branch: init/02-product-requirements
+    branch: init/product-requirements
     outputs:
       - docs/PRD.md
     template: PRD.template.md
@@ -85,11 +96,13 @@ steps:
       - "The superpowers plugin (superpowers@claude-plugins-official) is installed and enabled: the interview runs its brainstorming skill (skills/02-product-requirements/SKILL.md, Precondition)."
 
   - id: 03-architecture
+    slug: architecture
     title: Architecture
+    aliases: [03-architecture]
     storyPriority: High
     storySize: LG
     storyEfforts: 12
-    branch: init/03-architecture
+    branch: init/architecture
     outputs:
       - docs/ARCHITECTURE.md
     template: ARCHITECTURE.template.md
@@ -98,11 +111,13 @@ steps:
     finalReminder: "ARCHITECTURE.md becomes final only when the Architect and Product Owner approve and merge the PR."
 
   - id: 04-tech-stack
+    slug: tech-stack
     title: Tech Stack
+    aliases: [04-tech-stack]
     storyPriority: High
     storySize: MD
     storyEfforts: 6
-    branch: init/04-tech-stack
+    branch: init/tech-stack
     outputs:
       - docs/TECH-STACK.md
       - CONTRIBUTING.md
@@ -114,11 +129,13 @@ steps:
       - "Append the tooling layer to CONTRIBUTING.md, between TOOLING-LAYER markers, using only technologies approved in TECH-STACK.md. Preserve the 00-bootstrap governance layer."
 
   - id: 05-test-strategy
+    slug: test-strategy
     title: Test Strategy
+    aliases: [05-test-strategy]
     storyPriority: High
     storySize: MD
     storyEfforts: 6
-    branch: init/05-test-strategy
+    branch: init/test-strategy
     outputs:
       - docs/TEST-STRATEGY.md
     template: TEST-STRATEGY.template.md
@@ -127,12 +144,13 @@ steps:
     finalReminder: "TEST-STRATEGY.md becomes final only when the Architect and Product Owner approve and merge the PR."
 
   - id: 06-ai-tool-guide
+    slug: ai-tool-guide
     title: AI Tool Guide
-    aliases: [05-ai-tool-guide]
+    aliases: [06-ai-tool-guide, 05-ai-tool-guide]
     storyPriority: High
     storySize: MD
     storyEfforts: 6
-    branch: init/06-ai-tool-guide
+    branch: init/ai-tool-guide
     outputs:
       - docs/AI-TOOL-GUIDE.md
       - CLAUDE.md
@@ -152,12 +170,13 @@ steps:
       - "When Claude Code is selected, write the team's plugins to .claude/settings.json (extraKnownMarketplaces + enabledPlugins), chosen with the operator; list manual prerequisites such as graphify in the guide."
 
   - id: 07-readme
+    slug: readme
     title: README
-    aliases: [06-readme]
+    aliases: [07-readme, 06-readme]
     storyPriority: High
     storySize: SM
     storyEfforts: 3
-    branch: init/07-readme
+    branch: init/readme
     outputs:
       - README.md
     replacesExisting: true
@@ -171,12 +190,13 @@ steps:
       - "Scaffolded mode (application code on main): test every command included in README.md before committing. Docs-first mode: show pointers only for versions and commands, and mark Environment Setup Pending scaffold — unverified instead (skills/07-readme/SKILL.md, No duplication and Mode)."
 
   - id: 08-backlog
+    slug: backlog
     title: Initial Backlog
-    aliases: [07-backlog]
+    aliases: [08-backlog, 07-backlog]
     storyPriority: High
     storySize: MD
     storyEfforts: 8
-    branch: init/08-backlog
+    branch: init/backlog
     outputs:
       - docs/BACKLOG.md
     template: BACKLOG.template.md
@@ -189,12 +209,13 @@ steps:
       - "Create GitHub issues one at a time with gh and capture their numbers."
 
   - id: 09-finalize
+    slug: finalize
     title: Finalize Governance
-    aliases: [08-finalize]
+    aliases: [09-finalize, 08-finalize]
     storyPriority: High
     storySize: XS
     storyEfforts: 1
-    branch: init/09-finalize
+    branch: init/finalize
     outputs:
       - CONTRIBUTING.md
     replacesExisting: true    # CONTRIBUTING.md is already on main; this step transforms it
