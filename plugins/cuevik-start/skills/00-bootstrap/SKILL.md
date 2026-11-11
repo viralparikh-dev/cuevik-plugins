@@ -43,7 +43,7 @@ Bootstrap runs before the folder is necessarily a repo, so its order differs fro
    articulated above.` (`Yes, make all <N>` · `No, stop`).
 6. **Remote changes** (§E), in order, with no further confirmation. §E.5 (board workflows) then
    needs the operator in GitHub, so it guides and asks.
-7. **Runner §3** — branch `init/00-bootstrap`.
+7. **Runner §3** — branch `init/bootstrap`.
 8. **Outputs** (§F). Show the files and wait for approval before committing.
 9. **Runner §5–§6** — commit, push on approval, PR (§G).
 
@@ -121,9 +121,9 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 3. `git show main:.cuevik/config.json` and `git show main:.cuevik/lineage.json` both non-zero, or
    **STOP**: `This repo is already bootstrapped.` Add or change the board through a PR that edits
    `.cuevik/config.json` (the config contract README, "Adding or repairing a board").
-4. `gh pr list --head init/00-bootstrap --state open --json url` returns `[]`, or **STOP** —
+4. `gh pr list --head init/bootstrap --state open --json url` returns `[]`, or **STOP** —
    `A 00-bootstrap PR is already open: <url>. Merge it (then this step is done), or close it and
-   delete its branch (git push origin --delete init/00-bootstrap, git branch -D init/00-bootstrap),
+   delete its branch (git push origin --delete init/bootstrap, git branch -D init/bootstrap),
    then re-run.`
 5. `git show main:CONTRIBUTING.md`:
    - Non-zero: **new** mode — write the whole file.
@@ -259,7 +259,7 @@ done and what was not. A re-run finds the board in the list, sees the link, skip
 reuses the `initiation` issues by title and finds the `cuevik-init-main` ruleset already present,
 so nothing is created twice.
 
-## F. Outputs (on `init/00-bootstrap`)
+## F. Outputs (on `init/bootstrap`)
 
 Write exactly these files (`steps.yml` `outputs`), nothing else:
 
@@ -273,7 +273,7 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 5,
+    "schemaVersion": 6,
     "boardState": "<configured | partial | none>",
     "backlogModel": "epic-grouped",
     "missing": ["<link | items | fields | workflows>"],
@@ -288,7 +288,7 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
     },
     "initiation": {
       "epic": <epic number from §E.4>,
-      "stories": { "<step id>": <story number from §E.4> }
+      "stories": { "<step slug>": <story number from §E.4> }
     }
   }
   ```
@@ -305,10 +305,10 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
   Express profile).
 
   `options` holds every option from §D.5, as read. `stories` has one entry per story from §E.4,
-  keyed by step id. `initiation` is always written: the issues are filed whatever the state. No
-  `$schema` key. It must satisfy
-  `${CLAUDE_PLUGIN_ROOT}/references/contracts/config/config.schema.json`: re-read the file and check
-  each rule there before committing.
+  keyed by the step's `slug` in `steps.yml` (`product-concept`), never by its numbered id.
+  `initiation` is always written: the issues are filed whatever the state. No `$schema` key. It must
+  satisfy `${CLAUDE_PLUGIN_ROOT}/references/contracts/config/config.schema.json`: re-read the file
+  and check each rule there before committing.
 - **`.cuevik/lineage.json`** — a byte-for-byte copy of
   `${CLAUDE_PLUGIN_ROOT}/references/contracts/lineage/lineage.example.json` (copy the file; do not
   retype it).
@@ -324,8 +324,8 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
 - **`.github/workflows/cuevik-init-order.yml`** — a byte-for-byte copy of
   `${CLAUDE_PLUGIN_ROOT}/references/workflows/cuevik-init-order.yml` (copy the file; do not retype
-  it). It is the `init-order` status check the §E.6 ruleset requires: on each `init/NN-*` PR it
-  fails until the previous step's PR has merged into `main`.
+  it). It is the `init-order` status check the §E.6 ruleset requires: on each step's `init/<slug>`
+  PR it fails until the previous step's PR has merged into `main`.
 
 Do not add stack-specific commands to `CONTRIBUTING.md`; `04-tech-stack` appends them. Never copy
 the runner, `steps.yml`, templates, roles or contracts into the repo.
@@ -335,7 +335,7 @@ the runner, `steps.yml`, templates, roles or contracts into the repo.
 `/cuevik-start:express` drives §A, §B, §C, §E.3, §E.4, §E.6 and §F. It skips §D, §E.1, §E.2 and
 §E.5 and the board bullets of §E.4: the lane has no board, so `boardState` is `none` without a
 question. It still sets up the §E.6 ruleset and writes the §F workflow: the lane's own `init/express`
-PR is not an `init/NN-*` branch, so the `init-order` check passes it ungated, and the ruleset then
+PR is not a step's branch, so the `init-order` check passes it ungated, and the ruleset then
 governs any standard step that graduates the repo later (`03-architecture` onward). It
 also files **no epic**: skip the `Epic: Project Initiation` issue and the sub-issue links of §E.4,
 and file only the `INIT-*` stories, each given the `Task` issue type when the owner supports it
@@ -374,7 +374,7 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `CONTRIBUTING.md` holds the governance layer verbatim, with both `INITIATION-ONLY` markers.
       In insert mode, the existing text is unchanged.
 - [ ] No stack-specific commands in `CONTRIBUTING.md`.
-- [ ] `.cuevik/config.json` has `schemaVersion` 5, `backlogModel` `epic-grouped`, and a
+- [ ] `.cuevik/config.json` has `schemaVersion` 6, `backlogModel` `epic-grouped`, and a
       `boardState` that matches what happened: `none` has neither `project` nor `missing`;
       `configured` has `project` and no `missing`; `partial` has `project` and a non-empty
       `missing`. The PR body says why for `none` and `partial`.
@@ -382,8 +382,8 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
       `missing` lists `link`), and its ids were read from GitHub.
 - [ ] `.cuevik/lineage.json` matches the plugin's default lineage.
 - [ ] `.cuevik/config.json` `initiation` matches the `initiation`-labelled issues: the epic and one
-      story per step after 00, each a sub-issue of the epic, and on the board when there is one
-      (unless `missing` lists `items`). No `epic` or `story` label on any of them.
+      story per step after 00, keyed by step slug, each a sub-issue of the epic, and on the board
+      when there is one (unless `missing` lists `items`). No `epic` or `story` label on any of them.
 - [ ] `gh repo view --json deleteBranchOnMerge` returns `true`.
 - [ ] `.github/workflows/cuevik-init-order.yml` matches the plugin's workflow byte for byte.
 - [ ] The `cuevik-init-main` ruleset is active on `main` (pull request required, `init-order`

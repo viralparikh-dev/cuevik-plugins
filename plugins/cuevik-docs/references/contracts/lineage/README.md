@@ -3,6 +3,11 @@
 The project's source-of-truth documents: which `cuevik-start` step writes each one, which documents
 it is written from, and who owns and reviews it.
 
+`steps` names each step by its slug (`tech-stack`, not `04-tech-stack`), so renumbering the steps
+changes nothing here. Version 1 used the numbered ids: bring an older file current with
+`/cuevik-start:migrate` (by hand: the config contract README, "Migrating from an older
+schemaVersion").
+
 | File | What it is |
 |---|---|
 | `lineage.schema.json` | JSON Schema (2020-12). The definition. |

@@ -1,6 +1,6 @@
 ---
 name: status
-description: Shows where project initiation stands. A progress line, then for each cuevik-start step (00–09) whether the step's init/<id> PR is merged, open, only a branch, or not started, read from git and GitHub, with the initiation issues on the board cross-checked, then the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
+description: Shows where project initiation stands. A progress line, then for each cuevik-start step (00–09) whether the step's init/<slug> PR is merged, open, only a branch, or not started, read from git and GitHub, with the initiation issues on the board cross-checked, then the next command. Read-only. Run it any time in the project folder; steps 01–08 also run it first.
 disable-model-invocation: true
 ---
 
@@ -11,11 +11,11 @@ branches, changes nothing on GitHub, and asks no questions. The current folder i
 repo. It takes no arguments. Run every `gh` command through the Bash tool.
 
 Load `${CLAUDE_PLUGIN_ROOT}/references/steps.yml`. Its steps are the rows, in its order. Each
-entry supplies `id`, `branch`, `outputs` (the first is the primary output), `bootstrap` and
-`replacesExisting`. Never hardcode a step list. If the file fails to load, stop and output:
-`Error: steps.yml could not be loaded.` Also load `${CLAUDE_PLUGIN_ROOT}/references/express.yml`
-(the Express lane's `branch` and `covers`); if it fails to load, stop and output: `Error:
-express.yml could not be loaded.`
+entry supplies `id`, `slug`, `branch`, `aliases`, `outputs` (the first is the primary output),
+`bootstrap` and `replacesExisting`. Never hardcode a step list. If the file fails to load, stop and
+output: `Error: steps.yml could not be loaded.` Also load
+`${CLAUDE_PLUGIN_ROOT}/references/express.yml` (the Express lane's `branch` and `covers`); if it
+fails to load, stop and output: `Error: express.yml could not be loaded.`
 
 Run every check silently, then render the report once. Do not print intermediate command output.
 
@@ -50,11 +50,11 @@ Read the branches once:
 Then, for each step:
 
 1. **PR.** `gh pr list --head <branch> --base main --state all --json number,state,title,url`,
-   for the step's `branch` and for each `init/<alias>` of its `aliases`: a repo initiated before a
-   renumbering has the merged PR on the old branch. This is the same lookup runner §1 check 4 uses
-   to gate the next step. Take the newest `MERGED` PR among them if there is one, else the `OPEN`
-   one, else the newest `CLOSED` one, else none. The branch statuses below (`⊙ branch`, branch
-   left) count an alias branch too.
+   for the step's `branch` and for each `init/<alias>` of its `aliases`: a repo initiated before
+   steps had slugs has the merged PR on the old numbered branch. This is the same lookup runner §1
+   check 4 uses to gate the next step. Take the newest `MERGED` PR among them if there is one, else
+   the `OPEN` one, else the newest `CLOSED` one, else none. The branch statuses below (`⊙ branch`,
+   branch left) count an alias branch too.
 2. **File check** on `<sha>`. `git cat-file -e <sha>:<path>` exit 0 means the file is there.
 
    | Step | Passes when |
@@ -92,12 +92,15 @@ stays the source of truth: this section never changes a row's Status or the Next
 `**Check:**` lines where GitHub's issues disagree with the rows, and one `**Board:**` line (step 5).
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
-   silently. `schemaVersion` below 5: one Check line, `.cuevik/config.json is schemaVersion <n>. Run
-   /cuevik-start:migrate, merge its PR, then re-run.`, then go on. No `initiation` key: one Check
-   line, `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`,
-   then skip the rest.
+   silently. `schemaVersion` below 6, or below 2 in `git show <sha>:.cuevik/lineage.json`: one Check
+   line per file,
+   `<file> is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then re-run.`, then go on.
+   No `initiation` key: one Check line,
+   `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`, then
+   skip the rest.
 2. `gh issue list --label initiation --state all --limit 100 --json number,state`, once.
-3. For each step in `initiation.stories`, with story `#n`:
+3. For each entry in `initiation.stories`, with story `#n`. Its key is a step's `slug`; in a
+   config not migrated yet it is one of the step's `aliases`. `<id>` below is that step's id:
 
    | Condition | Check line |
    | --- | --- |

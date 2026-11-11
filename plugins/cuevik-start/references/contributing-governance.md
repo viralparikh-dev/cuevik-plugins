@@ -45,16 +45,16 @@ Project initiation runs as ten `/cuevik-start` steps, one session and one PR per
 
 | Step | Branch | Writes |
 | --- | --- | --- |
-| `00-bootstrap` | `init/00-bootstrap` | `CONTRIBUTING.md` (this governance layer), `.cuevik/`, `.markdownlint.json` |
-| `01-product-concept` | `init/01-product-concept` | `docs/PRODUCT.md` |
-| `02-product-requirements` | `init/02-product-requirements` | `docs/PRD.md` |
-| `03-architecture` | `init/03-architecture` | `docs/ARCHITECTURE.md` |
-| `04-tech-stack` | `init/04-tech-stack` | `docs/TECH-STACK.md`, `CONTRIBUTING.md` tooling layer |
-| `05-test-strategy` | `init/05-test-strategy` | `docs/TEST-STRATEGY.md` |
-| `06-ai-tool-guide` | `init/06-ai-tool-guide` | `docs/AI-TOOL-GUIDE.md`, tool adapters |
-| `07-readme` | `init/07-readme` | `README.md` |
-| `08-backlog` | `init/08-backlog` | `docs/BACKLOG.md`, epic and story issues |
-| `09-finalize` | `init/09-finalize` | `CONTRIBUTING.md` (removes this block) |
+| `00-bootstrap` | `init/bootstrap` | `CONTRIBUTING.md` (this governance layer), `.cuevik/`, `.markdownlint.json` |
+| `01-product-concept` | `init/product-concept` | `docs/PRODUCT.md` |
+| `02-product-requirements` | `init/product-requirements` | `docs/PRD.md` |
+| `03-architecture` | `init/architecture` | `docs/ARCHITECTURE.md` |
+| `04-tech-stack` | `init/tech-stack` | `docs/TECH-STACK.md`, `CONTRIBUTING.md` tooling layer |
+| `05-test-strategy` | `init/test-strategy` | `docs/TEST-STRATEGY.md` |
+| `06-ai-tool-guide` | `init/ai-tool-guide` | `docs/AI-TOOL-GUIDE.md`, tool adapters |
+| `07-readme` | `init/readme` | `README.md` |
+| `08-backlog` | `init/backlog` | `docs/BACKLOG.md`, epic and story issues |
+| `09-finalize` | `init/finalize` | `CONTRIBUTING.md` (removes this block) |
 
 - One branch per step, created from an up-to-date `main`.
 - `main` holds only merged, final documents.

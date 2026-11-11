@@ -9,7 +9,7 @@
     "$schema": { "type": "string" },
     "schemaVersion": {
       "description": "Version of this contract. Increase it when a key is added, removed or renamed.",
-      "const": 5
+      "const": 6
     },
     "backlogModel": {
       "description": "How this repo's issues are organised. `epic-grouped`: epics are filed as GitHub issues and stories are their sub-issues (the standard lane). `flat`: no epic issues are filed; stories are distinguished by native GitHub issue type and carry no epic parent (the Express lane). Set once at bootstrap: the standard lane writes `epic-grouped`, Express writes `flat`.",
@@ -80,10 +80,10 @@
           "minimum": 1
         },
         "stories": {
-          "description": "Step id -> issue number of that step's story. One per step except 00-bootstrap, whose story cannot exist before bootstrap runs.",
+          "description": "Step slug (steps.yml `slug`, the step id without its number) -> issue number of that step's story. One per step except 00-bootstrap, whose story cannot exist before bootstrap runs.",
           "type": "object",
           "minProperties": 1,
-          "propertyNames": { "pattern": "^[0-9]{2}-[a-z0-9-]+$" },
+          "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
           "additionalProperties": { "type": "integer", "minimum": 1 }
         }
       }

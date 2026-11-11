@@ -70,12 +70,13 @@ order.
 
 `initiation` holds the issue numbers `00-bootstrap` creates to show initiation's progress: one
 `INIT-<NN>: <title>` story per step after `00-bootstrap` (its own story cannot exist before it
-runs), keyed by step id, plus — on an `epic-grouped` repo — one `Epic: Project Initiation` epic in
-`initiation.epic`. A `flat` repo files no epic and gives each story the native `Task` issue type
-instead. The issues are filed whatever the `boardState`, and are added to the board when there is
-one. They carry only the `initiation` label, never `epic` or `story`, so `cuevik-start:08-backlog`,
-`docs/BACKLOG.md` and `cuevik-ship`'s epic lookup never pick them up. The merged PR stays the source
-of truth for a step; the issues only mirror it.
+runs), keyed by step slug (`product-concept`, not `01-product-concept`), plus — on an `epic-grouped`
+repo — one `Epic: Project Initiation` epic in `initiation.epic`. A `flat` repo files no epic and
+gives each story the native `Task` issue type instead. The issues are filed whatever the
+`boardState`, and are added to the board when there is one. They carry only the `initiation` label,
+never `epic` or `story`, so `cuevik-start:08-backlog`, `docs/BACKLOG.md` and `cuevik-ship`'s epic
+lookup never pick them up. The merged PR stays the source of truth for a step; the issues only
+mirror it.
 
 ## Where the values come from
 
@@ -90,29 +91,37 @@ The `initiation` numbers are the ones `gh issue create` printed when `00-bootstr
 
 ## Migrating from an older schemaVersion
 
-Version 3 added `boardState`. Version 4 renamed four step ids, which are the keys of
+Version 3 added `boardState`. Version 4 renamed four step ids, which were the keys of
 `initiation.stories`, when the test strategy step was inserted. Version 5 added `backlogModel`.
+Version 6 keys `initiation.stories` by step slug, the id without its number, so a later renumbering
+changes nothing a repo keeps; the lineage contract's version 2 does the same to its `steps`.
 Older configs are not accepted: `cuevik-start` and `cuevik-ship` stop on one and say so.
 
 Bring a repo current with `/cuevik-start:migrate`. It opens one PR that edits both
 `.cuevik/config.json` and `.cuevik/lineage.json`. By hand, open a PR that does this to
 `.cuevik/config.json`:
 
-1. set `"schemaVersion": 5`;
+1. set `"schemaVersion": 6`;
 2. for a version 2 config, add `"boardState": "configured"` (every version 2 config has a
    `project`, so the value is the same for all of them);
 3. add `"backlogModel": "epic-grouped"` (every existing repo files epics, so the value is the same
    for all of them);
-4. rename these keys in `initiation.stories`: `05-ai-tool-guide` to `06-ai-tool-guide`,
-   `06-readme` to `07-readme`, `07-backlog` to `08-backlog`, `08-finalize` to `09-finalize`;
+4. rename every key in `initiation.stories` to its step slug by dropping the two-digit prefix:
+   `01-product-concept` to `product-concept`, `06-ai-tool-guide` (or the older `05-ai-tool-guide`)
+   to `ai-tool-guide`, and so on;
 5. leave everything else as it is;
 
 and this to `.cuevik/lineage.json`, in the same PR:
 
-1. rename the same four ids in every `steps` array;
-2. add the `docs/TEST-STRATEGY.md` entry from the default lineage (`lineage.example.json`);
-3. insert `docs/TEST-STRATEGY.md` right after `docs/TECH-STACK.md` in the `upstream` of
-   `docs/AI-TOOL-GUIDE.md`, `README.md` and `docs/BACKLOG.md`.
+1. set `"schemaVersion": 2`, and rename every id in every `steps` array to its slug the same way;
+2. if it is missing, add the `docs/TEST-STRATEGY.md` entry from the default lineage
+   (`lineage.example.json`);
+3. if it is missing, insert `docs/TEST-STRATEGY.md` right after `docs/TECH-STACK.md` in the
+   `upstream` of `docs/AI-TOOL-GUIDE.md`, `README.md` and `docs/BACKLOG.md`;
+
+and, when the repo has `.github/workflows/cuevik-init-order.yml`, replace it with the plugin's
+current copy (`cuevik-start`'s `references/workflows/cuevik-init-order.yml`), which knows both the
+slug branches and the older numbered ones.
 
 Merge it, then re-run the step.
 

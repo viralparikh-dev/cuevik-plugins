@@ -33,7 +33,9 @@ Stop at the first failure with its message.
    fast-forward main — resolve the pull error before continuing.`
 4. `git show main:.cuevik/lineage.json` — non-zero: `No .cuevik/lineage.json on main. Run
    /cuevik-start:00-bootstrap first.` It must parse and match the contract's schema
-   (`lineage.schema.json`); otherwise stop and say which rule fails.
+   (`lineage.schema.json`); otherwise stop and say which rule fails. A `schemaVersion` below 2
+   fails it: `.cuevik/lineage.json is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR,
+   then re-run.`
 5. `gh auth status` — non-zero: `gh is not signed in. Run gh auth login, then re-run.`
 
 ## 2. Pick the document and the change
