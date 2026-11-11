@@ -1,6 +1,6 @@
 ---
 name: 08-backlog
-description: Step 08 of cuevik-start. Run after 07-readme's PR is merged, in a new session in the project folder. Derives the initial epics and stories from docs/PRD.md, shows them for the Product Owner's approval, files them as GitHub issues (labels epic, story, priority:*), and opens a PR adding docs/BACKLOG.md — the frozen manifest of what initiation filed. From then on GitHub is the backlog.
+description: Step 08 of cuevik-start. Run once 07-readme's PR is open or merged, in a new session in the project folder. Derives the initial epics and stories from docs/PRD.md, shows them for the Product Owner's approval, files them as GitHub issues (labels epic, story, priority:*), and opens a PR adding docs/BACKLOG.md — the frozen manifest of what initiation filed. From then on GitHub is the backlog.
 disable-model-invocation: true
 ---
 

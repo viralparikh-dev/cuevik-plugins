@@ -1,6 +1,6 @@
 ---
 name: 03-architecture
-description: Step 03 of cuevik-start. Run after 02-product-requirements' PR is merged, in a new session in the project folder. Works through the system design with the Architect, one section at a time, every decision with its alternatives and trade-offs, and opens a PR adding docs/ARCHITECTURE.md — components, data, integrations, security and the structural answer to each requirement. No technology inventory.
+description: Step 03 of cuevik-start. Run once 02-product-requirements' PR is open or merged, in a new session in the project folder. Works through the system design with the Architect, one section at a time, every decision with its alternatives and trade-offs, and opens a PR adding docs/ARCHITECTURE.md — components, data, integrations, security and the structural answer to each requirement. No technology inventory.
 disable-model-invocation: true
 ---
 

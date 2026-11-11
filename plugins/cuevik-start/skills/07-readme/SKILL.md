@@ -1,6 +1,6 @@
 ---
 name: 07-readme
-description: Step 07 of cuevik-start. Run after 06-ai-tool-guide's PR is merged, in a new session in the project folder. Replaces the repo's README with the project's real entry point, built from the documents before it — overview, key concepts, prerequisites, environment, install, tests, structure — testing every command when code exists, marking setup as pending when it does not, and opens a PR.
+description: Step 07 of cuevik-start. Run once 06-ai-tool-guide's PR is open or merged, in a new session in the project folder. Replaces the repo's README with the project's real entry point, built from the documents before it — overview, key concepts, prerequisites, environment, install, tests, structure — testing every command when code exists, marking setup as pending when it does not, and opens a PR.
 disable-model-invocation: true
 ---
 
