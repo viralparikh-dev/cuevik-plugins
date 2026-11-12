@@ -66,7 +66,26 @@ jobs:
         run: python docs/guides/build_docs.py --check
 
       - name: Claude Code validates the marketplace and plugins
+        # Pinned: a new Claude Code release can add a validation rule and turn every PR red at once.
+        # To move it, change the version here, run `claude plugin validate` locally, and say so in the PR.
         run: |
-          npm install -g @anthropic-ai/claude-code
+          npm install -g @anthropic-ai/claude-code@2.1.322
           claude plugin validate .
           for p in plugins/*/; do claude plugin validate "$p"; done
+
+  guides:
+    # docs/guides holds generated HTML and PDFs. Rebuild them on Linux, where the committed PDFs
+    # were built: the HTML must match exactly and each PDF's text must match (line breaks aside), so
+    # a source change committed without a rebuild fails. Needs Chrome, which this runner image has.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: python -m pip install -r docs/guides/requirements.txt
+
+      - name: Committed guides match a fresh build
+        run: python docs/guides/build_docs.py --verify-built
