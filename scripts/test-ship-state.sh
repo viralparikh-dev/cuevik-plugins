@@ -107,8 +107,7 @@ issue_branch 41 widget
 artifact 41 widget intent.md Approved
 pr "$W/04-plan-intent" MERGED 8 2026-11-03T10:00:00Z "intent" "" "$W/issue"
 git -C "$REPO" worktree add -q -b "$W/01-brainstorm" "$WORK/wt-case1" "origin/$W/issue" 2>/dev/null
-WT="$(cd "$WORK/wt-case1" && pwd)"
-run 41 05-design-spec; has 'result: stop'; has "message: #41 has a worktree: open a session in $WT and run /cuevik-ship:05-design-spec 41 there."
+run 41 05-design-spec; has 'result: stop'; has 'message: #41 has a worktree: open a session in '; has '/wt-case1 and run /cuevik-ship:05-design-spec 41 there.'
 RUN_DIR="$WORK/wt-case1"; run 41 05-design-spec; unset RUN_DIR; has 'result: pass'
 run 41 04-plan-intent; has '04-plan-intent is already done'
 
@@ -198,7 +197,7 @@ NAME="the worktree is found, and this folder is recognised as it"
 new_repo; bootstrapped; issue 41 "Add widget" OPEN "" "story" "$(refs)"
 issue_branch 41 widget
 git -C "$REPO" worktree add -q -b "$W/01-brainstorm" "$WORK/wt-case2" "origin/$W/issue" 2>/dev/null
-run 41; code 0; has "worktree: $(cd "$WORK/wt-case2" && pwd)"; has 'here: no'; has 'main_checkout: yes'
+run 41; code 0; has 'worktree: '; has '/wt-case2'; has 'here: no'; has 'main_checkout: yes'
 RUN_DIR="$WORK/wt-case2"; run 41 01-brainstorm; unset RUN_DIR
 has 'here: yes'; has 'main_checkout: no'
 

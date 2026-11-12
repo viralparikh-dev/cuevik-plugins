@@ -52,7 +52,10 @@ PREFIX="$(git rev-parse --show-prefix 2>/dev/null)" || stop "This folder is not 
 [ -z "$PREFIX" ] || stop "Run cuevik-ship from the repo or worktree root."
 gh auth status >/dev/null 2>&1 || stop "gh is not signed in. Run gh auth login, then re-run."
 git fetch --prune origin >/dev/null 2>&1 || stop "Could not fetch origin. cuevik-ship needs GitHub's current state."
-git cat-file -e origin/main:.cuevik/config.json 2>/dev/null && git cat-file -e origin/main:.cuevik/lineage.json 2>/dev/null \
+# Always <commit>:<path>, never origin/main:<path>: Git Bash on Windows rewrites an argument shaped like
+# origin/main:.cuevik/x into a Windows path list, and the read then fails on a file that exists.
+MAIN_SHA="$(git rev-parse --verify -q origin/main 2>/dev/null)"
+[ -n "$MAIN_SHA" ] && git cat-file -e "$MAIN_SHA:.cuevik/config.json" 2>/dev/null && git cat-file -e "$MAIN_SHA:.cuevik/lineage.json" 2>/dev/null \
   || stop "This repo is not set up for cuevik. Run /cuevik-start:00-bootstrap first."
 if [ "$STEP" != "cleanup" ] && [ -n "$STEP" ] && [ -n "$(git status --porcelain 2>/dev/null)" ]; then
   stop "Uncommitted changes detected — commit or stash before continuing."
@@ -111,13 +114,13 @@ $(git worktree list --porcelain 2>/dev/null)
 EOF
 [ "$SLUG" != "-" ] || WORKTREE="-"
 if [ "$SLUG_SOURCE" = "none" ] && [ "$WORKTREE" != "-" ]; then SLUG_SOURCE="worktree"; fi
+# -ef (the same file) rather than comparing path strings: on Windows one folder has a short and a long
+# spelling, and git, bash and the operator do not always use the same one.
 TOP="$(git rev-parse --show-toplevel 2>/dev/null)"
-HERE="no"; [ "$WORKTREE" != "-" ] && [ "${TOP%/}" = "${WORKTREE%/}" ] && HERE="yes"
+HERE="no"; [ "$WORKTREE" != "-" ] && [ "$TOP" -ef "$WORKTREE" ] && HERE="yes"
 [ "$WORKTREE" != "-" ] || HERE="-"
-abs_dir() { (cd "$1" 2>/dev/null && pwd -P); }   # not git's --path-format: that needs Git 2.31
-GIT_DIR_ABS="$(abs_dir "$(git rev-parse --git-dir 2>/dev/null)")"
-COMMON_ABS="$(abs_dir "$(git rev-parse --git-common-dir 2>/dev/null)")"
-MAIN_CHECKOUT="no"; [ -n "$GIT_DIR_ABS" ] && [ "$GIT_DIR_ABS" = "$COMMON_ABS" ] && MAIN_CHECKOUT="yes"
+MAIN_CHECKOUT="no"
+[ "$(git rev-parse --git-dir 2>/dev/null)" -ef "$(git rev-parse --git-common-dir 2>/dev/null)" ] && MAIN_CHECKOUT="yes"
 
 ISSUE_BRANCH="$WORK/issue"
 ISSUE_BRANCH_ON_GITHUB="no"
@@ -185,10 +188,12 @@ intent.md|intent.md
 spec.md|spec.md
 plan.md|plan.md"
 A_NAMES=""
+ISSUE_TIP=""
+[ "$ISSUE_BRANCH_ON_GITHUB" != "yes" ] || ISSUE_TIP="$(git rev-parse --verify -q "origin/$ISSUE_BRANCH" 2>/dev/null)"
 while IFS='|' read -r name path; do
   status="-"; unticked="-"
-  if [ "$ISSUE_BRANCH_ON_GITHUB" = "yes" ]; then
-    if git show "origin/$ISSUE_BRANCH:docs/ship/$ISSUE-$SLUG/$path" > "$TMP/$name" 2>/dev/null; then
+  if [ -n "$ISSUE_TIP" ]; then
+    if git show "$ISSUE_TIP:docs/ship/$ISSUE-$SLUG/$path" > "$TMP/$name" 2>/dev/null; then
       status="$(sed -n 's/^\*\*Status:\*\* *\([A-Za-z]*\).*$/\1/p' "$TMP/$name" | head -n 1 | tr -d '\r')"
       [ -n "$status" ] || status="-"
       if [ "$name" = "spec.md" ]; then
@@ -220,7 +225,7 @@ ref_number() {  # the issue or PR number on a "- <label>: #<n>" line of the bloc
 }
 EPIC="$(ref_number Epic)"; [ -n "$EPIC" ] || EPIC="-"
 DOCS_PR="$(ref_number "Docs PR")"; [ -n "$DOCS_PR" ] || DOCS_PR="-"
-BACKLOG_MODEL="$(git show origin/main:.cuevik/config.json 2>/dev/null | grep -o '"backlogModel"[[:space:]]*:[[:space:]]*"[a-z-]*"' | head -n 1 | sed 's/.*"\([a-z-]*\)"$/\1/')"
+BACKLOG_MODEL="$(git show "$MAIN_SHA:.cuevik/config.json" 2>/dev/null | grep -o '"backlogModel"[[:space:]]*:[[:space:]]*"[a-z-]*"' | head -n 1 | sed 's/.*"\([a-z-]*\)"$/\1/')"
 
 # ---- the state ----------------------------------------------------------------------------------
 printf '== issue\n'

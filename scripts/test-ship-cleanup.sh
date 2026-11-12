@@ -31,10 +31,9 @@ finished() {
 NAME="plan: a finished issue with a worktree and local branches"
 finished
 git -C "$REPO" worktree add -q -b "$W/06-build-plan" "$WORK/wt-a" "origin/$W/issue" 2>/dev/null
-WT="$(cd "$WORK/wt-a" && pwd)"
 local_branch "$W/05-design-spec" "origin/$W/issue" > /dev/null
 run 41 plan; code 0
-has "path: $WT"; has 'removable: yes'
+has 'path: '; has '/wt-a'; has 'removable: yes'
 has "delete|$W/05-design-spec|reachable"; has "delete|$W/06-build-plan|reachable"
 has "tag: ship-archive/41-widget"; has 'state: create'; has "target: $(git -C "$REPO" rev-parse "origin/$W/issue")"
 has "delete|$W/issue"; has "delete|$W/05-design-spec"
@@ -43,7 +42,7 @@ git -C "$REPO" ls-remote --exit-code --heads origin "$W/issue" > /dev/null || fa
 
 NAME="apply: removes the worktree and local branches, tags and pushes the tag, then deletes the remote branches"
 RUN_DIR=""; run 41 apply; code 0
-has "done|worktree $WT removed"; has 'done|worktrees pruned'
+has 'done|worktree '; has '/wt-a removed'; has 'done|worktrees pruned'
 has "done|branch $W/05-design-spec deleted"; has "done|branch $W/06-build-plan deleted"
 has "done|tag ship-archive/41-widget created at "; has 'done|tag ship-archive/41-widget pushed'
 has "done|remote branch $W/issue deleted"; has "done|remote branch $W/05-design-spec deleted"

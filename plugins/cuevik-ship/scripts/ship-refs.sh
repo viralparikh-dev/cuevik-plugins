@@ -68,13 +68,16 @@ step_pr() {  # the merged-or-open PR number of a step, or nothing
   printf '%s\n' "$STATE" | awk -F'|' -v s="$1" '$1 == s && ($4 == "merged" || $4 == "open") { print $5; exit }'
 }
 file_link() {  # file_link <label> <path under docs/ship/<n>-<slug>/> <step>: the line, or nothing
-  local label="$1" path="docs/ship/$ISSUE-$SLUG/$2" step="$3" sha="" branch pr name
+  local label="$1" path="docs/ship/$ISSUE-$SLUG/$2" step="$3" sha="" branch pr name tip step_tip
   [ "$SLUG" != "-" ] || return 0
   branch="$WORK/$step"
-  if [ "$ISSUE_BRANCH_ON_GITHUB" = "yes" ] && git cat-file -e "origin/$ISSUE_BRANCH:$path" 2>/dev/null; then
-    sha="$(git log -1 --format=%H "origin/$ISSUE_BRANCH" -- "$path" 2>/dev/null)"
-  elif git cat-file -e "origin/$branch:$path" 2>/dev/null; then
-    sha="$(git rev-parse "origin/$branch" 2>/dev/null)"
+  # <commit>:<path>, never <branch>:<path>: Git Bash on Windows rewrites the latter into a path list.
+  tip=""; [ "$ISSUE_BRANCH_ON_GITHUB" != "yes" ] || tip="$(git rev-parse --verify -q "origin/$ISSUE_BRANCH" 2>/dev/null)"
+  step_tip="$(git rev-parse --verify -q "origin/$branch" 2>/dev/null)"
+  if [ -n "$tip" ] && git cat-file -e "$tip:$path" 2>/dev/null; then
+    sha="$(git log -1 --format=%H "$tip" -- "$path" 2>/dev/null)"
+  elif [ -n "$step_tip" ] && git cat-file -e "$step_tip:$path" 2>/dev/null; then
+    sha="$step_tip"
   fi
   [ -n "$sha" ] || return 0
   name="${2##*/}"; pr="$(step_pr "$step")"
