@@ -1,0 +1,3 @@
+# Bash cannot run a script, or split a table, that a Windows checkout turned into CRLF.
+*.sh text eol=lf
+plugins/cuevik-start/scripts/steps.table text eol=lf

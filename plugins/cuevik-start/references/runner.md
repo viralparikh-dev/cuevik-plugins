@@ -21,7 +21,8 @@ Run exactly one step per session.
   session and one PR.
 - At the start of every step session, run §1 preconditions 1–2 (clean working tree, refresh
   `main`) first, then follow `${CLAUDE_PLUGIN_ROOT}/skills/status/SKILL.md` so status reflects
-  what has been merged on GitHub. Do not repeat preconditions 1–2 afterward.
+  what has been merged on GitHub. Give its script this step's id: the same run then answers §1
+  check 4. Do not repeat preconditions 1–2 afterward.
 - Continue only the single requested step after status is known.
 - If the user asks to run a different step in the same session, stop and tell them to start a new
   session for that step.
@@ -151,41 +152,30 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    keeps you at most one step ahead. Merge order itself is enforced by the repo's `main` ruleset
    and the `init-order` status check, not here (`CONTRIBUTING.md`).
 
-   The **predecessor** is the step listed immediately before this one in `steps.yml`. For any gate
-   query below, run it for the queried step's `branch`, for each `init/<alias>` of its `aliases` in
-   `steps.yml` (a repo initiated before steps had slugs has the PR on the old numbered branch), and
-   — when the Express lane covers that step (`references/express.yml`, `covers`) — for the lane's
-   `branch` (`init/express`). A PR from any of these satisfies the query.
+   The check is made by `${CLAUDE_PLUGIN_ROOT}/scripts/init-state.sh`, not by you: read the
+   `== gate` section of the run §0 made with this step's id (if that section is missing, run
+   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/init-state.sh" <step id>` now). The script looks each
+   step's PR up under its `branch`, under its alias branches (a repo initiated before steps had
+   slugs has the PR on the old numbered branch) and, for a step the Express lane covers, under the
+   lane's branch. Never work the gate out with `gh pr list` calls of your own, and never proceed
+   without its answer: a script that cannot run is a **STOP**, with what the shell said.
 
-   - **Predecessor open or merged.** Run both
-     `gh pr list --head <branch> --base main --state merged --json number,url` and
-     `... --state open ...` for the predecessor.
-     - A PR returned by either: record whether it was **merged** or only **open**, then apply the
-       clamp below. The self-review checklist in `CONTRIBUTING.md` is the approval for a merged PR.
-     - None returned: **STOP**. Tell the operator that `<predecessor id>`'s PR must be open or
-       merged before this step can start.
-   - **Earlier-steps clamp.** Only when the predecessor passed on an **open** (not merged) PR: for
-     every step before the predecessor in `steps.yml`, run the merged query. (`00-bootstrap` is
-     already required on `main` by check 3, so in practice this bites from `02` onward.)
-     - Every one returns a merged PR: proceed.
-     - Any returns none: **STOP**. Tell the operator they can be at most one step ahead —
-       `<that step id>`'s PR must merge before starting this step while `<predecessor id>` is still
-       open.
-
-   `04-tech-stack` needs no special case now: its predecessor `03-architecture` is covered by the
-   open-or-merged rule like every other step. The Express-lane and alias lookups above are what let
-   `03-architecture` follow an Express repo, whose `01`, `02` and `08` never had a PR on a branch of
-   their own.
+   - `result: pass`: proceed. Keep `predecessor_state` (`merged` or `open`), `predecessor_branch`
+     and `predecessor_merged`: check 5 and §7 use them. The self-review checklist in
+     `CONTRIBUTING.md` is the approval for a merged PR.
+   - `result: stop`: **STOP** and tell the operator the `message` line: either the previous step's
+     PR is neither open nor merged, or it is only open and an earlier step is not merged yet (at
+     most one step ahead).
 
 5. **Upstream documents on `main`** — for every upstream document from Inputs §3, run
    `git show main:<document>`.
    - Exit 0 for every document: proceed.
    - Non-zero for any document: **STOP** and tell the operator which document is missing from
-     `main`. Exception: when check 4 passed on an **open** (unmerged) predecessor PR, read that
-     predecessor's **primary output** (the first entry of its `outputs` in `steps.yml`) from the
-     PR's branch instead of `main`: `git fetch origin <predecessor branch>` then
-     `git show origin/<predecessor branch>:<primary output>`, where `<predecessor branch>` is the
-     branch check 4 found the open PR on (an alias branch in a migrated repo). Every other upstream
+     `main`. Exception: when check 4 gave `predecessor_state: open`, read that predecessor's
+     **primary output** (the first entry of its `outputs` in `steps.yml`) from the PR's branch
+     instead of `main`: `git fetch origin <predecessor branch>` then
+     `git show origin/<predecessor branch>:<primary output>`, where `<predecessor branch>` is
+     check 4's `predecessor_branch` (an alias branch in a migrated repo). Every other upstream
      document still comes from `main`; one missing there is a real STOP — it means an earlier step
      is unmerged, so you are trying to run more than one step ahead.
    - Empty `upstream`: no upstream document is required.
@@ -364,15 +354,14 @@ the board: skip.
 2. The epic: `Start date` = today if it is empty, and `Status` = `Working` if it is still
    `Backlog`. Read its current Status from the item lookup's `.status`. Checking `Backlog`, not
    "first step", also repairs a board where an earlier step ran before this rule.
-3. The previous step's story, if it has one: `End date` = the date its PR merged, from
-   `gh pr list --head <previous branch> --base main --state merged --json mergedAt --jq '.[0].mergedAt'`
-   (the `YYYY-MM-DD` part), `<previous branch>` being the branch §1 check 4 found that PR on. The PR
-   merges on GitHub while no step runs, so the next step records it. The last step's End date, and
-   the epic's, are set by `/cuevik-start:cleanup`. If the previous step has no merged PR yet (you
-   started this step while the previous one's PR is still open, one step ahead), skip its End date.
-   Also set `End date` on any earlier story that has a merged PR but an empty `End date`, so a
-   late-merged previous step's date is recorded by the step after it. Each step keeps its own story,
-   `Start date` and `Working` status; nothing is shared.
+3. The previous step's story, if it has one: `End date` = the date its PR merged, which is
+   `predecessor_merged` from §1 check 4. The PR merges on GitHub while no step runs, so the next
+   step records it. The last step's End date, and the epic's, are set by `/cuevik-start:cleanup`.
+   If it is `-` (you started this step while the previous one's PR is still open, one step ahead),
+   skip its End date. Also set `End date` on any earlier story that has a merged PR but an empty
+   `End date`, so a late-merged previous step's date is recorded by the step after it: each
+   step's merge date is the fifth field of its line in the script's `== steps` section. Each step
+   keeps its own story, `Start date` and `Working` status; nothing is shared.
 
 **After step start the board owns Status.** Never set it again from a step. The `Closes #<story>`
 line (§6) links the PR to the story, and the board's workflows do the rest:

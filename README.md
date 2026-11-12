@@ -6,7 +6,7 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 
 | Plugin | Use it to | Version |
 | --- | --- | --- |
-| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, test strategy, AI tool guide, README and backlog; or the lean `express` path for an MVP | 0.6.1 |
+| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, test strategy, AI tool guide, README and backlog; or the lean `express` path for an MVP | 0.7.0 |
 | `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.6.1 |
 | `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | 0.6.1 |
 | `cuevik-deck` | Turn a Statement of Work into a project kickoff deck: discovery questionnaire → reviewed brief → PowerPoint, Google Slides or Claude Design Slides. Standalone, no repo | 0.5.0 |
@@ -14,6 +14,7 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 ## Prerequisites
 
 - [GitHub CLI](https://cli.github.com) (`gh`), signed in (`gh auth login`); add the `project` scope to use a project board: `gh auth refresh -s project`
+- A bash shell for the commands Claude Code runs (on Windows, [Git for Windows](https://gitforwindows.org) provides it): `cuevik-start` runs a bash script that ships with the plugin
 - A GitHub account. `/cuevik-start:00-bootstrap` creates the repo if it is missing, and a Projects board if you want one, after you confirm each
 - A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board
 - The `superpowers` plugin from the official Claude marketplace (`claude-plugins-official`): `cuevik-start` installs it as a dependency, and `/cuevik-start:01-product-concept` runs its brainstorming skill for the interview
