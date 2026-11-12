@@ -10,7 +10,7 @@ W="ship/41-widget"
 REPO_URL="https://github.com/test-owner/test-repo/blob"
 
 sha_of() { git -C "$REPO" log -1 --format=%H "origin/$W/issue" -- "docs/ship/41-widget/$1"; }
-body() { jq -r .body "$GH_ISSUE"; }
+body() { jq -rb .body "$GH_ISSUE"; }   # -b: no newline translation by a native Windows jq.exe
 edited() { [ -f "$GH_ISSUE_BODY_OUT" ]; }
 step_with_file() {  # step_with_file <step> <path> <status>: the step's branch holds the file, pushed, not merged
   git -C "$REPO" checkout -q -b "$W/$1" "origin/$W/issue"
@@ -83,7 +83,7 @@ pr "$W/04-plan-intent" MERGED 8 2026-11-03T10:00:00Z "i" "" "$W/issue"
 printf 'Line one\r\nLine two\r\n\r\n## References\r\n\r\n<!-- cuevik-ship:references -->\r\n<!-- /cuevik-ship:references -->\r\n\r\nTrailing words.\r\n' > "$WORK/crlf.md"
 jq -n --rawfile b "$WORK/crlf.md" '{number: 41, title: "t", state: "OPEN", stateReason: null, labels: [{name: "story"}], body: $b, url: "u"}' > "$GH_ISSUE"
 run 41 apply; code 0; has 'action: updated'
-printf '%s' "$(jq -r .body "$GH_ISSUE")" > "$WORK/after.md"
+jq -rjb .body "$GH_ISSUE" > "$WORK/after.md"
 head -c 40 "$WORK/after.md" | grep -q $'Line one\r' || fail "CRLF before the block must survive"
 grep -q $'Trailing words.\r' "$WORK/after.md" || fail "text after the block must survive with its CRLF"
 grep -qe $'^- Intent: \\[intent.md\\].*\r$' "$WORK/after.md" || fail "inserted lines must use the body's CRLF"

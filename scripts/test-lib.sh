@@ -65,7 +65,9 @@ while [ "$i" -lt "${#ARGS[@]}" ]; do
   esac
   i=$((i + 1))
 done
-emit() { if [ -n "$EXPR" ]; then jq -r "$EXPR"; else cat; fi; }
+# jq -b: a native Windows jq.exe otherwise turns every newline into \r\n, so a body would gain a \r on
+# each round trip through this stub (the real gh does not translate newlines).
+emit() { if [ -n "$EXPR" ]; then jq -rb "$EXPR"; else cat; fi; }
 case "$1 $2" in
   "auth status") [ -z "$GH_NO_AUTH" ]; exit $? ;;
   "repo view") if [ -n "$EXPR" ]; then echo '{"name":"test-repo","nameWithOwner":"test-owner/test-repo"}' | emit; else echo "test-owner/test-repo"; fi; exit 0 ;;
@@ -78,7 +80,7 @@ case "$1 $2" in
     if [ -f "$GH_PR_BODIES/$n.md" ]; then obj="$(printf '%s' "$obj" | jq -c --rawfile b "$GH_PR_BODIES/$n.md" '.body = $b')"; fi
     printf '%s\n' "$obj" | emit; exit 0 ;;
   "issue view")
-    { [ -f "$GH_ISSUE" ] && [ "$(jq -r .number "$GH_ISSUE")" = "$3" ]; } || { echo "GraphQL: Could not resolve to an issue or pull request with the number of $3." >&2; exit 1; }
+    { [ -f "$GH_ISSUE" ] && [ "$(jq -rb .number "$GH_ISSUE")" = "$3" ]; } || { echo "GraphQL: Could not resolve to an issue or pull request with the number of $3." >&2; exit 1; }
     emit < "$GH_ISSUE"; exit 0 ;;
   "issue edit")
     [ -n "$BODY_FILE" ] || { echo "stub gh: issue edit without --body-file" >&2; exit 64; }
