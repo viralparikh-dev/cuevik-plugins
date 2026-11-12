@@ -30,9 +30,10 @@ Arguments: `$ARGUMENTS` — the issue number. Empty: **STOP** and ask for it.
 
 ## 1. Gates and branch
 
-1. `gate.md`: common preconditions, then the 06 row — `.../05-design-spec` merged into
-   `.../issue`, and `spec.md` there reads `Approved` (missing or `Draft`: run
-   `/cuevik-ship:05-design-spec <n>`). A merged `.../06-build-plan` PR: **STOP**, 06 is done.
+1. The gate (`gate.md`): `ship-state.sh <n> 06-build-plan`. It stops unless `.../05-design-spec`
+   is merged into `.../issue` and `spec.md` there reads `Approved` (missing or `Draft`: run
+   `/cuevik-ship:05-design-spec <n>`), and it stops with `done: yes` when the `.../06-build-plan`
+   PR is merged: 06 is done. Its `spec_unticked` is the number of §8 boxes still open (step 4).
 2. Plan and approval (`gate.md`, After the gate): the branch, `plan.md`, any §8 sign-off edit to
    `spec.md`, the board move to `Ready` and the label removals.
 3. `git switch -c ship/<n>-<slug>/06-build-plan origin/ship/<n>-<slug>/issue`.
@@ -137,7 +138,8 @@ from the issue: the work folder is complete. In a cloud session, skip the card a
    with no PR.
 3. `Approved`: PR into `.../issue`, title `docs(ship): plan for #<n>`, body: the waves, the task
    count, the risks, and `Refs #<n>`.
-4. Refresh the References block: `Plan:` (and `Spec:` if it changed).
+4. Refresh the References block: `ship-refs.sh <n> apply`. It writes `Plan:` (and re-points `Spec:` if it
+   changed).
 
 Report the PR URL and next: merge it, then `/cuevik-ship:07-execute-plan <n>` in a new session in
 the worktree. Executing the plan is a separate session: that is the point of writing it down.

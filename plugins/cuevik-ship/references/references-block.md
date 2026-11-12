@@ -49,15 +49,23 @@ https://github.com/<owner>/<repo>/blob/<sha>/docs/ship/<n>-<slug>/<file>
 ## Refresh
 
 ```sh
-gh issue view <n> --json body --jq .body > <tmp>/body.md
-# replace the text between the two markers, or append the whole section if they are missing
-gh issue edit <n> --body-file <tmp>/body.md
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/ship-refs.sh" <n> apply [--epic "#e"] [--split-from "#m"] [--split-into "#a, #b"]
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/ship-refs.sh" <n> show    # the block it would write; changes nothing
 ```
 
-- Write `<tmp>` outside the repo (a temporary folder), never in the worktree.
-- Change nothing outside the markers. Markers missing: append `## References`, a blank line and
-  the marked block at the end of the body.
-- Two marker pairs, or an end marker before the start marker: **STOP** and report; never guess
-  which block is current.
+A script writes the block, not you: never edit the issue description by hand and never run `gh
+issue edit` on it. It derives every line a branch or a PR can prove (`Brainstorm:`, `Docs PR:`,
+`Intent:`, `Spec:`, `Plan:`, `Code PR:`) from the permalink and PR rules above, keeps every line it
+cannot derive exactly as it is, and never removes one. `Epic:`, `Split from:` and `Split into:` are
+written by the step that knows them, through the three options (`03-create-backlog`); a new value
+replaces the old line.
+
+- It changes nothing outside the markers. Markers missing: it appends `## References`, a blank
+  line and the marked block at the end of the body.
+- Two marker pairs, or an end marker before the start marker: it **STOPS**; report it, never
+  guess which block is current.
 - A refresh needs no confirmation of its own: it changes only the block, which belongs to
-  cuevik-ship. Say in one line what it changed.
+  cuevik-ship. Its output says whether the block was `created`, `updated` or `unchanged`: say in one
+  line what it changed.
+- Exit 1: its last line is the answer; output it and stop. Exit 2 or a script that cannot be run:
+  `Error: ship-refs.sh could not be run: <what the shell said>`. There is no other way to refresh.

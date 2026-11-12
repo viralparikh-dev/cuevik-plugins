@@ -65,13 +65,12 @@ Arguments: `$ARGUMENTS`
 
 ## 1. Gate
 
-`gate.md` common preconditions 1–3 (no worktree needed: 03 has no branch). Then `git fetch
---prune origin` and read only from `origin/main`.
+The gate (`gate.md`): `ship-state.sh <n> 03-create-backlog` for an issue number (03 has no branch
+and needs no worktree), or `ship-state.sh --preflight` for IDs. Read only from `origin/main`.
 
-- **Issue number:** its References block has `Docs PR: #<q>`, and `gh pr view <q> --json
-  state,baseRefName,body` is `MERGED` into `main`; otherwise **STOP** (02 is not merged). Parse the
-  `<!-- cuevik-ship:ratified -->` YAML block in that body; missing or unreadable: **STOP**. IDs to
-  file: `new`, `changed`, `retired`. Only `covered` (or nothing): **STOP** — nothing to file.
+- **Issue number:** the script stops unless the `Docs PR: #<q>` PR is `MERGED` into `main` with a
+  `<!-- cuevik-ship:ratified -->` block in its body (`gh pr view <q> --json body`). Parse that YAML
+  block; unreadable: **STOP**. IDs to file: `new`, `changed`, `retired`. Only `covered` (or nothing): **STOP** — nothing to file.
 - **Every ID** is in `origin/main:docs/PRD.md` — a §6 or §7 item, or struck through as retired.
   Any missing: **STOP** and name it.
 
@@ -158,8 +157,9 @@ gh issue comment <n> --body "Requirement changed in <docs PR url>."
 - Any other `gh` failure: **STOP** and report what was written and what was not; a re-run
   classifies the written rows as **Already filed**.
 
-Then refresh the References block of the issue: `Epic: #<e>` and, on a split,
-`Split into: #<a>, #<b>`. The `Epic:` line and the removed `idea` label are what
+Then refresh the References block of the issue: `ship-refs.sh <n> apply --epic "#<e>"` and, on a
+split, `--split-into "#<a>, #<b>"`; for each split issue `<m>`,
+`ship-refs.sh <m> apply --split-from "#<n>"`. The `Epic:` line and the removed `idea` label are what
 `04-plan-intent` gates on (D10). On a `flat` repo there is no `Epic:` line (the block keeps only
 `Split into:` where it applies); the `story` label and the removed `idea` label are what
 `04-plan-intent` gates on instead (`config.md`).

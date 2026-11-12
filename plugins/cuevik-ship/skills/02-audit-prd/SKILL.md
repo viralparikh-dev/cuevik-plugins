@@ -28,10 +28,10 @@ Arguments: `$ARGUMENTS` — the issue number. Empty: **STOP** and ask for it.
 
 ## 1. Gate and branch
 
-1. `gate.md`: common preconditions, then the 02 row — `ship/<n>-<slug>/01-brainstorm` merged into
-   `.../issue`, and `brainstorm.md` on `origin/ship/<n>-<slug>/issue` reads `Approved` (`Draft`:
-   finish it with `/cuevik-ship:01-brainstorm <n>`; `Rejected`: it has been decided). A merged
-   `.../02-audit-prd` PR: **STOP**, 02 is done; next is 03.
+1. The gate (`gate.md`): `ship-state.sh <n> 02-audit-prd`. It stops unless `.../01-brainstorm`
+   is merged into `.../issue` and `brainstorm.md` there reads `Approved` (`Draft`: finish it with
+   `/cuevik-ship:01-brainstorm <n>`; `Rejected`: it has been decided), and it stops with `done: yes`
+   when the `.../02-audit-prd` PR is merged: 02 is done; next is 03.
 2. Plan and approval (`gate.md`, After the gate): branch `ship/<n>-<slug>/02-audit-prd` from
    `origin/main`, the documents it may change, the PR to `main`.
 3. `git switch -c ship/<n>-<slug>/02-audit-prd origin/main` in the worktree. This branch has no
@@ -153,7 +153,7 @@ open it (`branches.md`, PRs): title `docs(prd): <idea title> (#<n>)`. Body:
   Empty lists stay as `[]`.
 - Last line: `Refs #<n>`. Never `Closes`: steps 04–07 still need the issue open.
 
-Then refresh the References block with `Docs PR: #<q>`. The brainstorm file is not edited: it
+Then refresh the References block (`ship-refs.sh <n> apply` writes `Docs PR: #<q>`). The brainstorm file is not edited: it
 keeps only 01's decision.
 
 Report the PR URL, the final `PRD-NNN` list (new, changed, retired, prerequisites), and next:
