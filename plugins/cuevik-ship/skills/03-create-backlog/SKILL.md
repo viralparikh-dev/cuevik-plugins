@@ -152,8 +152,8 @@ gh issue comment <n> --body "Requirement changed in <docs PR url>."
 - **Split extras:** each body ends with its own References block: `Split from: #<n>`, the
   `Brainstorm:` permalink copied from `#<n>`, `Docs PR: #<q>`, `Epic: #<e>`.
 - A story joining an existing epic: add its ID to the epic's `Requirements:` line.
-- **Board** (local sessions only, `config.md`; none when `boardState` is `none`): `gh project
-  item-add` for every new issue, and `Item Type` `Epic` or `Story` on new items and on the
+- **Board** (local sessions only, `config.md`; none when `boardState` is `none`): `board.addItem`
+  for every new issue, and `board.setField` `Item Type` `Epic` or `Story` on new items and on the
   converted issue. Never set Status. In a cloud session skip it and list the URLs to add.
 - Any other `gh` failure: **STOP** and report what was written and what was not; a re-run
   classifies the written rows as **Already filed**.

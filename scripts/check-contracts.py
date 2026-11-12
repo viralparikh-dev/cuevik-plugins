@@ -9,12 +9,14 @@ Checks
   1. Every contracts/<name>/ folder is declared in contracts/consumers.json, and every declared
      contract and plugin exists.
   2. Every .json file under contracts/ parses; each <name>.schema.json is valid JSON Schema 2020-12
-     and <name>.example.json validates against it.
+     and <name>.example.json validates against it. A contract with no <name>.schema.json describes
+     no file (contracts/board/): it is only compared with its copies.
   3. The lineage example is a valid graph: unique paths, upstream paths known, no self-links, no cycles.
   4. Each declared copy at plugins/<plugin>/references/contracts/<name>/ exists and matches
      contracts/<name>/ file for file (line endings ignored, since core.autocrlf rewrites them).
   5. No plugin holds an undeclared copy.
-  6. With --target: <repo>/.cuevik/<name>.json exists and passes checks 2 and 3.
+  6. With --target: for each contract with a schema, <repo>/.cuevik/<name>.json exists and passes
+     checks 2 and 3.
 Any failure exits non-zero.
 """
 import argparse, json, sys
@@ -110,13 +112,14 @@ def main():
 
     for path in sorted(CONTRACTS.rglob("*.json")):
         load(path)
-    for name in sorted(contracts):
+    with_schema = {n for n in contracts if (CONTRACTS / n / f"{n}.schema.json").is_file()}
+    for name in sorted(with_schema):
         example = CONTRACTS / name / f"{name}.example.json"
         validate(name, load(example), f"contracts/{name}/{example.name}")
 
     target = args.target
     if target:
-        for name in sorted(contracts):
+        for name in sorted(with_schema):
             path = target / ".cuevik" / f"{name}.json"
             if path.is_file():
                 validate(name, load(path), path.as_posix())

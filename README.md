@@ -6,8 +6,8 @@ Cuevik Plugins turn project delivery into a sequence of numbered steps, each one
 
 | Plugin | Use it to | Version |
 | --- | --- | --- |
-| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, test strategy, AI tool guide, README and backlog; or the lean `express` path for an MVP | 0.6.0 |
-| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.6.0 |
+| `cuevik-start` | Take an empty repo to a clean, governed, build-ready state: contributing rules, product concept, PRD, architecture, tech stack, test strategy, AI tool guide, README and backlog; or the lean `express` path for an MVP | 0.6.1 |
+| `cuevik-ship` | Ship one issue at a time: brainstorm → requirements → backlog → intent → spec → plan → code PR | 0.6.1 |
 | `cuevik-docs` | Audit source-of-truth docs for drift and update them through a PR. Both plugins depend on it | 0.6.0 |
 | `cuevik-deck` | Turn a Statement of Work into a project kickoff deck: discovery questionnaire → reviewed brief → PowerPoint, Google Slides or Claude Design Slides. Standalone, no repo | 0.5.0 |
 

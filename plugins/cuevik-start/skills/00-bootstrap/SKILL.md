@@ -12,9 +12,11 @@ Load these in order and run them as one workflow:
 2. The `00-bootstrap` entry in `${CLAUDE_PLUGIN_ROOT}/references/steps.yml` — branch, outputs,
    commit message, PR summary, special preconditions and actions.
 3. This file — what is specific to bootstrap.
-4. `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` — every board operation (`board.read`,
-   `board.create`, …) and how its result is classified. This file holds the questions and calls
-   the operations by name.
+4. `${CLAUDE_PLUGIN_ROOT}/references/contracts/board/board.md`, then
+   `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` — every board operation (`board.read`,
+   `board.create`, …) and how its result is classified: the core holds the operations shared
+   with cuevik-ship, the adapter the rest. This file holds the questions and calls the operations
+   by name.
 
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
 before running 00-bootstrap.` On conflict, precedence is runner > `steps.yml` > this file, except
@@ -137,10 +139,10 @@ Run after runner §1 checks 1 and 2. Repo = `<owner>/<name>` from §B.
 ## D. Board (questions and reads only)
 
 The board is optional. Every board call is an operation in
-`${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` (the adapter); this section holds the
-questions. A board result never stops bootstrap: `unavailable`, or the operator choosing `No
-board`, ends the board work with state `none` (§F), and a `degraded` result becomes a `missing`
-part.
+`${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md` (the adapter) or in the board core it builds on;
+this section holds the questions. A board result never stops bootstrap: `unavailable`, or the
+operator choosing `No board`, ends the board work with state `none` (§F), and a `degraded` result
+becomes a `missing` part.
 
 1. **Owner.** Ask: `Use <repo owner> as the board owner? (yes, or name another user or
    organisation)`. A board can belong to a different owner than the repo.
@@ -230,7 +232,7 @@ failure **STOPS**.
    - Efforts: `board.setField` the `Efforts` number field on each story's item to the step's
      `storyEfforts` (hours). Leave the epic's empty: the board sums its stories. No `Efforts`
      field: skip, as above.
-   - Sprint: the adapter's `Sprint` procedure (`board.setField`), then the epic and every story go
+   - Sprint: `board.sprint`, then the epic and every story go
      in `Sprint-00` when it was created. No `Sprint` iteration field: skip and say so in the PR
      body.
 

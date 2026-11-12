@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.6.0, cuevik-ship 0.6.0, cuevik-docs 0.6.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.6.1, cuevik-ship 0.6.1, cuevik-docs 0.6.0, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
