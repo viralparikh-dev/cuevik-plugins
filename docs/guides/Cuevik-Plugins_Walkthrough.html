@@ -140,7 +140,7 @@ h2.pb{break-before:page;margin-top:0}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
   figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.6.1, cuevik-ship 0.6.1, cuevik-docs 0.6.1, cuevik-deck 0.5.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.7.0, cuevik-ship 0.6.1, cuevik-docs 0.6.1, cuevik-deck 0.5.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
@@ -243,6 +243,7 @@ h2.pb{break-before:page;margin-top:0}
 
 <ul>
 <li><a href="https://cli.github.com">GitHub CLI</a> (<code>gh</code>), signed in: <code>gh auth login</code>. To use a project board, also add the <code>project</code> scope: <code>gh auth refresh -s project</code>.</li>
+<li>A bash shell for the commands Claude Code runs. On Windows, <a href="https://gitforwindows.org">Git for Windows</a> provides it. <code>cuevik-start</code> runs a bash script that ships with the plugin.</li>
 <li>A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board.</li>
 <li>Read access to the marketplace repository, which is private for now.</li>
 <li>Admin rights on the project's repo. <code>00-bootstrap</code> changes a repo setting, and links a board when there is one.</li>
@@ -686,7 +687,7 @@ h2.pb{break-before:page;margin-top:0}
 <p>Initiation is complete when this PR is merged.</p>
 <div class="keep k3"><h3 id="status">status</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Nothing (report only)  ·  <strong>You:</strong> Read the report</p></div>
 
-<p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. Every step also runs it at the start of its session. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.</p>
+<p>Read-only. It shows how far setup has got from what is merged on GitHub, and writes nothing. The rows come from a script that ships with the plugin, so the same repo always gives the same report. Every step also runs it at the start of its session, and takes from the same run whether it may start. When a step starts, its story on the board (if the repo has one) moves to Working with today's start date, and the previous story gets the date its PR merged as its end date.</p>
 <p>It starts with a progress line, one cell per step, such as <code>██░░░░░░░░ 2/10 · next: 02-product-requirements</code>, then a row per step. The merged PR decides each row. If an initiation issue disagrees, for example a story closed with no merged PR, it adds a line saying so but does not change the row. For a repo with no board, or an incomplete one, it adds a <code>Board:</code> line saying so and how to add or repair it. If <code>.cuevik/config.json</code> is older than the current contract, it adds a line telling you to run <code>/cuevik-start:migrate</code>. For a repo set up with <code>express</code>, the four steps it covered show as merged by the Express PR.</p>
 <div class="keep k3"><h3 id="cleanup">cleanup</h3><p class="facts"><strong>Status:</strong> <span class="tag available">Available</span>  ·  <strong>Branch:</strong> none  ·  <strong>PR to:</strong> none  ·  <strong>Writes:</strong> Deletes merged local <code>init/*</code> branches  ·  <strong>You:</strong> Confirm the list</p></div>
 
@@ -1222,6 +1223,14 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td>Run <code>gh auth login</code>, then re-run.</td>
 </tr>
 <tr>
+<td><code>Error: init-state.sh could not be run</code></td>
+<td>The plugin's status script did not start, usually because there is no bash shell. On Windows, install Git for Windows, then re-run. The step does not go on without it.</td>
+</tr>
+<tr>
+<td><code>Could not read pull requests for &lt;branch&gt; from GitHub</code></td>
+<td>A GitHub query failed, so there is no report: a guess would show merged steps as not started. Check the network and <code>gh auth status</code>, then re-run.</td>
+</tr>
+<tr>
 <td><code>gh cannot read Projects for &lt;owner&gt;</code></td>
 <td>Bootstrap goes on without a board and says so. To use a board, add the <code>project</code> scope in a local session (<code>gh auth refresh -s project</code>), then add the board later (see below). Cloud sessions cannot reach Projects.</td>
 </tr>
@@ -1331,6 +1340,11 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="nw">0.7.0</td>
+<td class="nw">2026-11-12</td>
+<td><code>cuevik-start</code> 0.7.0: <code>status</code> and the check that lets a step start are worked out by a bash script that ships with the plugin, in one run, instead of being worked out command by command in the session. The report and the rules are unchanged. It needs a bash shell: on Windows, Git for Windows. <code>cuevik-start</code> and <code>cuevik-ship</code> 0.6.1 (earlier): both read the board through one shared set of operations, and a <code>cuevik-start</code> step in a cloud session now skips the board instead of failing on it</td>
+</tr>
 <tr>
 <td class="nw">0.6.0</td>
 <td class="nw">2026-11-11</td>

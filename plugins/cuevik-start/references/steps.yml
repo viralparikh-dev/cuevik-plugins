@@ -9,7 +9,9 @@
 # Fields:
 #   id                  step id = skill name (/cuevik-start:<id>); order in this list is run order.
 #                       references/workflows/cuevik-init-order.yml repeats the order, slugs and aliases
-#                       for project repos: change both (the repo's check-init-order.py compares them)
+#                       for project repos: change both (the repo's check-init-order.py compares them).
+#                       scripts/steps.table is generated from this file for the plugin's shell scripts:
+#                       after a change here, run the repo's gen-steps-table.py
 #                       Its two-digit prefix is for display: nothing a project repo keeps uses it
 #   slug                the step's permanent key: the id without its number. What a project repo keeps
 #                       is keyed by it: the branch, initiation.stories in .cuevik/config.json and

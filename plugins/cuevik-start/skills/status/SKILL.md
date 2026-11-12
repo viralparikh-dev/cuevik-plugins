@@ -8,88 +8,72 @@ disable-model-invocation: true
 
 A read-only report of cuevik-start step progress. It writes no files, creates and deletes no
 branches, changes nothing on GitHub, and asks no questions. The current folder is the project
-repo. It takes no arguments. Run every `gh` command through the Bash tool.
+repo. It takes no arguments. Run every command through the Bash tool.
 
-Load `${CLAUDE_PLUGIN_ROOT}/references/steps.yml`. Its steps are the rows, in its order. Each
-entry supplies `id`, `slug`, `branch`, `aliases`, `outputs` (the first is the primary output),
-`bootstrap` and `replacesExisting`. Never hardcode a step list. If the file fails to load, stop and
-output: `Error: steps.yml could not be loaded.` Also load
-`${CLAUDE_PLUGIN_ROOT}/references/express.yml` (the Express lane's `branch` and `covers`); if it
-fails to load, stop and output: `Error: express.yml could not be loaded.`
+The rows are worked out by a script that ships with the plugin, not by you. Never hardcode a step
+list, and never run `gh pr list`, `git ls-remote` or a file check of your own to build or to
+second-guess a row.
 
-Run every check silently, then render the report once. Do not print intermediate command output.
+## 1. Run the script
 
-## 1. Preflight
+```sh
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/init-state.sh"
+```
 
-Stop at the first failure and output only its message.
+When a step's runner follows this file (runner §0), add that step's id as the one argument, for
+example `bash "${CLAUDE_PLUGIN_ROOT}/scripts/init-state.sh" 03-architecture`: the output then
+also has the `== gate` section runner §1 check 4 reads. Run it once, silently.
 
-1. `git rev-parse --show-prefix`. Non-zero: `This folder is not a git repo. Run
-   /cuevik-start:00-bootstrap first.` Non-empty output: `Run status from the repo root.`
-2. `git remote get-url origin`. Missing, or not on `github.com`: `No GitHub origin. Run
-   /cuevik-start:00-bootstrap first.`
-3. `gh auth status`. Non-zero: `gh is not signed in. Run gh auth login, then re-run.`
-4. `git fetch --prune origin`. This updates only remote-tracking refs, and drops the ones whose
-   branches GitHub deleted. Non-zero: `Could not fetch origin. Status needs GitHub's current
-   state.` Never check out, pull, or change a local branch.
-5. `git rev-parse --verify -q origin/main`. Non-zero: `origin has no main branch. Run
-   /cuevik-start:00-bootstrap first.` Otherwise its output is `<sha>`.
+| The script | Do |
+| --- | --- |
+| exits 0 | Go on to §2 with its output. |
+| exits 1 | Its one line is the whole answer: output it and stop. It is a preflight failure (not a git repo, not the repo root, no GitHub origin, `gh` not signed in, no `main` on GitHub) or a GitHub query that failed. |
+| cannot be run, or exits with anything else | Output `Error: init-state.sh could not be run: <what the shell said>` and stop. There is no other way to produce the report. |
 
-Every file check below reads `<sha>`, the commit `origin/main` points at, not local `main`, which
-can be behind GitHub when status runs on its own. When a step's runner follows this file (runner
-§0), `main` has just been pulled, so the two are the same. Always write `<sha>:<path>`, never
-`origin/main:<path>`: Git Bash on Windows rewrites an argument shaped like `origin/main:.cuevik/x`
-into a Windows path list, and the check then fails on a file that exists.
+What it does, so its output can be read: it fetches `origin` (remote-tracking refs only; it never
+checks out, pulls or changes a branch), then for each step, in `steps.yml` order, finds the
+step's PR and checks its output on `origin/main`.
 
-## 2. Per step
+- **The PR** is looked up under the step's `branch` and under each `init/<alias>` of its
+  `aliases`: a repo initiated before steps had slugs has the PR on the old numbered branch. For a
+  step the Express lane covers, the lane's one PR stands for it unless the step has a merged or
+  open PR of its own (Detail then starts `express PR #n`). The newest merged PR wins, else the
+  open one, else the newest closed one.
+- **The file check:** a `bootstrap: true` step needs both `.cuevik/` files on `origin/main`;
+  `09-finalize` needs `CONTRIBUTING.md` there without its `INITIATION-ONLY` block; any other
+  `replacesExisting: true` step has no file check (its output is on `main` before it runs); every
+  other step needs its primary output there.
+- **The row's status**, first match wins:
 
-Read the branches once:
+  | Condition | Status | `== steps` state |
+  | --- | --- | --- |
+  | merged PR, file check passes or none | `✓ merged` | `merged` |
+  | merged PR, file check fails | `⚠ mismatch` | `mismatch` |
+  | no merged PR, file check passes | `⚠ mismatch` | `mismatch` |
+  | open PR | `⟳ PR open` | `open` |
+  | a branch of the step, local or on GitHub | `⊙ branch` | `branch` |
+  | none of the above | `— not started` | `none` |
 
-- On GitHub: `git ls-remote --heads origin`. Keep lines whose ref starts with `refs/heads/init/`.
-- Local: `git for-each-ref --format='%(refname:short)' refs/heads/init/`.
+Its output has these sections, each starting at a `== <name>` line:
 
-Then, for each step:
+- `== report`: the heading, the progress line, the table and the script's own `**Check:**` lines
+  (one per `⚠ mismatch` row, one per step merged out of order).
+- `== next`: the `**Next:**` line, decided by the first row that is not `✓ merged`.
+- `== steps`: one line per step, `id|slug|state|pr|merged|branch|via`. §2 reads `state` and `pr`
+  from it; the runner reads the rest.
+- `== gate` (only with a step id): for the runner, not for this report.
 
-1. **PR.** `gh pr list --head <branch> --base main --state all --json number,state,title,url`,
-   for the step's `branch` and for each `init/<alias>` of its `aliases`: a repo initiated before
-   steps had slugs has the merged PR on the old numbered branch. This is the same lookup runner §1
-   check 4 uses to gate the next step. Take the newest `MERGED` PR among them if there is one, else
-   the `OPEN` one, else the newest `CLOSED` one, else none. The branch statuses below (`⊙ branch`,
-   branch left) count an alias branch too.
-2. **File check** on `<sha>`. `git cat-file -e <sha>:<path>` exit 0 means the file is there.
-
-   | Step | Passes when |
-   | --- | --- |
-   | `bootstrap: true` | `.cuevik/config.json` and `.cuevik/lineage.json` are both there (runner §1 check 3) |
-   | `09-finalize` | `CONTRIBUTING.md` is there and `git show <sha>:CONTRIBUTING.md` has no `INITIATION-ONLY` text |
-   | any other `replacesExisting: true` step | no file check: its output is on `main` before it runs |
-   | every other step | the primary output is there |
-
-3. **Status.** The first matching row wins:
-
-   | Condition | Status | Detail |
-   | --- | --- | --- |
-   | merged PR, file check passes or none | `✓ merged` | `PR #n` |
-   | merged PR, file check fails | `⚠ mismatch` | `PR #n merged, but <what failed> on origin/main` |
-   | no merged PR, file check passes | `⚠ mismatch` | `<output> on origin/main without a merged <branch> PR; the next step's gate needs this step's PR open or merged` |
-   | open PR | `⟳ PR open` | `PR #n — "<title>"` |
-   | branch local or on GitHub | `⊙ branch` | `local`, `GitHub` or `local + GitHub`, plus `closed PR #n` if there is one |
-   | none of the above | `— not started` | |
-
-   On a `✓ merged` row whose branch still exists, append `local branch left —
-   /cuevik-start:cleanup` (local) or `branch left on GitHub` (GitHub).
-
-   **Express lane.** Once, run `gh pr list --head <express.yml branch> --base main --state all
-   --json number,state,title,url`; take the newest `MERGED` PR if there is one, else the `OPEN`
-   one, else the newest `CLOSED` one. For each step in `covers` whose own PR query (1) found
-   nothing, that Express PR is the step's PR, and Detail starts `express PR #n`. Everything else
-   in 1–3 applies as written. The rows of the steps not in `covers` are not affected: a repo run
-   through the lane shows `00`, `01`, `02`, `08` as `✓ merged` and the rest as `— not started`.
-
-## 3. Initiation issues
+## 2. Initiation issues
 
 The issues `00-bootstrap` filed mirror the steps, on the board when the repo has one. The merged PR
 stays the source of truth: this section never changes a row's Status or the Next line; it only adds
 `**Check:**` lines where GitHub's issues disagree with the rows, and one `**Board:**` line (step 5).
+
+A step's row is its line in the script's `== steps` section: `slug` is the second field, `state`
+the third (`merged` is a `✓ merged` row, `none` a `— not started` one) and `pr` the fourth.
+`<sha>` is the output of `git rev-parse origin/main`. Always write `<sha>:<path>`, never
+`origin/main:<path>`: Git Bash on Windows rewrites an argument shaped like `origin/main:.cuevik/x`
+into a Windows path list, and the read then fails on a file that exists.
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
    silently. `schemaVersion` below 6, or below 2 in `git show <sha>:.cuevik/lineage.json`: one Check
@@ -117,54 +101,23 @@ stays the source of truth: this section never changes a row's Status or the Next
 5. The board, from `boardState`. `none` is a valid state, not a mismatch, so it is a `**Board:**`
    line, not a Check line: `**Board:** none (issues only). To add one, open a PR on
    .cuevik/config.json (config contract README, "Adding or repairing a board").` In a repo with a
-   merged Express PR (§2), print no `**Board:**` line for `none`: the lane asks for no board.
-   `partial`: `**Board:**
-   partial, missing <parts from missing>. To repair it, open a PR on .cuevik/config.json (config
+   merged Express PR (a `== steps` line with state `merged` and last field `express`), print no
+   `**Board:**` line for `none`: the lane asks for no board. `partial`: `**Board:** partial,
+   missing <parts from missing>. To repair it, open a PR on .cuevik/config.json (config
    contract README, "Adding or repairing a board").` `configured`: no line. The issue cross-check
    above runs in every state: it reads the issues, not the board.
 
-## 4. Report
+## 3. Report
 
-```markdown
-## Initiation status — <owner>/<repo> (origin/main @ <short sha>)
+Print, in this order and nothing else:
 
-`█░░░░░░░░░ 1/10 · next: 01-product-concept`
+1. The `== report` section, exactly as the script wrote it (without the `== report` line).
+2. One `**Check:**` line for each issue disagreement from §2.
+3. The `**Board:**` line from §2 step 5, if there is one.
+4. The `== next` section's `**Next:**` line, exactly as the script wrote it.
 
-| Step | Output | Status | Detail |
-| --- | --- | --- | --- |
-| 00-bootstrap | CONTRIBUTING.md, .cuevik/ | ✓ merged | PR #1 |
-| 01-product-concept | docs/PRODUCT.md | ⟳ PR open | PR #4 — "docs: add PRODUCT.md (01-product-concept)" |
-| 02-product-requirements | docs/PRD.md | — not started | |
-
-**Next:** merge PR #4 (01-product-concept) when it is ready. /cuevik-start:02-product-requirements may start now (one step ahead), but the main ruleset blocks it from merging until PR #4 merges.
-```
-
-- Repo: `gh repo view --json nameWithOwner --jq .nameWithOwner`. Sha: `git rev-parse --short
-  origin/main`.
-- Output: the primary output. A `bootstrap: true` step also lists `.cuevik/`.
-- Progress line, in a code span: one cell per row in `steps.yml` order, `█` for `✓ merged` and
-  `░` for any other status; then `<merged>/<rows>`; then `· next: <id>`, the row the Next line
-  is decided by. Every row `✓ merged`: `· complete`.
-
-After the table, print one `**Check:**` line for each `⚠ mismatch` row, for each `✓ merged`
-row that comes after a step that is not merged (steps ran out of order), and for each issue
-disagreement from §3. Then print the `**Board:**` line from §3 step 5, if there is one, and one
-`**Next:**` line. It is decided by the first row in `steps.yml` order that is not `✓ merged`:
-
-- `⚠ mismatch`: `blocked — <id> does not add up (see Check).`
-- `⟳ PR open`: `merge PR #n (<id>) when it is ready. /cuevik-start:<next id> may start now (one
-  step ahead), but the main ruleset blocks it from merging until PR #n merges.` If it is the last
-  step: `merge PR #n (<id>); initiation is then complete.`
-- `⊙ branch`: `/cuevik-start:<id> in a new session. Branch <branch> exists; the runner asks
-  whether to reuse or delete it.`
-- `— not started`: `/cuevik-start:<id> in a new session.` For `09-finalize`, add `It strips the
-  INITIATION-ONLY block from CONTRIBUTING.md; the last step.` When the row is `03-architecture`
-  and the Express lane has a merged PR (§2): `Express lane complete (express PR #n). To graduate,
-  /cuevik-start:03-architecture in a new session; optional.`
-- `⟳ PR open` on a row decided by an open Express PR: `merge express PR #n; the lane is then
-  complete.`
-- Every row `✓ merged`: `Initiation complete. Run /cuevik-start:cleanup to delete merged local
-  init/* branches. Revise a document with /cuevik-docs:update <document>.`
+Never print the `== steps` or `== gate` sections, and never reword a row, a Check line or the
+Next line: they are the script's.
 
 ## Nothing else
 
