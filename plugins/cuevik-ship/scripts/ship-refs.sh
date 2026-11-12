@@ -53,7 +53,11 @@ TMP="$(mktemp -d 2>/dev/null || mktemp -d -t cuevik)" || stop "Could not create 
 trap 'rm -rf "$TMP"' EXIT
 REPO_NAME="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null | tr -d '\r')"
 [ -n "$REPO_NAME" ] || stop "Could not read the repository name from GitHub."
-gh issue view "$ISSUE" --json body --jq '.body' > "$TMP/body.md" 2>/dev/null || stop "Could not read issue #$ISSUE from GitHub."
+# gh --jq prints the string and then one newline of its own: drop exactly that one, or the body would
+# gain a blank line at its end on every refresh.
+gh issue view "$ISSUE" --json body --jq '.body' > "$TMP/raw.md" 2>/dev/null || stop "Could not read issue #$ISSUE from GitHub."
+size="$(wc -c < "$TMP/raw.md" | tr -d ' ')"
+if [ "$size" -gt 0 ]; then head -c "$((size - 1))" "$TMP/raw.md" > "$TMP/body.md"; else : > "$TMP/body.md"; fi
 
 # ---- the block as it stands ---------------------------------------------------------------------
 START='<!-- cuevik-ship:references -->'; END='<!-- /cuevik-ship:references -->'
@@ -109,13 +113,16 @@ emit "Split into" "${SET_INTO:+- Split into: $SET_INTO}"
 awk '!/^- (Brainstorm|Docs PR|Epic|Intent|Spec|Plan|Code PR|Split from|Split into):/' "$TMP/old.txt" >> "$TMP/new.txt"
 
 # ---- splice it in -------------------------------------------------------------------------------
-EOL=""; grep -q $'\r' "$TMP/body.md" && EOL=$'\r'
+# Count the CRs with tr, not grep: Git for Windows' grep treats CRLF as the line end and cannot see a CR.
+EOL=""; [ "$(tr -cd '\r' < "$TMP/body.md" | wc -c | tr -d ' ')" -gt 0 ] && EOL=$'\r'
 if grep -Eq "^$START"$'\r''?$' "$TMP/body.md"; then
-  awk -v s="$START" -v e="$END" -v blockfile="$TMP/new.txt" -v eol="$EOL" '
-    { line = $0; sub(/\r$/, "", line) }
-    line == s { print; while ((getline l < blockfile) > 0) print l eol; skip = 1; next }
-    line == e { skip = 0; print; next }
-    !skip { print }' "$TMP/body.md" > "$TMP/out.md"
+  # Keep every byte outside the markers: the lines before the start marker, the new block, then the
+  # end marker line and everything after it (an awk that prints each line would add a final newline).
+  first="$(awk -v s="$START" '{ l = $0; sub(/\r$/, "", l) } l == s { print NR; exit }' "$TMP/body.md")"
+  last="$(awk -v e="$END" '{ l = $0; sub(/\r$/, "", l) } l == e { print NR; exit }' "$TMP/body.md")"
+  { head -n "$first" "$TMP/body.md"
+    while IFS= read -r line || [ -n "$line" ]; do printf '%s%s\n' "$line" "$EOL"; done < "$TMP/new.txt"
+    tail -n "+$last" "$TMP/body.md"; } > "$TMP/out.md"
   ACTION="updated"
 else
   { cat "$TMP/body.md"
