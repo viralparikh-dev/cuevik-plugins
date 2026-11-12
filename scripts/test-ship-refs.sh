@@ -81,7 +81,7 @@ issue_branch 41 widget
 artifact 41 widget intent.md Approved
 pr "$W/04-plan-intent" MERGED 8 2026-11-03T10:00:00Z "i" "" "$W/issue"
 printf 'Line one\r\nLine two\r\n\r\n## References\r\n\r\n<!-- cuevik-ship:references -->\r\n<!-- /cuevik-ship:references -->\r\n\r\nTrailing words.\r\n' > "$WORK/crlf.md"
-jq -n --rawfile b "$WORK/crlf.md" '{number: 41, title: "t", state: "OPEN", stateReason: null, labels: [{name: "story"}], body: $b, url: "u"}' > "$GH_ISSUE"
+issue 41 "t" OPEN "" "story" "$WORK/crlf.md"
 run 41 apply; code 0; has 'action: updated'
 # Show every CR as a visible ~ with tr, then look for it with grep: Git for Windows' grep treats CRLF as the
 # line end and cannot match a CR itself.
@@ -109,12 +109,12 @@ new_repo; bootstrapped
 issue_branch 41 widget; artifact 41 widget intent.md Approved
 pr "$W/04-plan-intent" MERGED 8 2026-11-03T10:00:00Z "i" "" "$W/issue"
 printf 'Head\n\n<!-- cuevik-ship:references -->\n<!-- /cuevik-ship:references -->\nTail with no final newline' > "$WORK/nonl.md"
-jq -n --rawfile b "$WORK/nonl.md" '{number: 41, title: "t", state: "OPEN", stateReason: null, labels: [{name: "story"}], body: $b, url: "u"}' > "$GH_ISSUE"
+issue 41 "t" OPEN "" "story" "$WORK/nonl.md"
 run 41 apply; code 0; has 'action: updated'
 case "$(jq -rjb .body "$GH_ISSUE" | tr '\n' '^')" in *'-->^Tail with no final newline') ;; *) fail "the tail must be byte for byte as it was: $(jq -rjb .body "$GH_ISSUE" | tr '\n' '^')" ;; esac
 run 41 apply; has 'action: unchanged'
 printf 'Body ends with newlines\n\n' > "$WORK/nl.md"
-jq -n --rawfile b "$WORK/nl.md" '{number: 41, title: "t", state: "OPEN", stateReason: null, labels: [{name: "story"}], body: $b, url: "u"}' > "$GH_ISSUE"
+issue 41 "t" OPEN "" "story" "$WORK/nl.md"
 run 41 apply; code 0
 A="$(jq -rjb .body "$GH_ISSUE" | tr '\n' '^')"
 case "$A" in 'Body ends with newlines^^^## References^^<!-- cuevik-ship:references -->^- Intent: '*'^<!-- /cuevik-ship:references -->^') ;; *) fail "unexpected body: $A" ;; esac

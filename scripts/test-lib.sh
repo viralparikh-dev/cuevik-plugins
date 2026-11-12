@@ -85,7 +85,9 @@ case "$1 $2" in
   "issue edit")
     [ -n "$BODY_FILE" ] || { echo "stub gh: issue edit without --body-file" >&2; exit 64; }
     cp "$BODY_FILE" "$GH_ISSUE_BODY_OUT"
-    jq --rawfile b "$BODY_FILE" '.body = $b' "$GH_ISSUE" > "$GH_ISSUE.tmp" && mv "$GH_ISSUE.tmp" "$GH_ISSUE"
+    # The body goes in as a JSON string made from stdin in binary mode (jq -Rsb): a native Windows jq.exe
+    # reads --rawfile in text mode and would strip every CR of a CRLF body.
+    jq -b --argjson b "$(jq -Rsb . < "$BODY_FILE")" '.body = $b' "$GH_ISSUE" > "$GH_ISSUE.tmp" && mv "$GH_ISSUE.tmp" "$GH_ISSUE"
     exit 0 ;;
 esac
 echo "stub gh: unexpected call: $*" >&2
@@ -148,9 +150,9 @@ run() { OUT="$(cd "${RUN_DIR:-$REPO${RUN_IN:+/$RUN_IN}}" && bash "$SCRIPT" "$@" 
 # ---- cuevik-ship fixtures -------------------------------------------------------------------------
 # issue <number> <title> <state> <reason> <labels, comma-separated> [<body file>]: the issue gh returns.
 issue() {
-  local body=""; [ -n "$6" ] && body="$(cat "$6")"
+  local body='""'; [ -n "$6" ] && body="$(jq -Rsb . < "$6")"   # every byte of the body file, CRs and final newline included
   local labels; labels="$(printf '%s' "$5" | jq -R 'split(",") | map(select(length > 0) | {name: .})')"
-  jq -n --argjson n "$1" --arg t "$2" --arg st "$3" --arg r "$4" --argjson l "$labels" --arg b "$body" \
+  jq -n --argjson n "$1" --arg t "$2" --arg st "$3" --arg r "$4" --argjson l "$labels" --argjson b "$body" \
     '{number: $n, title: $t, state: $st, stateReason: (if $r == "" then null else $r end), labels: $l, body: $b,
       url: ("https://github.com/test-owner/test-repo/issues/" + ($n | tostring))}' > "$GH_ISSUE"
 }
