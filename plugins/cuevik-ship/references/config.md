@@ -13,8 +13,8 @@ Never hardcode an owner, repo, board number, field id or folder. Read them:
 | Worktree root | the plugin's `worktree_root` option (`references/branches.md`) |
 
 Read the two `.cuevik/` files from `origin/main`, never from a work branch. If one fails its
-contract's schema, **STOP** and say which rule fails. A config below `schemaVersion` 6, or a lineage
-below `schemaVersion` 2, fails it: say
+contract's schema, **STOP** and say which rule fails. A file whose `schemaVersion` is below the
+`const` in its contract's schema (`references/contracts/<name>/<name>.schema.json`) fails it: say
 `<file> is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then re-run.`
 
 ## Board state
@@ -30,8 +30,7 @@ below `schemaVersion` 2, fails it: say
 
 ## Backlog model
 
-`backlogModel` decides how the backlog is shaped. It is required (config contract, since
-`schemaVersion` 5):
+`backlogModel` decides how the backlog is shaped. It is required (config contract):
 
 - `epic-grouped`: stories are filed under an `Epic:` issue for their PRD section and linked as its
   sub-issues (the standard lane). `03-create-backlog` resolves or creates the epic, and

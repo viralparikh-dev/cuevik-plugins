@@ -76,8 +76,8 @@ the third (`merged` is a `✓ merged` row, `none` a `— not started` one) and `
 into a Windows path list, and the read then fails on a file that exists.
 
 1. `git show <sha>:.cuevik/config.json`. Non-zero (not bootstrapped yet): skip this section
-   silently. `schemaVersion` below 6, or below 2 in `git show <sha>:.cuevik/lineage.json`: one Check
-   line per file,
+   silently. either file's `schemaVersion` below its current one (runner §1 check 3; the lineage
+   is `git show <sha>:.cuevik/lineage.json`): one Check line per file,
    `<file> is schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then re-run.`, then go on.
    No `initiation` key: one Check line,
    `.cuevik/config.json has no initiation issues, so initiation is not tracked in issues.`, then

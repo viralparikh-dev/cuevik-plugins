@@ -140,8 +140,10 @@ the folder a git repo with a GitHub `origin`. Every other step runs all of them.
    - Exit 0 for both: proceed, after reading `schemaVersion` from each.
    - Non-zero for either: **STOP**. Tell the operator to run `/cuevik-start:00-bootstrap` and
      merge its PR first.
-   - The config's `schemaVersion` is below `6`, or the lineage's is below `2` (a file from before
-     the current contract, which keys steps by number): **STOP**. Tell the operator: `<file> is
+   - A file's `schemaVersion` is **current** when it equals the `schemaVersion` `const` in its
+     contract's schema: `${CLAUDE_PLUGIN_ROOT}/references/contracts/config/config.schema.json` for
+     the config, `.../lineage/lineage.schema.json` for the lineage. Either file below its current
+     version (a file from before the current contract): **STOP**. Tell the operator: `<file> is
      schemaVersion <n>. Run /cuevik-start:migrate, merge its PR, then re-run.` (Config contract
      README, "Migrating from an older schemaVersion", for the edit by hand.) `bootstrap: true`
      steps skip this: they write the file.
