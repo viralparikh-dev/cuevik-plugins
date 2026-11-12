@@ -31,5 +31,6 @@ declared in [`../consumers.json`](../consumers.json).
 ## Changing it
 
 1. Edit `board.md`.
-2. Copy this folder over every consumer's copy listed in `consumers.json`.
+2. Copy this folder over every consumer's copy listed in `consumers.json`:
+   `python scripts/check-contracts.py --sync` does it, then runs the checks.
 3. Run `python scripts/check-contracts.py`. It fails on any copy that differs.
