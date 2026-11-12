@@ -140,7 +140,7 @@ h2.pb{break-before:page;margin-top:0}
 @media screen{main{background:var(--background)}}
 @media screen and (max-width:820px){main{padding:16px}.toc ul{columns:1}td:first-child,td code{white-space:normal}.tbl{overflow-x:auto}.cards,.cards.two{grid-template-columns:1fr}
   figure.sw{overflow-x:auto}.sw svg{min-width:680px}}
-</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.7.1, cuevik-ship 0.6.2, cuevik-docs 0.6.2, cuevik-deck 0.5.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
+</style></head><body><main><header class="hero"><div class="eyebrow">Cuevik Plugins · Walkthrough</div><h1 id="cuevik-plugins-walkthrough">Cuevik Plugins — Walkthrough</h1><div class="meta"><span class="chip"><span class="lbl">Plugins</span><span>cuevik-start 0.8.0, cuevik-ship 0.7.0, cuevik-docs 0.6.2, cuevik-deck 0.5.0</span></span><span class="chip neutral"><span class="lbl">Marketplace</span><span>cuevik-plugins</span></span><span class="chip neutral"><span class="lbl">Author</span><span>Viral Parikh</span></span></div><p class="lead">Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.</p></header>
 
 
 <nav class="toc"><div class="ttl">Contents</div><ul>
@@ -243,7 +243,7 @@ h2.pb{break-before:page;margin-top:0}
 
 <ul>
 <li><a href="https://cli.github.com">GitHub CLI</a> (<code>gh</code>), signed in: <code>gh auth login</code>. To use a project board, also add the <code>project</code> scope: <code>gh auth refresh -s project</code>.</li>
-<li>A bash shell for the commands Claude Code runs. On Windows, <a href="https://gitforwindows.org">Git for Windows</a> provides it. <code>cuevik-start</code> runs a bash script that ships with the plugin.</li>
+<li>A bash shell for the commands Claude Code runs. On Windows, <a href="https://gitforwindows.org">Git for Windows</a> provides it. <code>cuevik-start</code> and <code>cuevik-ship</code> run bash scripts that ship with the plugins.</li>
 <li>A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board.</li>
 <li>Read access to the marketplace repository, which is private for now.</li>
 <li>Admin rights on the project's repo. <code>00-bootstrap</code> changes a repo setting, and links a board when there is one.</li>
@@ -1223,8 +1223,8 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 <td>Run <code>gh auth login</code>, then re-run.</td>
 </tr>
 <tr>
-<td><code>Error: init-state.sh could not be run</code></td>
-<td>The plugin's status script did not start, usually because there is no bash shell. On Windows, install Git for Windows, then re-run. The step does not go on without it.</td>
+<td><code>Error: &lt;script&gt; could not be run</code></td>
+<td>One of the plugin's scripts (<code>init-state.sh</code>, <code>cleanup.sh</code>, <code>ship-state.sh</code>, <code>ship-cleanup.sh</code>, <code>ship-refs.sh</code>) did not start, usually because there is no bash shell. On Windows, install Git for Windows, then re-run. The step does not go on without it.</td>
 </tr>
 <tr>
 <td><code>Could not read pull requests for &lt;branch&gt; from GitHub</code></td>
@@ -1340,6 +1340,11 @@ links, stale dates, README transcription) as one PR. <code>/cuevik-ship:02-audit
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="nw">0.8.0</td>
+<td class="nw">2026-11-12</td>
+<td><code>cuevik-start</code> 0.8.0 and <code>cuevik-ship</code> 0.7.0: more of the fixed rules run as bash scripts that ship with the plugins instead of being worked out command by command in the session. <code>cuevik-start</code>'s <code>cleanup</code> decides which branches are safe to delete and deletes only those. <code>cuevik-ship</code> checks every gate (previous step merged, work file approved, right folder, no open PR), refreshes the References block in the issue, and runs <code>cleanup</code>. The commands and the rules are unchanged except for one difference: <code>cuevik-ship</code>'s <code>cleanup</code> refuses the whole cleanup, not just the worktree, when the worktree has uncommitted work. Guides and CI: the committed HTML and PDFs are rebuilt and compared in CI, and plugin prose no longer states a contract's schema version (0.7.1, 0.6.2)</td>
+</tr>
 <tr>
 <td class="nw">0.7.0</td>
 <td class="nw">2026-11-12</td>

@@ -1,6 +1,6 @@
 # Cuevik Plugins — Walkthrough
 
-**Plugins:** cuevik-start 0.7.1, cuevik-ship 0.6.2, cuevik-docs 0.6.2, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
+**Plugins:** cuevik-start 0.8.0, cuevik-ship 0.7.0, cuevik-docs 0.6.2, cuevik-deck 0.5.0  ·  **Marketplace:** cuevik-plugins  ·  **Author:** Viral Parikh
 
 Claude drafts each step, you approve it. This guide covers all four plugins: how to install them, how every step works, and what each command does, from an empty repo to a merged code PR.
 
@@ -26,7 +26,7 @@ Each command carries a tag. **Available** means you can install and run it today
 Before you install:
 
 - [GitHub CLI](https://cli.github.com) (`gh`), signed in: `gh auth login`. To use a project board, also add the `project` scope: `gh auth refresh -s project`.
-- A bash shell for the commands Claude Code runs. On Windows, [Git for Windows](https://gitforwindows.org) provides it. `cuevik-start` runs a bash script that ships with the plugin.
+- A bash shell for the commands Claude Code runs. On Windows, [Git for Windows](https://gitforwindows.org) provides it. `cuevik-start` and `cuevik-ship` run bash scripts that ship with the plugins.
 - A local Claude Code session. Cloud sessions cannot reach GitHub Projects, so a cloud session sets up no board.
 - Read access to the marketplace repository, which is private for now.
 - Admin rights on the project's repo. `00-bootstrap` changes a repo setting, and links a board when there is one.
@@ -717,7 +717,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 | You see | Cause and fix |
 |---|---|
 | `gh is not signed in` | Run `gh auth login`, then re-run. |
-| `Error: init-state.sh could not be run` | The plugin's status script did not start, usually because there is no bash shell. On Windows, install Git for Windows, then re-run. The step does not go on without it. |
+| `Error: <script> could not be run` | One of the plugin's scripts (`init-state.sh`, `cleanup.sh`, `ship-state.sh`, `ship-cleanup.sh`, `ship-refs.sh`) did not start, usually because there is no bash shell. On Windows, install Git for Windows, then re-run. The step does not go on without it. |
 | `Could not read pull requests for <branch> from GitHub` | A GitHub query failed, so there is no report: a guess would show merged steps as not started. Check the network and `gh auth status`, then re-run. |
 | `gh cannot read Projects for <owner>` | Bootstrap goes on without a board and says so. To use a board, add the `project` scope in a local session (`gh auth refresh -s project`), then add the board later (see below). Cloud sessions cannot reach Projects. |
 | `Uncommitted changes detected` | A step starts from a clean working tree. Commit or stash, then re-run. |
@@ -762,6 +762,7 @@ A step stops with a message rather than guessing. Fix the cause and re-run it. `
 
 | Version | Date | Change |
 |---|---|---|
+| 0.8.0 | 2026-11-12 | `cuevik-start` 0.8.0 and `cuevik-ship` 0.7.0: more of the fixed rules run as bash scripts that ship with the plugins instead of being worked out command by command in the session. `cuevik-start`'s `cleanup` decides which branches are safe to delete and deletes only those. `cuevik-ship` checks every gate (previous step merged, work file approved, right folder, no open PR), refreshes the References block in the issue, and runs `cleanup`. The commands and the rules are unchanged except for one difference: `cuevik-ship`'s `cleanup` refuses the whole cleanup, not just the worktree, when the worktree has uncommitted work. Guides and CI: the committed HTML and PDFs are rebuilt and compared in CI, and plugin prose no longer states a contract's schema version (0.7.1, 0.6.2) |
 | 0.7.0 | 2026-11-12 | `cuevik-start` 0.7.0: `status` and the check that lets a step start are worked out by a bash script that ships with the plugin, in one run, instead of being worked out command by command in the session. The report and the rules are unchanged. It needs a bash shell: on Windows, Git for Windows. `cuevik-start` and `cuevik-ship` 0.6.1 (earlier): both read the board through one shared set of operations, and a `cuevik-start` step in a cloud session now skips the board instead of failing on it |
 | 0.6.0 | 2026-11-11 | `cuevik-start` 0.6.0: everything a repo keeps about a step is stored under the step's name instead of its number, so a later renumbering changes nothing in a repo. Branches are `init/<name>` (`init/tech-stack`), and the story keys in the config (contract version 6) and the `steps` in the lineage (contract version 2) drop the two-digit prefix. Commands keep their numbers. Run `/cuevik-start:migrate` on older repos: it renames the keys and replaces the merge-order workflow, and PRs on the old numbered branches still count. `cuevik-ship` and `cuevik-docs` move to 0.6.0 for the new contracts |
 | 0.5.0 | 2026-11-10 | `cuevik-start` 0.5.1: initiation steps can run one step ahead — start the next step while the previous step's PR is still open — with merge order, the up-to-date requirement and drift enforced by a `main` branch ruleset and an `init-order` status check that `00-bootstrap` now sets up. `cuevik-ship`, `cuevik-docs` and `cuevik-deck` move to 0.5.0 so all plugins share one version |

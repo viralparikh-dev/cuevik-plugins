@@ -49,9 +49,14 @@ jobs:
       - name: Step table for the plugin's scripts is current
         run: python scripts/gen-steps-table.py --check
 
-      # Windows too: this is where a CRLF checkout or a Git Bash difference would break the script.
-      - name: init-state.sh behaves as the status skill and the runner expect
-        run: bash scripts/test-init-state.sh
+      # Windows too: this is where a CRLF checkout or a Git Bash difference would break a script.
+      - name: The plugins' shell scripts behave as their skills expect
+        run: |
+          bash scripts/test-init-state.sh
+          bash scripts/test-cleanup.sh
+          bash scripts/test-ship-state.sh
+          bash scripts/test-ship-cleanup.sh
+          bash scripts/test-ship-refs.sh
 
       # Claude Code detects a plugin update by its version: a change merged without a bump never
       # reaches installed users. Pull requests only: a push to main has no base to compare with.
