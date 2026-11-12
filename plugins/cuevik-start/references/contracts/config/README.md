@@ -155,7 +155,8 @@ declared in [`../consumers.json`](../consumers.json).
 
 1. Edit `config.schema.json` and the example. Increase `schemaVersion` when a key is added,
    removed or renamed.
-2. Copy this folder over every consumer's copy listed in `consumers.json`.
+2. Copy this folder over every consumer's copy listed in `consumers.json`:
+   `python scripts/check-contracts.py --sync` does it, then runs the checks.
 3. Run `python scripts/check-contracts.py` (once: `python -m pip install -r scripts/requirements.txt`).
    It fails on an invalid example or any copy that differs. `--target <repo>` also checks that
    repo's `.cuevik/` files.

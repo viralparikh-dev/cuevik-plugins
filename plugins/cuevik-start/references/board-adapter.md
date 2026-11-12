@@ -1,14 +1,19 @@
 # Board adapter
 
-Every GitHub Projects (v2) call in cuevik-start is in this file. `00-bootstrap`, the runner (§7)
-and `08-backlog` call an operation by its name and run no `gh project` or Projects GraphQL command
-of their own. The board is optional (`.cuevik/config.json` `boardState`), and a board failure must
+Every GitHub Projects (v2) call in cuevik-start is an operation in one of two files. The board
+core, `${CLAUDE_PLUGIN_ROOT}/references/contracts/board/board.md`, holds the four that `cuevik-ship`
+runs too (`board.read` `fields` and `item`, `board.addItem`, `board.setField`) and the rules for
+when a call is made; this file holds the ones only cuevik-start runs. Load the core first: its
+rules apply to every operation here. `00-bootstrap`, `01-product-concept`, the runner (§7) and
+`08-backlog` call an operation by its name and run no `gh project` or Projects GraphQL command of
+their own. The board is optional (`.cuevik/config.json` `boardState`), and a board failure must
 never stop initiation: this file says how each failure is classified, and the caller decides what
 that means.
 
 Placeholders: `<board-owner>` and `<project owner>` are the board's owner (`project.owner` in the
 config, or the owner chosen in `00-bootstrap` §D.1); `<number>` is the board number; `<project id>`
-and `<project.id>` are the board's node id.
+is the board's node id. In `00-bootstrap`, before `.cuevik/config.json` exists, the core's
+placeholders take the values read in §D instead of the config's.
 
 ## Results
 
@@ -29,22 +34,32 @@ What a caller does with a result:
 - **A step** (runner §7, `08-backlog`) reports a `degraded` or `unavailable` result in its PR body
   and carries on. Never create fields or options.
 - **`boardState: none`:** a caller makes no call at all and says nothing.
+- **A cloud session** (the core, "When a call is made"): `board.read` `probe` is `unavailable`
+  without a call, so bootstrap records no board; a step makes no call and says in its PR body
+  which board updates were skipped.
+
+How the core's operations are classified here: a `board.addItem` that fails is `degraded`, part
+`items`. A `board.setField` that fails on a field the board has is `degraded`, part `fields`; a
+board without the field, or without that option, is a skip, said in the PR body, not a `degraded`
+result.
 
 ## Operations
 
-| Operation | Used by |
-| --- | --- |
-| `board.read` | bootstrap §D and §E.5; runner §7; `08-backlog` |
-| `board.create` | bootstrap §E.1 |
-| `board.link` | bootstrap §E.2 |
-| `board.addItem` | bootstrap §E.4; `08-backlog` |
-| `board.setField` | bootstrap §E.4; runner §7; `08-backlog` |
-| `board.setMeta` | `01-product-concept` |
-| `board.workflows` | bootstrap §E.5 |
+| Operation | In | Used by |
+| --- | --- | --- |
+| `board.read` `fields`, `item` | the core | bootstrap §E.4; runner §7; `08-backlog` |
+| `board.addItem` | the core | bootstrap §E.4; `08-backlog` |
+| `board.setField` | the core | bootstrap §E.4; runner §7; `08-backlog` |
+| `board.read`, every other variant | this file | bootstrap §D and §E.5 |
+| `board.create` | this file | bootstrap §E.1 |
+| `board.link` | this file | bootstrap §E.2 |
+| `board.sprint` | this file | bootstrap §E.4 |
+| `board.setMeta` | this file | `01-product-concept` |
+| `board.workflows` | this file | bootstrap §E.5 |
 
 ### board.read
 
-Variants. A read never changes the board.
+Variants. A read never changes the board. `fields` and `item` are in the core.
 
 - **`probe`** (before anything else): `gh project list --owner <board-owner> --limit 1`. Non-zero:
   `unavailable`, with the message `gh cannot read Projects for <board-owner>. In a local session,
@@ -75,13 +90,6 @@ Variants. A read never changes the board.
 - **`template`** (a template board the operator named):
   `gh project view <template-number> --owner <template-owner> --format json --jq .title`.
   Non-zero: `unavailable` for this template, and say why.
-- **`fields`**: read the board's fields once:
-  `gh project field-list <number> --owner <project owner> --format json --limit 100`. Find a field
-  by exact name; a single-select option by exact name in its `options`. A missing field or option:
-  skip that update and say so in the PR body. This is not a `degraded` result.
-- **`item`**: an issue's board item id:
-  `gh project item-list <number> --owner <project owner> --format json --limit 500 --jq '.items[] | select(.content.url=="<issue url>") | .id'`,
-  where the issue url is `https://github.com/<owner>/<repo>/issues/<n>`. Not on the board: skip.
 - **`workflows`**: which workflows are on (a workflow that was never set up is not listed; treat it
   as off):
 
@@ -137,27 +145,11 @@ repo: `gh project link <number> --owner <board-owner>`. It prints nothing on suc
 organisation-owned repo is untested. If the link fails, the result is `degraded`, part `link`:
 show the error; do not retry with another owner.
 
-### board.addItem
+### board.sprint
 
-`gh project item-add <number> --owner <board-owner> --url <issue url> --format json --jq .id`; the
-output is the item's id. Adding an item that is already on the board is harmless and returns the
-same id. Never set Status: the board's own workflows set it when an item is added and when its issue
-closes. A failure is `degraded`, part `items` (a step reports it in its PR body).
-
-### board.setField
-
-Sets one value on one item; the caller names the item, the field and the value. Look the field up
-first (`board.read` `fields`), then:
-`gh project item-edit --id <item id> --project-id <project.id> --field-id <field id>`, plus
-`--date <YYYY-MM-DD>` for a date field or `--single-select-option-id <option id>` for a
-single-select field (for Status, use `project.statusField` from the config). For a number field,
-`gh project item-edit ... --field-id <field id> --number <hours>`.
-
-A board without the field, or without that option, is a skip, not a failure: say so in the PR body.
-An `item-edit` that fails on a field the board has is `degraded`, part `fields`.
-
-**The `Sprint` iteration field** (bootstrap only), only on a board whose `Sprint` field has
-**no sprints at all** (current, upcoming or completed). Read them:
+Bootstrap only. It creates the first sprint and puts the initiation issues in it, only on a board
+whose `Sprint` iteration field has **no sprints at all** (current, upcoming or completed). Read
+them:
 
 ```sh
 gh api graphql -f o=<board-owner> -F n=<number> -f query='
@@ -179,8 +171,8 @@ gh api graphql -f o=<board-owner> -F n=<number> -f query='
       configuration{iterations{id title}}}}}}'
   ```
 
-  Then put the epic and every story in it:
-  `gh project item-edit ... --field-id <field id> --iteration-id <Sprint-00 id>`.
+  Then put the epic and every story in it: `board.setField`, the `Sprint` field, with
+  `--iteration-id <Sprint-00 id>`.
 - Any sprint already there: create none and leave the items' Sprint empty. Later sprints
   follow the same name format: `Sprint-01`, `Sprint-02`, ….
 - No `Sprint` iteration field: skip and say so in the PR body.

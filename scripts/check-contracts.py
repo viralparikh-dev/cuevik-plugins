@@ -2,6 +2,7 @@
 """Check the shared contracts and every plugin's copy of them.
 
 Usage:  python scripts/check-contracts.py                  check this repo
+        python scripts/check-contracts.py --sync           first copy each contract over its plugin copies
         python scripts/check-contracts.py --target <repo>  also check <repo>/.cuevik/*.json
 Needs:  python -m pip install -r scripts/requirements.txt
 
@@ -9,15 +10,21 @@ Checks
   1. Every contracts/<name>/ folder is declared in contracts/consumers.json, and every declared
      contract and plugin exists.
   2. Every .json file under contracts/ parses; each <name>.schema.json is valid JSON Schema 2020-12
-     and <name>.example.json validates against it.
+     and <name>.example.json validates against it. A contract with no <name>.schema.json describes
+     no file (contracts/board/): it is only compared with its copies.
   3. The lineage example is a valid graph: unique paths, upstream paths known, no self-links, no cycles.
   4. Each declared copy at plugins/<plugin>/references/contracts/<name>/ exists and matches
      contracts/<name>/ file for file (line endings ignored, since core.autocrlf rewrites them).
   5. No plugin holds an undeclared copy.
-  6. With --target: <repo>/.cuevik/<name>.json exists and passes checks 2 and 3.
+  6. With --target: for each contract with a schema, <repo>/.cuevik/<name>.json exists and passes
+     checks 2 and 3.
 Any failure exits non-zero.
+
+--sync writes before it checks: for each contract in contracts/consumers.json it makes every declared
+plugin copy match contracts/<name>/ (files added, replaced or removed), then runs the checks above.
+It touches nothing else: an undeclared copy is still reported, not deleted.
 """
-import argparse, json, sys
+import argparse, json, shutil, sys
 from pathlib import Path
 
 try:
@@ -96,13 +103,41 @@ def check_lineage(lineage, label):
     any(visit(p, []) for p in up)
 
 
+def sync(declared, contracts):
+    """Make every declared plugin copy match its contract folder; print what changed."""
+    changed = 0
+    for name, plugins in sorted(declared.items()):
+        if name not in contracts:
+            continue
+        source = files(CONTRACTS / name)
+        for plugin in plugins:
+            if not (PLUGINS / plugin).is_dir():
+                continue  # the checks report the unknown plugin
+            copy_dir = PLUGINS / plugin / "references" / "contracts" / name
+            copy = files(copy_dir) if copy_dir.is_dir() else {}
+            for f, src in sorted(source.items()):
+                if f not in copy or text(src) != text(copy[f]):
+                    (copy_dir / f).parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(src, copy_dir / f)
+                    print(f"synced   {(copy_dir / f).relative_to(ROOT).as_posix()}")
+                    changed += 1
+            for f in sorted(copy.keys() - source.keys()):
+                copy[f].unlink()
+                print(f"removed  {copy[f].relative_to(ROOT).as_posix()}")
+                changed += 1
+    print(f"sync: {changed} files changed" if changed else "sync: every copy already matches")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Check the shared contracts and every plugin's copy of them.")
     parser.add_argument("--target", type=Path, help="project repo whose .cuevik/*.json to validate too")
+    parser.add_argument("--sync", action="store_true", help="first copy each contract over its declared plugin copies")
     args = parser.parse_args()
     consumers = load(CONTRACTS / "consumers.json") or {}
     declared = {k: v for k, v in consumers.items() if not k.startswith("$")}
     contracts = {p.name for p in CONTRACTS.iterdir() if p.is_dir()}
+    if args.sync:
+        sync(declared, contracts)
     for name in sorted(contracts - declared.keys()):
         failures.append(f"contracts/{name}/ is not declared in contracts/consumers.json")
     for name in sorted(declared.keys() - contracts):
@@ -110,13 +145,14 @@ def main():
 
     for path in sorted(CONTRACTS.rglob("*.json")):
         load(path)
-    for name in sorted(contracts):
+    with_schema = {n for n in contracts if (CONTRACTS / n / f"{n}.schema.json").is_file()}
+    for name in sorted(with_schema):
         example = CONTRACTS / name / f"{name}.example.json"
         validate(name, load(example), f"contracts/{name}/{example.name}")
 
     target = args.target
     if target:
-        for name in sorted(contracts):
+        for name in sorted(with_schema):
             path = target / ".cuevik" / f"{name}.json"
             if path.is_file():
                 validate(name, load(path), path.as_posix())

@@ -341,8 +341,10 @@ The board is optional. Read `boardState` from `.cuevik/config.json` (Inputs §4)
 - `configured` or `partial`: do the bookkeeping below. `partial` behaves like `configured`: a call
   that needs a part the board lacks is skipped and reported, as any failed call is.
 
-Every board call is an operation in `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`; load it
-only when `boardState` is not `none`. This section holds no `gh project` command.
+Every board call in this section is an operation in the board core,
+`${CLAUDE_PLUGIN_ROOT}/references/contracts/board/board.md` (shared with cuevik-ship); load it only
+when `boardState` is not `none`. This section holds no `gh project` command. In a cloud session
+the core makes no call: say in one line of the PR body which board updates were skipped.
 
 The initiation issues mirror the steps on the board (`.cuevik/config.json` `initiation`). The
 merged PR stays the source of truth, so a board update that fails never stops a step: report it
@@ -351,7 +353,8 @@ in the PR body and carry on. Never create fields or options.
 **Field lookup:** `board.read` `fields`, once. A missing field or option: skip that update and say
 so in the PR body.
 
-**Item lookup:** `board.read` `item`, for an issue's board item id. Not on the board: skip.
+**Item lookup:** `board.read` `item`, for an issue's board item id and its current Status. Not on
+the board: skip.
 
 **Set a value:** `board.setField` (for Status, use `project.statusField` from the config).
 

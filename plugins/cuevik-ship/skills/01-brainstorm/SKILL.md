@@ -80,7 +80,7 @@ issue body and §1 of the file, unedited.
    ```sh
    gh label create idea --color C5DEF5 --description "cuevik-ship idea, not yet a story"   # if missing
    gh issue create --label idea --title "<title>" --body-file <tmp>/issue.md               # prints the URL; <n> is its last segment
-   gh project item-add <number> --owner <project owner> --url <issue url>                  # local sessions only (config.md)
+   # board.addItem for the new issue (config.md): only with a board, in a local session
    git branch ship/<n>-<slug>/issue origin/main
    git push -u origin ship/<n>-<slug>/issue
    git worktree add <path> -b ship/<n>-<slug>/01-brainstorm origin/ship/<n>-<slug>/issue

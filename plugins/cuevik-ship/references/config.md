@@ -7,6 +7,7 @@ Never hardcode an owner, repo, board number, field id or folder. Read them:
 | Repo owner and name | the git remote: `gh repo view --json nameWithOwner --jq .nameWithOwner` |
 | Whether there is a board | `git show origin/main:.cuevik/config.json` `boardState` (contract: `references/contracts/config/`) |
 | Board owner, number, node id, Status field and option ids | the same file's `project`, present unless `boardState` is `none` |
+| How to call the board | the board core (`references/contracts/board/board.md`) |
 | Backlog model (epics or flat) | the same file's `backlogModel` (contract: `references/contracts/config/`) |
 | Source-of-truth documents, owners, reviewers, upstream links | `git show origin/main:.cuevik/lineage.json` (contract: `references/contracts/lineage/`) |
 | Worktree root | the plugin's `worktree_root` option (`references/branches.md`) |
@@ -23,9 +24,9 @@ below `schemaVersion` 2, fails it: say
 - `none`: the repo has no board, which is valid. Make no `gh project` call anywhere, in a local or
   a cloud session, and say nothing about it: not in a report, not as a list of board updates to make
   by hand.
-- `configured` or `partial`: the rules below. `missing` (only with `partial`) is for humans and
-  `cuevik-start`'s `status`; a part the board lacks is skipped and reported by the per-call rules
-  below.
+- `configured` or `partial`: the rules under "The board" below. `missing` (only with `partial`) is
+  for humans and `cuevik-start`'s `status`; a part the board lacks is skipped and reported by the
+  per-call rules there.
 
 ## Backlog model
 
@@ -68,28 +69,21 @@ Never **STOP** for types. Types are additive: a story keeps its `story` and `pri
 either way. When any story is filed untyped, the step's report records `Issue types: not set
 (<reason>); labels carry the data.`
 
-## Local or cloud
+## The board
 
-`echo "$CLAUDE_CODE_REMOTE"` prints `true` in a cloud session. Cloud sessions cannot reach
-GitHub Projects: skip every `gh project` call there and say which board updates the operator
-should make locally (or that the board's `Auto-add to project` workflow covers new issues).
-Everything else works the same.
+Every board call is an operation in the board core, `references/contracts/board/board.md` (shared
+with `cuevik-start`): `board.read` `item` and `fields`, `board.addItem` and `board.setField`. Load
+it when `boardState` is not `none`; cuevik-ship runs no `gh project` command of its own. The core
+says when a call is made (never on a `boardState` `none` repo, never in a cloud session) and that a
+failed or skipped call never stops a step. What cuevik-ship adds:
 
-## Board updates
-
-The board mirrors the work; the merged PR stays the source of truth, so a failed board update
-never stops a step: report it and carry on. Never create fields or options.
-
-- **Item:** `gh project item-list <number> --owner <project owner> --format json --limit 500 --jq
-  '.items[] | select(.content.url=="<issue url>") | {id, status}'`. Not on the board: add it with
-  `gh project item-add <number> --owner <project owner> --url <issue url> --format json --jq .id`
-  when the step adds issues; otherwise skip and report.
-- **Status:** look the option up by name in `project.statusField.options`, then
-  `gh project item-edit --id <item id> --project-id <project.id> --field-id
-  <project.statusField.id> --single-select-option-id <option id>`. A name the board does not have:
-  skip and report.
-- **Other fields** (`Item Type`): `gh project field-list <number> --owner <project owner> --format
-  json --limit 100`, field and option by exact name; missing: skip.
+- **Cloud session:** say which board updates the operator should make locally (or that the board's
+  `Auto-add to project` workflow covers new issues). Everything else works the same.
+- **Item:** `board.read` `item`. Not on the board: add it with `board.addItem` when the step adds
+  issues; otherwise skip and report.
+- **Status:** `board.setField`, with the Status named in the table below. A name the board does
+  not have: skip and report.
+- **Other fields** (`Item Type`): `board.setField`, field and option by exact name; missing: skip.
 
 Status moves, by step. The board's own workflows (`Item added to project`, `Pull request linked to
 issue`, `Item closed`) set the rest:

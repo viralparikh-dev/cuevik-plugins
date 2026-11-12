@@ -52,7 +52,7 @@ steps:
       - "gh is authenticated with the repo scope, plus the project scope for a board; without it, or in a cloud session (which cannot reach Projects v2), bootstrap goes on without a board."
     specialActions:
       - "Make the current folder a git repo if it is not one, and connect or create the GitHub repo as origin (skills/00-bootstrap/SKILL.md §B). List and confirm every create first."
-      - "Optionally connect or create and link the project board (references/board-adapter.md); a board failure never stops bootstrap. Record boardState in .cuevik/config.json, with the board's ids read back (project) and any incomplete parts (missing) as that state requires."
+      - "Optionally connect or create and link the project board (references/board-adapter.md, with the board core it names); a board failure never stops bootstrap. Record boardState in .cuevik/config.json, with the board's ids read back (project) and any incomplete parts (missing) as that state requires."
       - "File the initiation issues (label initiation only): an Initiation epic and one story per later step, as sub-issues of the epic, and on the board when there is one. Record their numbers in .cuevik/config.json."
       - "When a board is recorded, check its seven workflows are on and guide the operator to turn on any that are off, including Auto-add to project with this repo in its filter (no API can)."
       - "Write .cuevik/lineage.json with the default lineage."

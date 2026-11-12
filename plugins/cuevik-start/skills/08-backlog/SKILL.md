@@ -112,7 +112,8 @@ each number from the URL `gh issue create` prints:
    `gh api -X POST repos/<owner>/<repo>/issues/<epic>/sub_issues -F sub_issue_id=<id>`, where
    `<id>` is `gh api repos/<owner>/<repo>/issues/<story> --jq .id`.
 4. **Board** — first read `boardState` from `.cuevik/config.json`. Board calls are operations of
-   `${CLAUDE_PLUGIN_ROOT}/references/board-adapter.md`; load it when a board is recorded.
+   the board core, `${CLAUDE_PLUGIN_ROOT}/references/contracts/board/board.md`; load it when a
+   board is recorded.
    - **`none`:** tell the operator that the backlog should live on a board, and push them to set
      one up: a PR on `.cuevik/config.json` (config contract README, "Adding or repairing a
      board"). Ask with `AskUserQuestion` (`Pause to set up a board` / `Continue without a board`).
