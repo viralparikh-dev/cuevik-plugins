@@ -37,7 +37,8 @@ Arguments: `$ARGUMENTS`
 
 ## 1. Resolve the path
 
-Run `gate.md` common preconditions 1–4, then decide which path this is:
+Run the gate (`gate.md`): `ship-state.sh <n> 04-plan-intent` for an issue number, or
+`ship-state.sh --preflight` for a free description. Then decide which path this is:
 
 | Path | When | Gate | Branches |
 | --- | --- | --- | --- |
@@ -45,10 +46,8 @@ Run `gate.md` common preconditions 1–4, then decide which path this is:
 | **B. New work item** | an open issue with no `ship/<n>-*` branch, not labelled `epic` or `idea` (a bug, a refactor, a split story, or a story filed at initiation) | none | 04 creates `.../issue` and the worktree |
 | **C. Free description** | text, not a number | none | as B, once the issue exists |
 
-- An `idea` issue with no `Epic:` line (on a `flat` repo, any issue still labelled `idea`):
-  **STOP** — it has not been through 02 and 03.
-- An `epic`: **STOP** — plan one of its stories.
-- Closed issue: **STOP**.
+- An `idea` issue (the script's gate stops it; on a `flat` repo too): it has not been through 02
+  and 03. An `epic`, or a closed issue: the gate stops those as well.
 - An `Approved` `intent.md` on the issue branch, or a merged `.../04-plan-intent` PR: **STOP**,
   04 is done; next is 05. A `.../04-plan-intent` branch with no PR: resume (refine that file; do
   not start a second one).
@@ -156,7 +155,8 @@ not move here: `shaping` already says the item is in hand.
    with no PR.
 3. `Approved`: PR into `.../issue` (`branches.md`, PRs), title `docs(ship): intent for #<n>`,
    body: the mode, the outcome, the cut, and `Refs #<n>`.
-4. Refresh the References block: `Intent:` with the PR head permalink and the PR number.
+4. Refresh the References block: `ship-refs.sh <n> apply`. It writes `Intent:` with the PR head permalink
+   and the PR number.
 
 Report the PR URL and next: merge it, then `/cuevik-ship:05-design-spec <n>` in a new session in
 the worktree. Do not invoke 05.

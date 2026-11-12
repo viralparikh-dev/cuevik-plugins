@@ -275,7 +275,7 @@ Write exactly these files (`steps.yml` `outputs`), nothing else:
 
   ```json
   {
-    "schemaVersion": 6,
+    "schemaVersion": <the config schema's current schemaVersion>,
     "boardState": "<configured | partial | none>",
     "backlogModel": "epic-grouped",
     "missing": ["<link | items | fields | workflows>"],
@@ -376,10 +376,10 @@ Follow runner §5–§6. The PR body covers the `prSummary`:
 - [ ] `CONTRIBUTING.md` holds the governance layer verbatim, with both `INITIATION-ONLY` markers.
       In insert mode, the existing text is unchanged.
 - [ ] No stack-specific commands in `CONTRIBUTING.md`.
-- [ ] `.cuevik/config.json` has `schemaVersion` 6, `backlogModel` `epic-grouped`, and a
-      `boardState` that matches what happened: `none` has neither `project` nor `missing`;
-      `configured` has `project` and no `missing`; `partial` has `project` and a non-empty
-      `missing`. The PR body says why for `none` and `partial`.
+- [ ] `.cuevik/config.json` has the config schema's current `schemaVersion`, `backlogModel`
+      `epic-grouped`, and a `boardState` that matches what happened: `none` has neither `project`
+      nor `missing`; `configured` has `project` and no `missing`; `partial` has `project` and a
+      non-empty `missing`. The PR body says why for `none` and `partial`.
 - [ ] With a board recorded, `project` names the board that is linked to this repo (unless
       `missing` lists `link`), and its ids were read from GitHub.
 - [ ] `.cuevik/lineage.json` matches the plugin's default lineage.

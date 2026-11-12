@@ -29,15 +29,16 @@ consequential to guess.
 
 ## 1. Gates
 
-`gate.md` common preconditions, then, each hard (fail one: say which and stop, move nothing):
+The gate (`gate.md`): `ship-state.sh <n> 07-execute-plan`, then, each hard (fail one: say which
+and stop, move nothing):
 
-1. **The plan.** `.../06-build-plan` merged into `.../issue`, and
-   `git show origin/ship/<n>-<slug>/issue:docs/ship/<n>-<slug>/plan.md` reads `Approved`.
-2. **No previous run.** The plan's `**Code branch:**` (`ship/<n>-<slug>/07-execute-plan`): an open
-   PR from it → **STOP** and name it; a merged one → **STOP**, 07 is done; the branch on GitHub
-   with no PR → ask `Reuse it` / `Delete it` (a reuse continues from its commits and the plan's
-   first task whose proof still fails).
-3. **The card** (local sessions): `Ready` → proceed. `Working` → a run may already be live: ask
+1. **The plan and no previous run.** The script stops unless `.../06-build-plan` is merged into
+   `.../issue` and `plan.md` there reads `Approved`. It also covers the plan's `**Code branch:**`
+   (`ship/<n>-<slug>/07-execute-plan`): an open PR from it → **STOP** and name it; a merged one →
+   **STOP**, 07 is done. The branch on GitHub or local with no PR (`step_branch_state` not `none`)
+   → ask `Reuse it` / `Delete it` (a reuse continues from its commits and the plan's first task
+   whose proof still fails).
+2. **The card** (local sessions): `Ready` → proceed. `Working` → a run may already be live: ask
    `Continue anyway?` (`Yes` / `No`). Anything else → report it and ask the same. Not on the board
    or a cloud session: say so and proceed. `boardState` `none`: there is no card; proceed, saying
    nothing.
@@ -96,8 +97,8 @@ Follow the plan's Execution contract. These rules hold on top of it:
      `Done` when it merges and closes the issue. Do not set either yourself.
 4. **Deviations** also go on the issue as one comment (`gh issue comment <n>`): the plan lives on
    the issue branch, which this branch must not touch.
-5. **Final References refresh:** `Code PR: #<c>`, and every file line re-pointed at the latest
-   commit on `.../issue` that touched it.
+5. **Final References refresh:** `ship-refs.sh <n> apply`. It writes `Code PR: #<c>` and re-points every
+   file line at the latest commit on `.../issue` that touched it.
 
 ## 5. Report
 

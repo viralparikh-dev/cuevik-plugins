@@ -29,10 +29,10 @@ Arguments: `$ARGUMENTS` — the issue number. Empty: **STOP** and ask for it.
 
 ## 1. Gate and branch
 
-1. `gate.md`: common preconditions, then the 05 row — `.../04-plan-intent` merged into
-   `.../issue`, and `intent.md` there reads `Approved` (missing or `Draft`: run
-   `/cuevik-ship:04-plan-intent <n>`; do not write the intent here). A merged `.../05-design-spec`
-   PR: **STOP**, 05 is done.
+1. The gate (`gate.md`): `ship-state.sh <n> 05-design-spec`. It stops unless `.../04-plan-intent`
+   is merged into `.../issue` and `intent.md` there reads `Approved` (missing or `Draft`: run
+   `/cuevik-ship:04-plan-intent <n>`; do not write the intent here), and it stops with `done: yes`
+   when the `.../05-design-spec` PR is merged: 05 is done.
 2. Plan and approval (`gate.md`, After the gate), then
    `git switch -c ship/<n>-<slug>/05-design-spec origin/ship/<n>-<slug>/issue`.
 3. Read `intent.md` in full, and only that from the work folder: the session that wrote it is
@@ -156,7 +156,8 @@ not move here.
    with no PR.
 3. `Approved`: PR into `.../issue`, title `docs(ship): spec for #<n>`, body: the behaviour in
    brief, §7, the §8 sign-offs (ticked or open), and `Refs #<n>`.
-4. Refresh the References block: `Spec:` (and `Intent:` if corrected).
+4. Refresh the References block: `ship-refs.sh <n> apply`. It writes `Spec:` (and re-points `Intent:` if
+   corrected).
 
 Report the PR URL, any open §8 item, and next: merge it, then `/cuevik-ship:06-build-plan <n>`
 in a new session in the worktree. Do not invoke 06.

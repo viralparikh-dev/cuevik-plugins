@@ -5,6 +5,8 @@ Usage:  python docs/guides/build_docs.py            build everything; stops if a
         python docs/guides/build_docs.py --write    refresh the generated blocks in the Walkthrough .md first
         python docs/guides/build_docs.py --check    run the checks only, write nothing
         python docs/guides/build_docs.py --release  also require exact plugin versions (final merge)
+        python docs/guides/build_docs.py --verify-built   rebuild into a temp folder and compare with the
+                                                    committed HTML and PDFs; write nothing (CI, Linux)
 
 Edited by hand: Cuevik-Plugins_Walkthrough.md and Cuevik-Plugins_Overview.md. Generated:
   Walkthrough .html + .pdf, WalkthroughByActor .pdf (one page per plugin), Commands .pdf,
@@ -20,6 +22,9 @@ they cannot drift from them. The checks stop the build when:
   5. a term from the local, gitignored .private-terms appears in a guide
   6. the Overview exposes an internal term, or lists different commands than the Walkthrough
   7. a command's Available / Planned tag disagrees with whether its skill exists on disk
+--verify-built adds one more: the committed HTML must equal a fresh build byte for byte, and each
+committed PDF must have the same text as a fresh one with whitespace ignored (so a line that breaks
+differently under another font does not count). Build on Linux, like the committed PDFs.
 """
 import argparse, base64, html as H, json, re, sys
 from pathlib import Path
@@ -793,21 +798,57 @@ def pdf(browser, html, out, footer):
     print(f"wrote {out.name}")
 
 
-def build(walk, over, d, t1, t2):
+def build(walk, over, d, t1, t2, out=None):
+    """Write the HTML and PDFs into out (default: next to the sources)."""
     from playwright.sync_api import sync_playwright
+    out = out or DOCS
     svgs = {name: swimlane(i, f"{name} by actor", lanes, rows) for i, (name, (lanes, rows)) in enumerate(diagrams(d, t1, t2).items())}
     w_title, w_html = walkthrough_html(walk, svgs)
     o_title, o_html = overview_html(over)
-    WALK.with_suffix(".html").write_text(w_html, encoding="utf-8")
-    OVER.with_suffix(".html").write_text(o_html, encoding="utf-8")
-    print(f"wrote {WALK.with_suffix('.html').name}\nwrote {OVER.with_suffix('.html').name}")
+    walk_html, over_html = out / WALK.with_suffix(".html").name, out / OVER.with_suffix(".html").name
+    walk_html.write_text(w_html, encoding="utf-8", newline="\n")
+    over_html.write_text(o_html, encoding="utf-8", newline="\n")
+    print(f"wrote {walk_html.name}\nwrote {over_html.name}")
     with sync_playwright() as p:
         b = p.chromium.launch(channel="chrome")
-        pdf(b, w_html, WALK.with_suffix(".pdf"), w_title)
-        pdf(b, byactor_html(svgs, d), BYACTOR, "Cuevik Plugins · Walkthrough by actor")
-        pdf(b, commands_html(d, t1, t2), COMMANDS, "Cuevik Plugins · Commands")
-        pdf(b, o_html, OVER.with_suffix(".pdf"), "Cuevik Plugins · Overview")
+        pdf(b, w_html, out / WALK.with_suffix(".pdf").name, w_title)
+        pdf(b, byactor_html(svgs, d), out / BYACTOR.name, "Cuevik Plugins · Walkthrough by actor")
+        pdf(b, commands_html(d, t1, t2), out / COMMANDS.name, "Cuevik Plugins · Commands")
+        pdf(b, o_html, out / OVER.with_suffix(".pdf").name, "Cuevik Plugins · Overview")
         b.close()
+
+
+def pdf_text(path):
+    """A PDF's text with all whitespace removed, so only the characters are compared."""
+    import pymupdf
+    with pymupdf.open(path) as doc:
+        return re.sub(r"\s+", "", "".join(page.get_text() for page in doc))
+
+
+def verify_built(walk, over, d, t1, t2):
+    """Fail unless the committed HTML and PDFs are what the sources build today."""
+    import tempfile
+    stale = []
+    with tempfile.TemporaryDirectory() as tmp:
+        fresh = Path(tmp)
+        build(walk, over, d, t1, t2, out=fresh)
+        for made in sorted(fresh.iterdir()):
+            have = DOCS / made.name
+            if not have.is_file():
+                stale.append(f"{made.name} is missing")
+            elif made.suffix == ".html":
+                if made.read_bytes() != have.read_bytes().replace(b"\r\n", b"\n"):
+                    stale.append(f"{made.name} differs from a fresh build")
+            else:
+                a, b = pdf_text(made), pdf_text(have)
+                if a != b:
+                    at = next((i for i, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b)))
+                    stale.append(f"{made.name} text differs from a fresh build near: ...{b[max(0, at - 30):at + 30]}... "
+                                 f"(fresh: ...{a[max(0, at - 30):at + 30]}...)")
+    if stale:
+        fail("the guides are not built from their sources: " + "; ".join(stale)
+             + ". Run: python docs/guides/build_docs.py, and commit the result")
+    print("committed guides match a fresh build")
 
 
 def main():
@@ -815,6 +856,8 @@ def main():
     ap.add_argument("--write", action="store_true", help="refresh the generated blocks and status tags in the .md sources")
     ap.add_argument("--check", action="store_true", help="run the checks only; write nothing")
     ap.add_argument("--release", action="store_true", help="require exact plugin versions")
+    ap.add_argument("--verify-built", action="store_true",
+                    help="rebuild into a temp folder and compare with the committed HTML and PDFs; write nothing")
     args = ap.parse_args()
     d = load()
     walk, over = WALK.read_text(encoding="utf-8"), OVER.read_text(encoding="utf-8")
@@ -823,6 +866,9 @@ def main():
     walk, over = sync(walk, over, d, t1, t2, args.write)
     if args.check:
         print("checks passed")
+        return
+    if args.verify_built:
+        verify_built(walk, over, d, t1, t2)
         return
     build(walk, over, d, t1, t2)
     print("guides in sync with the plugins")

@@ -18,13 +18,16 @@ Checks
   5. No plugin holds an undeclared copy.
   6. With --target: for each contract with a schema, <repo>/.cuevik/<name>.json exists and passes
      checks 2 and 3.
+  7. No plugin prose (skills, references, READMEs; not the contract copies) states a schemaVersion
+     number. The number lives in each contract's schema; prose says "the current schemaVersion" and
+     a reader looks it up, so a bump cannot leave a stale number behind.
 Any failure exits non-zero.
 
 --sync writes before it checks: for each contract in contracts/consumers.json it makes every declared
 plugin copy match contracts/<name>/ (files added, replaced or removed), then runs the checks above.
 It touches nothing else: an undeclared copy is still reported, not deleted.
 """
-import argparse, json, shutil, sys
+import argparse, json, re, shutil, sys
 from pathlib import Path
 
 try:
@@ -128,6 +131,21 @@ def sync(declared, contracts):
     print(f"sync: {changed} files changed" if changed else "sync: every copy already matches")
 
 
+# A schemaVersion written as a number, or "<config|lineage|contract> ... version <n>", in prose.
+VERSION_IN_PROSE = re.compile(r"schemaVersion\W{0,15}\d|(?i:\b(?:config|lineage|contract)\b[^.\n]{0,25}\bversions? \d)")
+
+
+def check_prose_versions():
+    for path in sorted(PLUGINS.rglob("*")):
+        rel = path.relative_to(ROOT).as_posix()
+        if path.suffix not in (".md", ".yml") or not path.is_file() or "/references/contracts/" in rel:
+            continue
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if VERSION_IN_PROSE.search(line):
+                failures.append(f"{rel}:{number}: states a schemaVersion number; say \"the current schemaVersion\" "
+                                f"and let the reader take it from the contract's schema: {line.strip()[:90]}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Check the shared contracts and every plugin's copy of them.")
     parser.add_argument("--target", type=Path, help="project repo whose .cuevik/*.json to validate too")
@@ -179,6 +197,8 @@ def main():
                 failures.append(f"{rel}/{f} is not in contracts/{name}/")
             for f in sorted(source.keys() & copy.keys()):
                 check(text(source[f]) == text(copy[f]), f"{rel}/{f} differs from contracts/{name}/{f}")
+
+    check_prose_versions()
 
     for copy_dir in sorted(PLUGINS.glob("*/references/contracts/*")):
         plugin, name = copy_dir.parts[-4], copy_dir.name

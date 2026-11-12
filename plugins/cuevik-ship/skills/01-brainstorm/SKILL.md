@@ -37,9 +37,10 @@ Arguments: `$ARGUMENTS`
 
 ## 1. Resolve
 
-Run `gate.md` common preconditions 1–4. Then:
+Run the gate (`gate.md`): `ship-state.sh --preflight` for a new idea, or `ship-state.sh <n>
+01-brainstorm` for an issue number. Then:
 
-- **Issue number.** `gh issue view <n> --json number,title,state,labels,body,url`.
+- **Issue number.** The script's `== issue` section has its state, labels and title.
   - Closed: **STOP** — reopen it on GitHub first, or start a new idea.
   - Label `epic`: **STOP** — an epic is not one idea; brainstorm one of its stories, or a new
     idea.
@@ -146,7 +147,8 @@ Only an explicit answer sets a status.
 3. `Approved` or `Rejected` only: open the PR into the issue branch (`branches.md`, PRs), title
    `docs(ship): brainstorm for #<n> — <Approved | Rejected>`, body: the one-line decision, the
    recommendation or the reason, and `Refs #<n>`. `Not yet`: no PR.
-4. Refresh the References block: `Brainstorm:` with the PR head permalink and the PR number.
+4. Refresh the References block (`references-block.md`): `ship-refs.sh <n> apply`. It writes `Brainstorm:` with
+   the PR head permalink and the PR number.
 5. **Rejected:** ask `Close #<n> as not planned?` (`Yes` / `No`); on `Yes`, comment the reason
    and close it. A pre-existing story is never closed here: retiring a requirement is 02's job.
 

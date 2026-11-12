@@ -2,101 +2,11 @@
 # Tests plugins/cuevik-start/scripts/init-state.sh against real temporary git repos and a stub gh.
 #
 # Usage:  bash scripts/test-init-state.sh
-# Needs:  git, jq (the stub runs the script's own --jq expression through it)
-#
-# Each case builds a bare "origin" and a clone of it, writes the pull requests GitHub would hold to
-# a fixture file, and runs the script in the clone. The clone's origin URL names github.com and is
-# redirected to the bare repo with url.<path>.insteadOf, so the script's own checks stay untouched.
+# Needs:  git, jq (see scripts/test-lib.sh, which holds the stub gh and the helpers)
 # Any failed expectation prints the output it saw and makes the run exit 1.
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$(dirname "${BASH_SOURCE[0]}")/test-lib.sh"
 SCRIPT="$ROOT/plugins/cuevik-start/scripts/init-state.sh"
-command -v jq >/dev/null || { echo "jq is needed to run these tests"; exit 1; }
-
-WORK="$(mktemp -d)"
-trap 'rm -rf "$WORK"' EXIT
-FAILED=0
-CASES=0
-
-# ---- the stub gh: answers from $GH_FIXTURE, one PR per line: head|state|number|date|title --------
-mkdir -p "$WORK/bin"
-cat > "$WORK/bin/gh" <<'STUB'
-#!/usr/bin/env bash
-case "$1 $2" in
-  "auth status") [ -z "$GH_NO_AUTH" ]; exit $? ;;
-  "repo view") echo "test-owner/test-repo"; exit 0 ;;
-  "pr list") ;;
-  *) echo "stub gh: unexpected call: $*" >&2; exit 64 ;;
-esac
-head=""; expr=""
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --head) head="$2"; shift ;;
-    --jq) expr="$2"; shift ;;
-  esac
-  shift
-done
-if [ "$head" = "$GH_FAIL_HEAD" ]; then echo "HTTP 502: Bad Gateway" >&2; exit 1; fi
-json="["; sep=""
-while IFS='|' read -r h state number date title; do
-  [ "$h" = "$head" ] || continue
-  merged="null"
-  if [ "$state" = "MERGED" ]; then merged="\"$date\""; fi
-  json="$json$sep{\"number\":$number,\"state\":\"$state\",\"title\":\"$title\",\"mergedAt\":$merged,\"createdAt\":\"$date\"}"
-  sep=","
-done < "$GH_FIXTURE"
-printf '%s]' "$json" | jq -r "$expr"
-STUB
-chmod +x "$WORK/bin/gh"
-export PATH="$WORK/bin:$PATH"
-
-# ---- building a case ----------------------------------------------------------------------------
-native() { if command -v cygpath >/dev/null; then cygpath -m "$1"; else printf '%s' "$1"; fi; }
-
-# new_repo: an empty origin with a first commit on main, and a clone of it in $REPO.
-new_repo() {
-  CASES=$((CASES + 1))
-  local base="$WORK/case$CASES"
-  mkdir -p "$base"
-  export GH_FIXTURE="$base/prs.txt"
-  : > "$GH_FIXTURE"
-  unset GH_NO_AUTH GH_FAIL_HEAD
-  git init -q --bare -b main "$base/origin.git"
-  REPO="$base/repo"
-  git init -q -b main "$REPO"
-  git -C "$REPO" config user.name test
-  git -C "$REPO" config user.email test@example.com
-  git -C "$REPO" config commit.gpgsign false
-  git -C "$REPO" config push.negotiate false
-  git -C "$REPO" config "url.$(native "$base/origin.git").insteadOf" "https://github.com/test-owner/test-repo.git"
-  git -C "$REPO" remote add origin "https://github.com/test-owner/test-repo.git"
-  git -C "$REPO" commit -q --allow-empty -m "chore: initialize repository"
-  git -C "$REPO" push -q -u origin main
-}
-
-# on_main <path> [<text>]: commit a file to main and push it.
-on_main() {
-  mkdir -p "$REPO/$(dirname "$1")"
-  printf '%s\n' "${2:-content}" > "$REPO/$1"
-  git -C "$REPO" add -A
-  git -C "$REPO" commit -q -m "add $1"
-  git -C "$REPO" push -q origin main
-}
-
-bootstrapped() {
-  on_main .cuevik/config.json '{"schemaVersion": 6}'
-  on_main .cuevik/lineage.json '{"schemaVersion": 2}'
-  on_main CONTRIBUTING.md '<!-- BEGIN INITIATION-ONLY --> rules <!-- END INITIATION-ONLY -->'
-}
-
-pr() { printf '%s|%s|%s|%s|%s\n' "$1" "$2" "$3" "$4" "$5" >> "$GH_FIXTURE"; }
-
-run() { OUT="$(cd "$REPO${RUN_IN:+/$RUN_IN}" && bash "$SCRIPT" "$@" 2>&1)"; CODE=$?; }
-
-fail() { FAILED=$((FAILED + 1)); printf 'FAIL  %s\n      %s\n' "$NAME" "$1"; printf '%s\n' "$OUT" | sed 's/^/      | /'; }
-has() { case "$OUT" in *"$1"*) ;; *) fail "expected to find: $1" ;; esac; }
-hasnt() { case "$OUT" in *"$1"*) fail "expected not to find: $1" ;; esac; }
-code() { [ "$CODE" -eq "$1" ] || fail "expected exit $1, got $CODE"; }
 
 # ---- cases --------------------------------------------------------------------------------------
 NAME="bootstrap merged, 01 open: 02 may start, 03 may not"
@@ -285,8 +195,4 @@ sed 's/$/\r/' "$ROOT/plugins/cuevik-start/scripts/steps.table" > "$WORK/crlf/ste
 OUT="$(cd "$REPO" && bash "$WORK/crlf/init-state.sh" 01-product-concept 2>&1)"; CODE=$?
 code 0; has '| 09-finalize | CONTRIBUTING.md | — not started |  |'; has 'predecessor: 00-bootstrap'
 
-if [ "$FAILED" -gt 0 ]; then
-  echo "init-state tests: $FAILED expectations failed in $CASES cases"
-  exit 1
-fi
-echo "init-state tests passed ($CASES cases)"
+finish "init-state"

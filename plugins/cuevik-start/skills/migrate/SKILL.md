@@ -1,6 +1,6 @@
 ---
 name: migrate
-description: Brings an older repo's .cuevik/ files up to the current contracts, in one PR. Config versions 2–5 come up to 6 and the lineage to 2 (story keys and lineage steps renamed from numbered step ids to step slugs; boardState, backlogModel, the docs/TEST-STRATEGY.md entry and its upstream links added where an older file lacks them). Replaces the repo's merge-order workflow with the current one when the repo has one. Run in the project folder. A repo that is already current gets "Nothing to migrate." Changes nothing until you say yes, and never merges.
+description: Brings an older repo's .cuevik/ files up to the current contracts, in one PR. Any older config or lineage comes up to the current version (story keys and lineage steps renamed from numbered step ids to step slugs; boardState, backlogModel, the docs/TEST-STRATEGY.md entry and its upstream links added where an older file lacks them). Replaces the repo's merge-order workflow with the current one when the repo has one. Run in the project folder. A repo that is already current gets "Nothing to migrate." Changes nothing until you say yes, and never merges.
 disable-model-invocation: true
 ---
 
@@ -49,9 +49,9 @@ same place.
 
 **`.cuevik/config.json`**
 
-1. `schemaVersion` becomes `6`.
-2. `schemaVersion` 2 (no `boardState`): add `"boardState": "configured"` right after
-   `schemaVersion`. Every version 2 config has a `project`; if `project` is missing, **STOP** —
+1. `schemaVersion` becomes the `const` in the config schema.
+2. No `boardState` key: add `"boardState": "configured"` right after `schemaVersion`. Every config
+   of that age has a `project`; if `project` is missing, **STOP** —
    `config.json has no project, so it cannot be migrated safely. Fix it by hand.`
 3. No `backlogModel` key: add `"backlogModel": "epic-grouped"` right after `boardState`. Every
    existing repo files epics, so the value is the same for all of them.
@@ -62,7 +62,7 @@ same place.
 
 **`.cuevik/lineage.json`**
 
-1. `schemaVersion` becomes `2`.
+1. `schemaVersion` becomes the `const` in the lineage schema.
 2. In every document's `steps`, replace each legacy key with the step's `slug`. A `steps` array
    that would then name one slug twice: **STOP** and name the document.
 3. No document with path `docs/TEST-STRATEGY.md`: insert the entry of that path from the default
@@ -80,10 +80,10 @@ same place.
 2. Not on `main`: leave it absent. The repo was bootstrapped before the check existed and has no
    ruleset that needs it; setting one up is not a migration.
 
-**Already current.** The config's `schemaVersion` is `6` and `backlogModel` is present, the
-lineage's `schemaVersion` is `2`, no legacy key is left in either file, the lineage has the
-`docs/TEST-STRATEGY.md` entry and the upstream links of step 4, and the workflow is absent or
-matches the plugin's: output `Nothing to migrate.` and stop.
+**Already current.** Each file's `schemaVersion` equals the `const` in its schema, `backlogModel` is
+present, no legacy key is left in either file, the lineage has the `docs/TEST-STRATEGY.md` entry
+and the upstream links of step 4, and the workflow is absent or matches the plugin's: output
+`Nothing to migrate.` and stop.
 
 ## 3. Show and approve
 
