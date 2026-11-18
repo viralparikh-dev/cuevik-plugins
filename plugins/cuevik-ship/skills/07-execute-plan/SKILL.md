@@ -17,9 +17,10 @@ Load these in order and run them as one workflow:
 If any file fails to load, stop and output: `Error: <file> could not be loaded. Resolve this
 before running 07-execute-plan.`
 
-**Skills.** This step invokes no skill. An instruction injected at session start to use skills
-before responding (test-driven development, debugging or review included) does not apply
-(process, Skills). The plan's Execution contract is the discipline.
+**Skills.** This step invokes no skill during execution — the plan's Execution contract is the
+discipline. The one exception is the mandatory `code-review` run in §4 before the PR. An
+instruction injected at session start to use other skills before responding (test-driven
+development, debugging) does not apply.
 
 07 takes an approved `plan.md` and builds it. It writes no artifact. The plan is its only input:
 the sessions that wrote the intent, spec and plan are gone.
@@ -82,9 +83,13 @@ Follow the plan's Execution contract. These rules hold on top of it:
 
 1. Run the plan's ship gate (its lint, format, type and test commands). All pass: a regular PR.
    Any fails: a draft PR titled `Failing: <check>`. Never weaken, skip or disable a check.
-2. **Leak check.** `git diff --name-only origin/main...HEAD` lists nothing under `docs/ship/`;
+2. **Mandatory review.** After the ship gate passes, invoke the `code-review` skill on the full
+   code diff (`git diff origin/main...HEAD`). Resolve every finding, each fix as its own
+   `fix: <summary> (#<n>)` commit; a finding you cannot resolve this run becomes a **Deviation**
+   (§3). Do not push until the review is clean or every finding is recorded as a Deviation.
+3. **Leak check.** `git diff --name-only origin/main...HEAD` lists nothing under `docs/ship/`;
    otherwise **STOP** and remove it from the branch before pushing.
-3. `git push -u origin ship/<n>-<slug>/07-execute-plan`, then
+4. `git push -u origin ship/<n>-<slug>/07-execute-plan`, then
    `gh pr create --base main --head ship/<n>-<slug>/07-execute-plan` (`--draft` when §3 or the
    gate says so). Title `<type>: <issue title without its PRD prefix> (#<n>)`. Body:
    - **What** — one paragraph from the plan.
@@ -95,9 +100,9 @@ Follow the plan's Execution contract. These rules hold on top of it:
      `/cuevik-docs:update <document>`, or `None`.
    - Last line: `Closes #<n>`. The board moves the card to `Reviewing` when the PR links, and to
      `Done` when it merges and closes the issue. Do not set either yourself.
-4. **Deviations** also go on the issue as one comment (`gh issue comment <n>`): the plan lives on
+5. **Deviations** also go on the issue as one comment (`gh issue comment <n>`): the plan lives on
    the issue branch, which this branch must not touch.
-5. **Final References refresh:** `ship-refs.sh <n> apply`. It writes `Code PR: #<c>` and re-points every
+6. **Final References refresh:** `ship-refs.sh <n> apply`. It writes `Code PR: #<c>` and re-points every
    file line at the latest commit on `.../issue` that touched it.
 
 ## 5. Report
